@@ -2,8 +2,10 @@ package backend.greatjourney;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
+@EnableJpaAuditing
 public class GreatjourneyApplication {
 
 	public static void main(String[] args) {
