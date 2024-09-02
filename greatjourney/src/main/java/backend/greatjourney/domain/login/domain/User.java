@@ -1,4 +1,4 @@
-package backend.greatjourney.domain.user.domain;
+package backend.greatjourney.domain.login.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,5 +26,7 @@ public class User {
     private boolean sns;
 
     private boolean snsId;
+
+    private boolean admin;
 
 }
