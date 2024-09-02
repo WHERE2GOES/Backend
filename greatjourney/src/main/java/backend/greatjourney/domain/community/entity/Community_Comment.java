@@ -1,12 +1,15 @@
 package backend.greatjourney.domain.community.entity;
 
 
+import backend.greatjourney.domain.user.domain.User;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 
 
 @Entity
 @Data
+@Builder(toBuilder = true)
 public class Community_Comment {
 
 

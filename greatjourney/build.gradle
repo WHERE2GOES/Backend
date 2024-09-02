@@ -28,6 +28,11 @@ dependencies {
 	//implementation 'org.springframework.boot:spring-boot-starter-validation'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	//swagger 관련
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+
+
 	//testImplementation 'org.springframework.security:spring-security-test'
 
 }

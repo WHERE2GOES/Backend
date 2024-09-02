@@ -1,13 +1,16 @@
 package backend.greatjourney.domain.community.entity;
 
 import backend.greatjourney.domain.base_time.BaseTimeEntity;
+import backend.greatjourney.domain.user.domain.User;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@Builder(toBuilder = true)
 public class Posting extends BaseTimeEntity {
 
 
