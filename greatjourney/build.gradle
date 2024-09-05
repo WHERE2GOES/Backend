@@ -20,18 +20,28 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	//runtimeOnly 'com.mysql:mysql-connector-j'
+	runtimeOnly 'com.mysql:mysql-connector-j'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-	//implementation 'org.springframework.boot:spring-boot-starter-security'
-	//implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.security:spring-security-test'
+
+	//jwt
+	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
+	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
+	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
+
 
 	//swagger 관련
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 
+
+	//web socket 관련
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
 	//testImplementation 'org.springframework.security:spring-security-test'
 
