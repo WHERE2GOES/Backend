@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/backend.iml" filepath="$PROJECT_DIR$/.idea/backend.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1984157471/greatjourney.main.iml" filepath="$PROJECT_DIR$/.idea/modules/1984157471/greatjourney.main.iml" />
     </modules>
   </component>
 </project>
