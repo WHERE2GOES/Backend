@@ -1,8 +1,10 @@
 package backend.greatjourney.domain.login.controller;
 
-import com.umc.Palette.domain.user.dto.*;
-import com.umc.Palette.domain.user.service.AuthenticationService;
-import com.umc.Palette.global.exception.*;
+import backend.greatjourney.domain.login.dto.*;
+import backend.greatjourney.domain.login.service.AuthenticationService;
+import backend.greatjourney.global.exception.BaseResponse;
+import backend.greatjourney.global.exception.BaseResponseService;
+import backend.greatjourney.global.exception.CustomExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/login/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
 
@@ -21,9 +23,9 @@ public class AuthenticationController {
     private final CustomExceptionHandler customExceptionHandler;
 
     // 회원가입 - (1) 아이디 중복 확인
-    @GetMapping("signup/{loginId}")
-    public BaseResponse<Object> checkLoginIdDuplicate(@PathVariable(name = "loginId") String loginId) {
-        if (authenticationService.checkLoginIdDuplicate(loginId)) {
+    @GetMapping("signup/{loginEmail}")
+    public BaseResponse<Object> checkLoginIdDuplicate(@PathVariable(name = "loginEmail") String loginEmail) {
+        if (authenticationService.checkLoginIdDuplicate(loginEmail)) {
             return BaseResponse.<Object>builder()
                     .code(2100)
                     .isSuccess(false)
@@ -84,7 +86,8 @@ public class AuthenticationController {
 
 
     @PostMapping("/signin")
-    public ResponseEntity<JwtAuthenticationResponse> signin(@RequestBody SigninRequest signinRequest) {
+    public ResponseEntity<JwtAuthenticationResponse> signin(@RequestBody SignInRequest signinRequest) {
+
         return ResponseEntity.ok(authenticationService.signin(signinRequest));
 
     }
@@ -102,9 +105,5 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.refreshToken(refreshTokenRequest));
 
     }
-
-
-
-
 
 }
