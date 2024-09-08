@@ -1,7 +1,7 @@
 package backend.greatjourney.domain.community.entity;
 
 import backend.greatjourney.domain.base_time.BaseTimeEntity;
-import backend.greatjourney.domain.user.domain.User;
+import backend.greatjourney.domain.login.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 
