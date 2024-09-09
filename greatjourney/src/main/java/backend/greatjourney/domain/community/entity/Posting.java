@@ -21,7 +21,8 @@ public class Posting extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user; //우혁이가 만든 user를 여기에 넣어주면 된다.
+    private User user;
+    //user와 연결되어 접속할 수 있도록 한다.
 
     private String image_url;
 

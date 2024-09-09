@@ -28,6 +28,8 @@ out/
 **/application.properties
 
 
+application.properties
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
