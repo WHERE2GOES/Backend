@@ -1,6 +1,6 @@
 package backend.greatjourney.domain.community.controller.response;
 
-import backend.greatjourney.domain.user.domain.User;
+import backend.greatjourney.domain.login.domain.User;
 import lombok.*;
 
 @Getter
