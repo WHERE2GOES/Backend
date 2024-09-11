@@ -1,9 +1,8 @@
 package backend.greatjourney.domain.community.controller.response;
 
-import backend.greatjourney.domain.community.entity.Community_Comment;
-import backend.greatjourney.domain.community.entity.Posting;
-import backend.greatjourney.domain.login.domain.User;
 
+
+import backend.greatjourney.domain.login.domain.User;
 import lombok.*;
 
 import java.time.LocalDateTime;

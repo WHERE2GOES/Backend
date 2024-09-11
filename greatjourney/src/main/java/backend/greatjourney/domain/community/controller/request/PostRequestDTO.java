@@ -1,7 +1,8 @@
 package backend.greatjourney.domain.community.controller.request;
 
 
-import backend.greatjourney.domain.community.entity.Posting;
+
+
 import backend.greatjourney.domain.login.domain.User;
 import lombok.*;
 
