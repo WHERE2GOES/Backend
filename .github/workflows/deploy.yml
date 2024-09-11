@@ -3,7 +3,7 @@ name: Build and Deploy for daejangjung2 server to AWS EC2 (CI/CD)
 on:
   pull_request:
     branches:
-      - dev
+      - develop
     types: [closed]
 
 env:
