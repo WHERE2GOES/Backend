@@ -1,5 +1,6 @@
 package backend.greatjourney.domain.login.service.impl;
 
+import backend.greatjourney.domain.login.domain.User;
 import backend.greatjourney.domain.login.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -21,8 +22,10 @@ public class JwtServiceImpl implements JwtService {
     @Value("${jwt.secret.signin}")
     private String signinSecret;
 
-    public String generateToken(UserDetails userDetails) {
-        return Jwts.builder().setSubject(userDetails.getUsername())
+    public String generateToken(User user) {
+        return Jwts.builder()
+                .setSubject(user.getEmail())  // 이메일을 주체로 설정
+                .claim("userId", user.getId())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
                 .signWith(getSiginKey(),  SignatureAlgorithm.HS256)

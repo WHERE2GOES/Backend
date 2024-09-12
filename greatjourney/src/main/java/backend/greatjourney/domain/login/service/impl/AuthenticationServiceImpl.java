@@ -1,12 +1,13 @@
 package backend.greatjourney.domain.login.service.impl;
 
 import backend.greatjourney.domain.login.Role;
-import backend.greatjourney.domain.login.converter.SignupConverter;
 import backend.greatjourney.domain.login.domain.User;
 import backend.greatjourney.domain.login.dto.*;
 import backend.greatjourney.domain.login.repository.UserRepository;
 import backend.greatjourney.domain.login.service.AuthenticationService;
 import backend.greatjourney.domain.login.service.JwtService;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.Optional;
+
+import static backend.greatjourney.domain.kakao.RandomPasswordGenerator.generateRandomPassword;
 
 
 @Slf4j
@@ -60,23 +64,23 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public User kakaoSignup(String email, String nickname) { // 카카오 회원가입
+    public Optional<User> kakaoSignup(String email, String nickname, String profileImgUrl) { // 카카오 회원가입
 
-//        if (userRepository.existsByEmail(email)) {
-//            return userRepository.findByEmail(email);
-//        }
-//        User user = new User();
-//
-//        user.setEmail(email);
-//        user.setName(nickname);
-//        user.setRole(Role.ROLE_USER);
-//        user.setPassword(passwordEncoder.encode(generateRandomPassword()));
-//        user.setNickname(nickname);
-//        user.setIntroduction("");
-//        user.setLoginId(email);
-//
-//        return userRepository.save(user);
-        return null;
+        if (userRepository.existsByEmail(email)) {
+            return userRepository.findByEmail(email);
+        }
+        User user = User.builder()
+                .email(email)
+                .nickname(nickname)
+                .role(Role.ROLE_USER)
+                .password(passwordEncoder.encode(generateRandomPassword()))
+                .residence(null)
+                .gender(true)
+                .phone(null)
+                .sns(true)
+                .build();
+
+        return Optional.of(userRepository.save(user));
 
     }
 

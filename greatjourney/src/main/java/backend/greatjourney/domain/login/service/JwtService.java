@@ -1,5 +1,6 @@
 package backend.greatjourney.domain.login.service;
 
+import backend.greatjourney.domain.login.domain.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Map;
@@ -8,7 +9,7 @@ public interface JwtService {
 
     String extractUserName(String token);
 
-    String generateToken(UserDetails userDetails);
+    String generateToken(User user);
 
     boolean isTokenValid(String token, UserDetails userDetails);
 

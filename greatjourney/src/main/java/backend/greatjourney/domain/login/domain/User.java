@@ -33,8 +33,6 @@ public class User implements UserDetails {
 
     private boolean sns;
 
-    private boolean snsId;
-
     @Enumerated(EnumType.STRING)
     private Role role;    // 권한
 
@@ -78,5 +76,8 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled(){
         return true;
+    }
+
+    public void setPassword(String encode) {
     }
 }

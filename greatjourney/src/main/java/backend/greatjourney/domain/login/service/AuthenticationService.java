@@ -3,12 +3,14 @@ package backend.greatjourney.domain.login.service;
 import backend.greatjourney.domain.login.domain.User;
 import backend.greatjourney.domain.login.dto.*;
 
+import java.util.Optional;
+
 
 public interface AuthenticationService {
 
     User signup(SignUpRequest signUpRequest);
 
-    User kakaoSignup(String email, String nickname);
+    Optional<User> kakaoSignup(String email, String nickname, String profileImgUrl);
 
     JwtAuthenticationResponse signin(SignInRequest signinRequest);
 
