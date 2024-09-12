@@ -1,4 +1,4 @@
-package backend.greatjourney.global;
+package backend.greatjourney.global.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;

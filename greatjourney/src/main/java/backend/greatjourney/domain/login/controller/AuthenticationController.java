@@ -93,8 +93,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/kakao/signin")
-    public ResponseEntity<JwtAuthenticationResponse> kakaoSignin(@RequestBody KakaoSigninRequest kakaoSigninRequest) {
-        return ResponseEntity.ok(authenticationService.kakaoSignin(kakaoSigninRequest));
+    public ResponseEntity<JwtAuthenticationResponse> kakaoSignin(@RequestBody String email) {
+        return ResponseEntity.ok(authenticationService.kakaoSignin(email));
 
     }
 
