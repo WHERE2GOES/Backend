@@ -37,7 +37,7 @@ jobs:
 
     
     - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+      run: chmod +x ./greatjourney/gradlew
     
     # Gradle build (Test 제외)
     - name: Build with Gradle
@@ -62,8 +62,9 @@ jobs:
 
     # S3 버킷에 업로드 된 파일을 대상으로 CodeDeploy에서 배포 요청
     - name: Code Deploy
-      run: aws deploy create-deployment
-        --application-name $CODE_DEPLOY_APP_NAME
-        --deployment-config-name CodeDeployDefault.OneAtATime
-        --deployment-group-name $DEPLOYMENT_GROUP_NAME
+      run: |
+        aws deploy create-deployment \
+        --application-name $CODE_DEPLOY_APP_NAME \
+        --deployment-config-name CodeDeployDefault.OneAtATime \
+        --deployment-group-name $DEPLOYMENT_GROUP_NAME \
         --s3-location bucket=$BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$GITHUB_SHA.zip
