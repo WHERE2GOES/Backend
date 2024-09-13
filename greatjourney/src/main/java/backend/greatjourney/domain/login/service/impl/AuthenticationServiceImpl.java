@@ -64,6 +64,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    public boolean kakaoIdExists(String kakaoEmail) {
+        return userRepository.existsByEmail(kakaoEmail);
+    }
+
+    @Override
     public Optional<User> kakaoSignup(String email, String nickname, String profileImgUrl) { // 카카오 회원가입
 
         if (userRepository.existsByEmail(email)) {
@@ -102,8 +107,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     }
 
-    public JwtAuthenticationResponse kakaoSignin (KakaoSigninRequest kakaoSigninRequest) {
-        var user = userRepository.findByEmail(kakaoSigninRequest.getLoginId()).orElseThrow(() -> new IllegalArgumentException("Invalid login_Id"));
+    public JwtAuthenticationResponse kakaoSignin (String email) {
+        var user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("Invalid login_Id"));
         var jwt = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
 

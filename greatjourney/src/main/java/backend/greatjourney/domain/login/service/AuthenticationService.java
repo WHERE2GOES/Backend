@@ -10,11 +10,13 @@ public interface AuthenticationService {
 
     User signup(SignUpRequest signUpRequest);
 
+    boolean kakaoIdExists(String kakaoEmail);
+
     Optional<User> kakaoSignup(String email, String nickname, String profileImgUrl);
 
     JwtAuthenticationResponse signin(SignInRequest signinRequest);
 
-    JwtAuthenticationResponse kakaoSignin(KakaoSigninRequest kakaoSigninRequest);
+    JwtAuthenticationResponse kakaoSignin(String email);
 
 
     JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest);
