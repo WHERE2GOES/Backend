@@ -3,6 +3,7 @@ package backend.greatjourney.domain.community.controller.request;
 
 
 
+import backend.greatjourney.domain.community.entity.Posting;
 import backend.greatjourney.domain.login.domain.User;
 import lombok.*;
 
@@ -15,7 +16,6 @@ public class PostRequestDTO {
 
     private User user;
 
-    private Long id;
 
     private String image_url;
 

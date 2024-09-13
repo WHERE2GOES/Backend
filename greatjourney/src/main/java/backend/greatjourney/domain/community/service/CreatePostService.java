@@ -32,7 +32,7 @@ public class CreatePostService {
     //게시글 생성
     public PostResponseDTO.postDetail makePost(PostRequestDTO postRequestDTO) {
 
-        User user = userRepository.findById(postRequestDTO.getId()).orElseThrow();
+        User user = userRepository.findById(postRequestDTO.getUser().getId()).orElseThrow();
 
         //DB에 저장하는 코드
         Posting post = postingRepository.save(postRequestDTO.toEntity(user));
@@ -90,7 +90,6 @@ public class CreatePostService {
 
         return PostResponseDTO.postDetail.of(post2);
     }
-
 
 
 
