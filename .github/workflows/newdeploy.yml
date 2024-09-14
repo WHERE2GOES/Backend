@@ -34,6 +34,8 @@ jobs:
       with:
         java-version: 17
 
+    - name: List current directory
+      run: ls -al
 
     
     - name: Grant execute permission for gradlew
