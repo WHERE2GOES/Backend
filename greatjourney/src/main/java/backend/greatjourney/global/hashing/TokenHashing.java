@@ -8,11 +8,10 @@ import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
 @Component
 public class TokenHashing {
-
-
 
 //    public String getUserIdFromJWT(String token) {
 //        Claims claims = Jwts.parser()
@@ -29,7 +28,7 @@ public class TokenHashing {
 //        SecurityContextHolder.getContext().setAuthentication(authentication); // SecurityContext에 저장
 //
         @Value("${jwt.secret.signin}")
-        private  String secretKey; // 실제 비밀키로 대체해야 합니다.
+        private  String secretKey;
 
         // JWT 토큰에서 사용자 ID 추출
         public String getUserIdFromJWT(String token) {
@@ -42,21 +41,21 @@ public class TokenHashing {
         }
 
         // 헤더에서 토큰을 읽어오는 메서드 (예: Authorization 헤더)
-        public String resolveToken(HttpServletRequest request) {
-            String bearerToken = request.getHeader("Authorization");
+        public String resolveToken(String bearerToken) {
+//            String bearerToken = request.getHeader("Authorization");
             if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
                 return bearerToken.substring(7);
             }
-            return "success";
+            return null;
         }
 
         // 헤더에 있는 토큰을 읽어서 userId를 구하는 함수
-        public String getUserIdFromRequest(HttpServletRequest request) {
-            String jwtToken = resolveToken(request); // 헤더에서 토큰 추출
+        public String getUserIdFromRequest(String token) {
+            String jwtToken = resolveToken(token); // 헤더에서 토큰 추출
             if (jwtToken != null && validateToken(jwtToken)) {
                 return getUserIdFromJWT(jwtToken); // 토큰에서 사용자 ID 추출
             }
-            return "success";
+            return null;
         }
 
         // JWT 토큰의 유효성을 검사하는 메서드

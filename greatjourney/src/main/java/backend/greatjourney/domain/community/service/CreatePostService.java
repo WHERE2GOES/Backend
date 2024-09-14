@@ -12,6 +12,7 @@ import backend.greatjourney.domain.community.repository.Community_CommentReposit
 import backend.greatjourney.domain.community.repository.PostingRepository;
 import backend.greatjourney.domain.login.domain.User;
 import backend.greatjourney.domain.login.repository.UserRepository;
+import backend.greatjourney.global.hashing.TokenHashing;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -28,11 +29,16 @@ public class CreatePostService {
     private final PostingRepository postingRepository;
     private final UserRepository userRepository;
     private final Community_CommentRepository commentRepository;
-
+    private final TokenHashing tokenHashing;
+    private final Community_CommentRepository communityCommentRepository;
     //게시글 생성
-    public PostResponseDTO.postDetail makePost(PostRequestDTO postRequestDTO) {
+    public PostResponseDTO.postDetail makePost(PostRequestDTO postRequestDTO,String token) {
 
-        User user = userRepository.findById(postRequestDTO.getUser().getId()).orElseThrow();
+        //토큰 값은 헤더를 통해서 전달하기 때문에 그걸 갖고 와서 열여주면 됨
+        String userId = tokenHashing.getUserIdFromRequest(token);
+
+        //문자열로 나온 userId를 변경해서 넘김
+        User user = userRepository.findById(Long.parseLong(userId)).orElseThrow();
 
         //DB에 저장하는 코드
         Posting post = postingRepository.save(postRequestDTO.toEntity(user));
@@ -41,6 +47,32 @@ public class CreatePostService {
         //성공할 때와 실패할 때에 대한 예외처리 필요함
         return PostResponseDTO.postDetail.of(post);
     }
+
+    //게시글 수정
+    public PostResponseDTO.postDetail modifyPost(PostRequestDTO postRequestDTO, String token, Long postId) {
+
+        //유저에 대한 정보를 가져옴
+        String userId = tokenHashing.getUserIdFromRequest(token);
+        User user = userRepository.findById(Long.parseLong(userId)).orElseThrow();
+
+        //게시글을 가져옴
+
+        Posting posting = postingRepository.findById(postId).orElseThrow();
+
+        //같은 유저의 경우
+        if(posting.getUser() == user){
+            posting.setContents(postRequestDTO.getContents());
+            posting.setTitle(postRequestDTO.getTitle());
+            posting.setImage_url(postRequestDTO.getImage_url());
+            postingRepository.save(posting);
+
+            return PostResponseDTO.postDetail.of(posting);
+            }else {
+            return null;
+        }
+
+    }
+
 
     //게시글 상세 검색
     public PostResponseDTO.postDetail getPostDetail(Long postId) {
@@ -70,15 +102,20 @@ public class CreatePostService {
 
     }
 
-
     //댓글을 작성하는 기능
     //댓글이 등록된 정보를 새로 가져다줘서 작성된 것을 바로 확인할 수 있게끔 설정
     //작성된 포스트를 리턴하는 식으로 제공하는 것
-    public PostResponseDTO.postDetail creatComment(Long postId, String comment) {
+    public PostResponseDTO.postDetail creatComment(Long postId, String comment, String token) {
+
         Posting post = postingRepository.findById(postId).orElseThrow();
 
         //user정보도 가져와야 한다.
-        User user = post.getUser();
+        //현재 댓글을 작성하는 유저에 대한 정보를 가져와야 함.
+//        User postHostUser = post.getUser();
+
+        //여기서 user는 댓글의 소유자가 되어야 함.
+        String userId = tokenHashing.getUserIdFromRequest(token);
+        User user = userRepository.findById(Long.parseLong(userId)).orElseThrow();
 
         Community_Comment communityComment = new Community_Comment(user,post,comment);
 
@@ -91,6 +128,34 @@ public class CreatePostService {
         return PostResponseDTO.postDetail.of(post2);
     }
 
+
+    //댓글 수정하는 함수
+    //기존의 댓글의 id로 찾는 방법도 있고 그냥 post에서 찾는 방법도 있다.
+    public PostResponseDTO.postDetail modifyComment(Long postId,Long commentId, String comment, String token) {
+
+        //댓글을 작성한 사람만 고칠 수 있게끔 유효성 검사 추가하기
+
+        Posting post = postingRepository.findById(postId).orElseThrow();
+
+        //userId를 통해서 유저정보를 가져온다.
+        String userId = tokenHashing.getUserIdFromRequest(token);
+        User user = userRepository.findById(Long.parseLong(userId)).orElseThrow();
+
+
+        //community comment를 구해서 그 안의 내용을 수정
+        Community_Comment communityComment = communityCommentRepository.findById(commentId).orElseThrow();
+
+        if (communityComment.getUser() == user) {
+            communityComment.setContent(comment);
+
+            communityCommentRepository.save(communityComment);
+
+            return PostResponseDTO.postDetail.of(post);
+        } else {
+            return null;
+        }
+
+    }
 
 
 }

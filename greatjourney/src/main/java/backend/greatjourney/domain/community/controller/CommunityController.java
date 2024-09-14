@@ -18,6 +18,39 @@ public class CommunityController {
 
     private final CreatePostService createPostService;
 
+    //게시글 생성하는 api
+    @PostMapping("/create")
+    public BaseResponse createPost(@RequestBody PostRequestDTO postRequestDTO, @RequestHeader String token) {
+
+        PostResponseDTO.postDetail postDetail = createPostService.makePost(postRequestDTO,token);
+
+        return BaseResponse.builder()
+                .code(200)
+                .isSuccess(true)
+                .data(postDetail)
+                .message("게시글이 작성되었습니다.")
+                .build();
+    }
+    //게시글 수정하는 api
+    @PostMapping("/modify/{postId}")
+    public BaseResponse modifyPost(@RequestBody PostRequestDTO postRequestDTO, @PathVariable Long postId, @RequestHeader String token) {
+
+        PostResponseDTO.postDetail postDetail = createPostService.modifyPost(postRequestDTO,token,postId);
+        if (postDetail == null) {
+            return BaseResponse.builder()
+                    .code(401)
+                    .isSuccess(false)
+                    .message("해당 게시글의 주인이 아닙니다.")
+                    .build();
+        }
+        return BaseResponse.builder()
+                .code(200)
+                .isSuccess(true)
+                .data(postDetail)
+                .message("게시글을 수정하였습니다.")
+                .build();
+    }
+
     //위치를 통해서 찾는 api
     @GetMapping("/location/{location}")
     public BaseResponse getPostByLocation(@RequestBody PostRequestDTO postRequestDTO,@PageableDefault(size = 10) Pageable pageable) {
@@ -34,23 +67,10 @@ public class CommunityController {
                 .build();
     }
 
-    //게시글 생성하는 api
-    @PostMapping("/create")
-    public BaseResponse createPost(@RequestBody PostRequestDTO postRequestDTO) {
-        PostResponseDTO.postDetail postDetail = createPostService.makePost(postRequestDTO);
-
-        return BaseResponse.builder()
-                .code(200)
-                .isSuccess(true)
-                .data(postDetail)
-                .message("게시글이 작성되었습니다.")
-                .build();
-    }
-
     //게시글 상세하게 보는 api
     //게시글을 상세하게 보는 경우 view +1이 되게끔 구현
     @GetMapping("/details/{postId}")
-    public BaseResponse getPostDetail(@RequestBody Long postId) {
+    public BaseResponse getPostDetail(@RequestBody @PathVariable Long postId) {
         PostResponseDTO.postDetail postDetail = createPostService.getPostDetail(postId);
 
         //이때마다 조회수를 늘려줄 수 있게끔 작동하는 것이다.
@@ -64,10 +84,40 @@ public class CommunityController {
                 .build();
     }
 
+    //댓글 작성
+    @PostMapping("/details/{postId}/comment")
+    public BaseResponse createPostComment(@RequestBody Long postId ,@RequestBody String comment,@RequestHeader String token) {
+
+        PostResponseDTO.postDetail postDetail = createPostService.creatComment(postId,comment,token);
+
+        return BaseResponse.builder()
+                .code(200)
+                .isSuccess(true)
+                .data(postDetail)
+                .message("댓글 작성완료")
+                .build();
+    }
+    //댓글 수정
+    @PostMapping("/details/{postId}/comment/modify")
+    public  BaseResponse modifyPostComment(@RequestBody @PathVariable Long postId ,@RequestBody Long commentId,@RequestBody String comment,@RequestHeader String token) {
+        PostResponseDTO.postDetail postDetail = createPostService.modifyComment(postId,commentId,comment,token);
 
 
+        if (postDetail == null) {
+            return BaseResponse.builder()
+                .code(401)
+                .isSuccess(false)
+                .message("해당 게시글의 주인이 아닙니다.")
+                .build();
+        }
 
-
+        return BaseResponse.builder()
+            .code(200)
+            .isSuccess(true)
+            .data(postDetail)
+            .message("댓글 수정완료")
+            .build();
+    }
 
 
 
