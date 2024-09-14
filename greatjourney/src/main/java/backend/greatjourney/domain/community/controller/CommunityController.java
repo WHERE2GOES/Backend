@@ -3,6 +3,7 @@ package backend.greatjourney.domain.community.controller;
 import backend.greatjourney.domain.community.controller.request.PostRequestDTO;
 import backend.greatjourney.domain.community.controller.response.PostResponseDTO;
 import backend.greatjourney.domain.community.controller.response.SliceResponse;
+import backend.greatjourney.domain.community.entity.Community_Comment;
 import backend.greatjourney.domain.community.service.CreatePostService;
 import backend.greatjourney.global.exception.BaseResponse;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +50,27 @@ public class CommunityController {
                 .data(postDetail)
                 .message("게시글을 수정하였습니다.")
                 .build();
+    }
+
+    //게시글을 삭제하는 api
+    @PostMapping("/delete")
+    public BaseResponse deletePost(@RequestParam Long postId, @RequestHeader String token) {
+        String response = createPostService.deletePost(postId,token);
+
+        if (response == null) {
+            return BaseResponse.builder()
+                    .code(401)
+                    .isSuccess(false)
+                    .message("해당 게시글의 주인이 아닙니다.")
+                    .build();
+        }else{
+            return BaseResponse.builder()
+                    .code(200)
+                    .isSuccess(true)
+                    .message("게시글을 삭제하였습니다.")
+                    .build();
+        }
+
     }
 
     //위치를 통해서 찾는 api
@@ -119,7 +141,24 @@ public class CommunityController {
             .build();
     }
 
+    //댓글 삭제
+    @PostMapping("/comment/delete")
+    public BaseResponse deletePostComment(@RequestBody Long commentId,@RequestHeader String token) {
 
+        String responses = createPostService.deleteComment(commentId,token);
 
-
+        if (responses == null) {
+            return BaseResponse.builder()
+                .code(401)
+                .isSuccess(false)
+                .message("해당 게시글의 주인이 아닙니다.")
+                .build();
+        }else{
+            return BaseResponse.builder()
+                    .code(200)
+                    .isSuccess(true)
+                    .message("댓글 삭제완료")
+                    .build();
+        }
+    }
 }

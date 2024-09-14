@@ -92,6 +92,23 @@ public class CreatePostService {
         return new SliceResponse<>(postDtoList);
     }
 
+    //게시글 삭제하는 함수
+    public String deletePost(Long postId, String token) {
+
+        //user값을 구하는 것
+        String userId = tokenHashing.getUserIdFromRequest(token);
+        User user = userRepository.findById(Long.parseLong(userId)).orElseThrow();
+
+        Posting post = postingRepository.findById(postId).orElseThrow();
+        if(post.getUser() == user){
+            postingRepository.delete(post);
+            return "success";
+        }else{
+            return null;
+        }
+    }
+
+
 
     //조회수를 증가시키는 함수
     @Transactional
@@ -101,6 +118,9 @@ public class CreatePostService {
         post.updateView(post.getView()+1);
 
     }
+
+
+
 
     //댓글을 작성하는 기능
     //댓글이 등록된 정보를 새로 가져다줘서 작성된 것을 바로 확인할 수 있게끔 설정
@@ -156,6 +176,21 @@ public class CreatePostService {
         }
 
     }
+    //comment를 삭제하는 함수
+    public String deleteComment(Long commentId, String token) {
 
+        //user정보를 토큰에서 가져오는 것이다.
+        String userId = tokenHashing.getUserIdFromRequest(token);
+        User user = userRepository.findById(Long.parseLong(userId)).orElseThrow();
+
+        Community_Comment communityComment = commentRepository.findById(commentId).orElseThrow();
+
+        if(communityComment.getUser() == user){
+            commentRepository.delete(communityComment);
+            return "success";
+        }else{
+            return null;
+        }
+    }
 
 }
