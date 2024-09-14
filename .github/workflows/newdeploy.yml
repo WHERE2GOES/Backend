@@ -37,10 +37,11 @@ jobs:
     - name: List current directory
       run: ls -al
 
-    
+    # gradlew에 실행 권한 부여
     - name: Grant execute permission for gradlew
       run: chmod +x ./greatjourney/gradlew
     
+    # Gradle 빌드 (Test 제외)
     - name: Build with Gradle
       run: ./greatjourney/gradlew clean build -x test
       working-directory: ./greatjourney
