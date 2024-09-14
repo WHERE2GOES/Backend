@@ -1,4 +1,4 @@
-package backend.greatjourney.domain.kakao.domain;
+package backend.greatjourney.domain.kakao.controller;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -7,7 +7,7 @@ import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -19,7 +19,7 @@ import java.util.HashMap;
 
 
 
-@Component
+@Service
 @Data
 public class KakaoApi {
 

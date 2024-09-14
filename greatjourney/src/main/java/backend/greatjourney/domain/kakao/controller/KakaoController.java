@@ -1,9 +1,10 @@
 package backend.greatjourney.domain.kakao.controller;
 
-import backend.greatjourney.domain.kakao.domain.KakaoApi;
+import backend.greatjourney.domain.login.dto.JwtAuthenticationResponse;
 import backend.greatjourney.domain.login.service.AuthenticationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +18,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class KakaoController {
 
-    private final KakaoApi kakaoApi;
+    private final  KakaoApi kakaoApi;
     private final AuthenticationService authenticationService;
 
     @GetMapping("/login")
@@ -34,7 +35,7 @@ public class KakaoController {
     }
 
     @RequestMapping("/login/oauth2/code/kakao")
-    public String loginByKakao(@RequestParam("code") String code) throws JsonProcessingException {
+    public ResponseEntity<JwtAuthenticationResponse> loginByKakao(@RequestParam("code") String code) throws JsonProcessingException {
 
         System.out.println("인가 코드 받기 시작");
         // 1. 인가 코드 받기 (@RequestParam String code)
@@ -62,13 +63,12 @@ public class KakaoController {
         // 3. DB에서 이메일로 사용자가 있는지 확인 (있으면 로그인, 없으면 회원가입)
         if (authenticationService.kakaoIdExists(email)) {
             // 사용자 정보가 존재하면 로그인 (JWT 발급)
-            String jwtToken = String.valueOf(authenticationService.kakaoSignin(email)); // 가입 후 바로 로그인 처리
-            return "redirect:/result?token=" + jwtToken;
+            return ResponseEntity.ok(authenticationService.kakaoSignin(email));
+
         } else {
             // 사용자가 없으면 회원가입 후 로그인
             authenticationService.kakaoSignup(email, nickname, picture);
-            String jwtToken = String.valueOf(authenticationService.kakaoSignin(email)); // 가입 후 바로 로그인 처리
-            return "redirect:/result?token=" + jwtToken;
+            return ResponseEntity.ok(authenticationService.kakaoSignin(email));
         }
     }
 

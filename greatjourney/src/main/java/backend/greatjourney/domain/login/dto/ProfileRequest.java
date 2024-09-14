@@ -6,8 +6,16 @@ import lombok.Data;
 public class ProfileRequest {
     private String nickname;        // 필수
     private String introduction;    // 필수
-    private String birth;           // 선택
-    private Character gender;          // 선택
 
+    private String email;
 
+    private String password;
+
+    private String residence;
+
+    private boolean gender;
+
+    private String phone;
+
+    private boolean sns;
 }

@@ -40,11 +40,14 @@ public class JwtServiceImpl implements JwtService {
                 .compact();
     }
 
+    // userId 추출 메서드
+    public Long extractUserId(String token) {
+        return extractClaim(token, claims -> claims.get("userId", Long.class));
+    }
 
-
-    public String extractUserName(String token) {
+    // 이메일 추출 메서드
+    public String extractUserEmail(String token) {
         return extractClaim(token, Claims::getSubject);
-
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolvers) {
@@ -63,7 +66,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String username = extractUserName(token);
+        final String username = extractUserEmail(token);
         return(username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
