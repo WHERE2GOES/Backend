@@ -1,6 +1,5 @@
 package backend.greatjourney.domain.kakao.controller;
 
-import backend.greatjourney.domain.kakao.domain.KakaoApi;
 import backend.greatjourney.domain.login.service.AuthenticationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class KakaoController {
 
-    private final KakaoApi kakaoApi;
+    private final  KakaoApi kakaoApi;
     private final AuthenticationService authenticationService;
 
     @GetMapping("/login")

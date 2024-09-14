@@ -7,7 +7,9 @@ import java.util.Map;
 
 public interface JwtService {
 
-    String extractUserName(String token);
+    String extractUserEmail(String token);
+
+    Long extractUserId(String token);
 
     String generateToken(User user);
 
