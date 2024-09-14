@@ -6,6 +6,7 @@ import backend.greatjourney.domain.login.dto.*;
 import backend.greatjourney.domain.login.repository.UserRepository;
 import backend.greatjourney.domain.login.service.AuthenticationService;
 import backend.greatjourney.domain.login.service.JwtService;
+import backend.greatjourney.domain.login.service.RandomPasswordGenerator;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.transaction.Transactional;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Optional;
 
-import static backend.greatjourney.domain.kakao.RandomPasswordGenerator.generateRandomPassword;
 
 
 @Slf4j
@@ -78,7 +78,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .email(email)
                 .nickname(nickname)
                 .role(Role.ROLE_USER)
-                .password(passwordEncoder.encode(generateRandomPassword()))
+                .password(passwordEncoder.encode(RandomPasswordGenerator.generateRandomPassword()))
                 .residence(null)
                 .gender(true)
                 .phone(null)

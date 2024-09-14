@@ -1,4 +1,4 @@
-package backend.greatjourney.domain.kakao;
+package backend.greatjourney.domain.login.service;
 
 import java.security.SecureRandom;
 
