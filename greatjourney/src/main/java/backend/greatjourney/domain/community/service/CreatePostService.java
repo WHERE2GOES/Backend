@@ -35,10 +35,10 @@ public class CreatePostService {
     public PostResponseDTO.postDetail makePost(PostRequestDTO postRequestDTO,String token) {
 
         //토큰 값은 헤더를 통해서 전달하기 때문에 그걸 갖고 와서 열여주면 됨
-        String userId = tokenHashing.getUserIdFromRequest(token);
+        Long userId = tokenHashing.getUserIdFromRequest(token);
 
         //문자열로 나온 userId를 변경해서 넘김
-        User user = userRepository.findById(Long.parseLong(userId)).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow();
 
         //DB에 저장하는 코드
         Posting post = postingRepository.save(postRequestDTO.toEntity(user));
@@ -52,8 +52,8 @@ public class CreatePostService {
     public PostResponseDTO.postDetail modifyPost(PostRequestDTO postRequestDTO, String token, Long postId) {
 
         //유저에 대한 정보를 가져옴
-        String userId = tokenHashing.getUserIdFromRequest(token);
-        User user = userRepository.findById(Long.parseLong(userId)).orElseThrow();
+        Long userId = tokenHashing.getUserIdFromRequest(token);
+        User user = userRepository.findById(userId).orElseThrow();
 
         //게시글을 가져옴
 
@@ -96,8 +96,8 @@ public class CreatePostService {
     public String deletePost(Long postId, String token) {
 
         //user값을 구하는 것
-        String userId = tokenHashing.getUserIdFromRequest(token);
-        User user = userRepository.findById(Long.parseLong(userId)).orElseThrow();
+        Long userId = tokenHashing.getUserIdFromRequest(token);
+        User user = userRepository.findById(userId).orElseThrow();
 
         Posting post = postingRepository.findById(postId).orElseThrow();
         if(post.getUser() == user){
@@ -134,8 +134,8 @@ public class CreatePostService {
 //        User postHostUser = post.getUser();
 
         //여기서 user는 댓글의 소유자가 되어야 함.
-        String userId = tokenHashing.getUserIdFromRequest(token);
-        User user = userRepository.findById(Long.parseLong(userId)).orElseThrow();
+        Long userId = tokenHashing.getUserIdFromRequest(token);
+        User user = userRepository.findById(userId).orElseThrow();
 
         Community_Comment communityComment = new Community_Comment(user,post,comment);
 
@@ -158,8 +158,8 @@ public class CreatePostService {
         Posting post = postingRepository.findById(postId).orElseThrow();
 
         //userId를 통해서 유저정보를 가져온다.
-        String userId = tokenHashing.getUserIdFromRequest(token);
-        User user = userRepository.findById(Long.parseLong(userId)).orElseThrow();
+        Long userId = tokenHashing.getUserIdFromRequest(token);
+        User user = userRepository.findById(userId).orElseThrow();
 
 
         //community comment를 구해서 그 안의 내용을 수정
@@ -180,8 +180,8 @@ public class CreatePostService {
     public String deleteComment(Long commentId, String token) {
 
         //user정보를 토큰에서 가져오는 것이다.
-        String userId = tokenHashing.getUserIdFromRequest(token);
-        User user = userRepository.findById(Long.parseLong(userId)).orElseThrow();
+        Long userId = tokenHashing.getUserIdFromRequest(token);
+        User user = userRepository.findById(userId).orElseThrow();
 
         Community_Comment communityComment = commentRepository.findById(commentId).orElseThrow();
 
