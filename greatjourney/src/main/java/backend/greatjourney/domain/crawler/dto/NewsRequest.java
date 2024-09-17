@@ -13,4 +13,5 @@ import lombok.NoArgsConstructor;
 public class NewsRequest {
 
     private String keywordText;
+    private int count;
 }
