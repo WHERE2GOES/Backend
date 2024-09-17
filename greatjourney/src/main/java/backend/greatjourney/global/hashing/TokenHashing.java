@@ -1,9 +1,11 @@
 package backend.greatjourney.global.hashing;
 
+import backend.greatjourney.domain.login.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
 @Component
+@RequiredArgsConstructor
 public class TokenHashing {
 
 //    public String getUserIdFromJWT(String token) {
@@ -27,17 +30,14 @@ public class TokenHashing {
 //        Authentication authentication = tokenProvider.getAuthentication(jwtToken); // 사용자 정보 생성
 //        SecurityContextHolder.getContext().setAuthentication(authentication); // SecurityContext에 저장
 //
+        private final JwtService jwtService;
         @Value("${jwt.secret.signin}")
         private  String secretKey;
 
         // JWT 토큰에서 사용자 ID 추출
-        public String getUserIdFromJWT(String token) {
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(secretKey)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-            return claims.getSubject(); // 'sub' 클레임에서 userId 추출
+        public Long getUserIdFromJWT(String token) {
+
+            return jwtService.extractUserId(token); // 'sub' 클레임에서 userId 추출
         }
 
         // 헤더에서 토큰을 읽어오는 메서드 (예: Authorization 헤더)
@@ -50,7 +50,7 @@ public class TokenHashing {
         }
 
         // 헤더에 있는 토큰을 읽어서 userId를 구하는 함수
-        public String getUserIdFromRequest(String token) {
+        public Long getUserIdFromRequest(String token) {
             String jwtToken = resolveToken(token); // 헤더에서 토큰 추출
             if (jwtToken != null && validateToken(jwtToken)) {
                 return getUserIdFromJWT(jwtToken); // 토큰에서 사용자 ID 추출
