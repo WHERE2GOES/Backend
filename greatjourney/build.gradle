@@ -58,6 +58,12 @@ dependencies {
 	//swagger 관련 코드
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 
+	//jsoup 관련 코드
+	implementation 'org.jsoup:jsoup:1.18.1'
+
+	//selinium관련 코드
+	implementation 'org.seleniumhq.selenium:selenium-java:4.24.0'
+
 }
 
 tasks.named('test') {
