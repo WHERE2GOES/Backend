@@ -14,7 +14,6 @@ public class NewsResponse {
     private String title;
     private String link;
     private String imageUrl;
-    private String article;
     private String summary;
 
 }
