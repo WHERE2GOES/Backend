@@ -34,7 +34,7 @@ public class KakaoController {
         return "kakaologin";
     }
 
-    @RequestMapping("/login/oauth2/code/kakao")
+    @GetMapping("/login/oauth2/code/kakao")
     public ResponseEntity<JwtAuthenticationResponse> loginByKakao(@RequestParam("code") String code) throws JsonProcessingException {
 
         System.out.println("인가 코드 받기 시작");
