@@ -1,5 +1,6 @@
 package backend.greatjourney.domain.contents.service;
 
+import backend.greatjourney.domain.contents.dto.ContentsResponse;
 import backend.greatjourney.domain.contents.dto.LocationBasedListResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,7 +27,7 @@ public class ContentsService {
     private final String BASE_URL = "http://apis.data.go.kr/B551011/KorService1";
 
     // API 호출을 위한 공통 메소드
-    public Collection<LocationBasedListResponse> callApi(UriComponentsBuilder curUrl) throws IOException {
+    public Collection<ContentsResponse> callApi(UriComponentsBuilder curUrl) throws IOException {
         // 최종 URL에 서비스 키는 수동으로 추가 (자동 인코딩 방지)
         String finalUrl = curUrl.toUriString() + "&ServiceKey=" + serviceKey;
         log.info("Final URL: {}", finalUrl);
@@ -50,27 +51,58 @@ public class ContentsService {
             }
 
             log.info("sb: "+sb.toString());
-            // JSON 응답을 WeatherResponse로 변환
-//            ObjectMapper objectMapper = new ObjectMapper();
-//            LocationBasedListResponse weatherResponse = objectMapper.readValue(sb.toString(), LocationBasedListResponse.class);
-//            LocationBasedListResponse weatherResponse = null;
-//            return LocationBasedListResponse;
+
             // JSON 응답을 파싱하여 WeatherResponse로 변환
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(sb.toString());
             JsonNode itemsNode = rootNode.path("response").path("body").path("items").path("item");
 
-            List<LocationBasedListResponse> contentsResponses = new ArrayList<>();
+            List<LocationBasedListResponse.Item> contentsResponses = new ArrayList<>();
+            List<ContentsResponse> contentsFinalResponses = new ArrayList<>();
+
             if (itemsNode.isArray()) {
                 for (JsonNode itemNode : itemsNode) {
                     // item을 WeatherResponse로 변환
-                    LocationBasedListResponse weatherResponse = objectMapper.treeToValue(itemNode, LocationBasedListResponse.class);
-                    contentsResponses.add(weatherResponse);
+                    LocationBasedListResponse.Item locationBasedListResponse = objectMapper.treeToValue(itemNode, LocationBasedListResponse.Item.class);
+                    contentsResponses.add(locationBasedListResponse);
+                }
+//                private String address;
+//
+//                //중심 좌표로 부터의 거리(미터)//
+//                private double distance;
+//                //본 이미지//
+//                private String mainImage;
+//                //썸네일 이미지//
+//                private String thumbnail;
+//                //x좌표//
+//                private String mapx;
+//                //y좌표//
+//                private String mapy;
+//                //        private String mlevel;
+////        private String modifiedtime;
+////        private String sigungucode;
+//                //전화번호//
+//                private String tel;
+//                //컨텐츠이름//
+//                private String title;
+
+                for (LocationBasedListResponse.Item contentResponse: contentsResponses) {
+                    // item을 WeatherResponse로 변환
+                    contentsFinalResponses.add(
+                            ContentsResponse.builder()
+                                    .address(contentResponse.getAddr1()+" "+contentResponse.getAddr2())
+                                    .distance(contentResponse.getDist())
+                                    .mainImageUrl(contentResponse.getFirstimage())
+                                    .thumbnailUrl(contentResponse.getFirstimage2())
+                                    .mapx(contentResponse.getMapx())
+                                    .mapy(contentResponse.getMapy())
+                                    .tel(contentResponse.getTel())
+                                    .title(contentResponse.getTitle())
+                                    .build()
+                    );
                 }
             }
-
-            return contentsResponses;
-
+            return contentsFinalResponses;
         } catch (IOException e) {
             System.err.println("Error reading the API response: " + e.getMessage());
             throw e;

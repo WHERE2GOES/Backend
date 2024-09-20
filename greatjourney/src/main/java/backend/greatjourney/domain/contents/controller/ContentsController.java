@@ -1,5 +1,6 @@
 package backend.greatjourney.domain.contents.controller;
 
+import backend.greatjourney.domain.contents.dto.ContentsResponse;
 import backend.greatjourney.domain.contents.dto.LocationBasedListResponse;
 import backend.greatjourney.domain.contents.service.ContentsService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,17 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.Collection;
+/*
+관광정보
+관광지	12
+문화시설	14
+행사/공연/축제	15
+여행코스	25
+레포츠	28
+숙박	32
+쇼핑	38
+음식점	39
+*/
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,122 +37,9 @@ public class ContentsController {
 
     @Value("${tour.api_key}")
     private String serviceKey;
-//
-//    @GetMapping("/location-based")
-//    public ResponseEntity<ApiResponse> getLocationBasedData(
-//            @RequestParam double mapX,
-//            @RequestParam double mapY,
-//            @RequestParam(defaultValue = "1000") int radius,
-//            @RequestParam(defaultValue = "12") int numOfRows,
-//            @RequestParam(defaultValue = "1") int pageNo,
-//            @RequestParam(defaultValue = "38") int contentTypeId) {
-//
-//        UriComponentsBuilder uriBuilder = UriComponentsBuilder
-//                .fromHttpUrl("http://apis.data.go.kr/B551011/KorService1/locationBasedList1")
-//                .queryParam("ServiceKey", serviceKey)  // 실제 서비스 키로 변경 필요
-//                .queryParam("mapX", mapX)
-//                .queryParam("mapY", mapY)
-//                .queryParam("radius", radius)
-//                .queryParam("numOfRows", numOfRows)
-//                .queryParam("pageNo", pageNo)
-//                .queryParam("contentTypeId", contentTypeId)
-//                .queryParam("listYN", "Y")
-//                .queryParam("MobileOS", "ETC")
-//                .queryParam("MobileApp", "YourApp");
-//
-//        // 최종 URL에 서비스 키는 수동으로 추가 (자동 인코딩 방지)
-//        String finalUrl = uriBuilder.toUriString() + "&ServiceKey=" + serviceKey;
-//
-//        log.info("serviceKey = " + serviceKey);
-//        log.info("Final URL: {}", finalUrl);
-//
-//        // API 호출
-//        return ResponseEntity.ok(contentsService.callApi(finalUrl));    }
-//
-//    @GetMapping("/area-based")
-//    public ResponseEntity<ApiResponse> getAreaBasedData(
-//            @RequestParam int areaCode,
-//            @RequestParam(required = false) Integer sigunguCode,
-//            @RequestParam(defaultValue = "12") int numOfRows,
-//            @RequestParam(defaultValue = "1") int pageNo,
-//            @RequestParam(defaultValue = "12") int contentTypeId) {
-//
-//        UriComponentsBuilder uriBuilder = UriComponentsBuilder
-//                .fromHttpUrl("http://apis.data.go.kr/B551011/KorService1/areaBasedList1")
-//                .queryParam("ServiceKey", serviceKey)
-//                .queryParam("areaCode", areaCode)
-//                .queryParam("sigunguCode", sigunguCode)
-//                .queryParam("numOfRows", numOfRows)
-//                .queryParam("pageNo", pageNo)
-//                .queryParam("contentTypeId", contentTypeId)
-//                .queryParam("listYN", "Y")
-//                .queryParam("MobileOS", "ETC")
-//                .queryParam("MobileApp", "YourApp");
-//
-//        // 최종 URL에 서비스 키는 수동으로 추가 (자동 인코딩 방지)
-//        String finalUrl = uriBuilder.toUriString() + "&ServiceKey=" + serviceKey;
-//
-//        log.info("serviceKey = " + serviceKey);
-//        log.info("Final URL: {}", finalUrl);
-//
-//        // API 호출
-//        return ResponseEntity.ok(contentsService.callApi(finalUrl));    }
-//
-//    @GetMapping("/category-codes")
-//    public ResponseEntity<ApiResponse> getCategoryCodes(
-//            @RequestParam int contentTypeId,
-//            @RequestParam(required = false) String cat1,
-//            @RequestParam(required = false) String cat2,
-//            @RequestParam(required = false) String cat3) {
-//
-//        UriComponentsBuilder uriBuilder = UriComponentsBuilder
-//                .fromHttpUrl("http://apis.data.go.kr/B551011/KorService1/categoryCode1")
-//                .queryParam("ServiceKey", serviceKey)
-//                .queryParam("contentTypeId", contentTypeId)
-//                .queryParam("cat1", cat1)
-//                .queryParam("cat2", cat2)
-//                .queryParam("cat3", cat3)
-//                .queryParam("MobileOS", "ETC")
-//                .queryParam("MobileApp", "YourApp");
-//
-//        // 최종 URL에 서비스 키는 수동으로 추가 (자동 인코딩 방지)
-//        String finalUrl = uriBuilder.toUriString() + "&ServiceKey=" + serviceKey;
-//
-//        log.info("serviceKey = " + serviceKey);
-//        log.info("Final URL: {}", finalUrl);
-//
-//        // API 호출
-//        return ResponseEntity.ok(contentsService.callApi(finalUrl));    }
-//
-//    @GetMapping("/keyword-search")
-//    public ResponseEntity<ApiResponse> searchByKeyword(
-//            @RequestParam String keyword,
-//            @RequestParam(defaultValue = "12") int contentTypeId,
-//            @RequestParam(defaultValue = "1") int pageNo,
-//            @RequestParam(defaultValue = "10") int numOfRows) {
-//
-//        UriComponentsBuilder uriBuilder = UriComponentsBuilder
-//                .fromHttpUrl("http://apis.data.go.kr/B551011/KorService1/searchKeyword1")
-//                .queryParam("ServiceKey", serviceKey)
-//                .queryParam("keyword", keyword)
-//                .queryParam("contentTypeId", contentTypeId)
-//                .queryParam("pageNo", pageNo)
-//                .queryParam("numOfRows", numOfRows)
-//                .queryParam("MobileOS", "ETC")
-//                .queryParam("MobileApp", "YourApp");
-//
-//        // 최종 URL에 서비스 키는 수동으로 추가 (자동 인코딩 방지)
-//        String finalUrl = uriBuilder.toUriString() + "&ServiceKey=" + serviceKey;
-//
-//        log.info("serviceKey = " + serviceKey);
-//        log.info("Final URL: {}", finalUrl);
-//
-//        // API 호출
-//        return ResponseEntity.ok(contentsService.callApi(finalUrl));
-//    }
 
     @GetMapping("/festivals")
-    public ResponseEntity<Collection<LocationBasedListResponse>> getFestivals(
+    public ResponseEntity<Collection<ContentsResponse>> getFestivals(
             @RequestParam double mapX,
             @RequestParam double mapY,
             @RequestParam(defaultValue = "2000") int radius,  // 기본값을 2000으로 변경
@@ -163,80 +62,6 @@ public class ContentsController {
                 .queryParam("_type", "json");
 
         return ResponseEntity.ok(contentsService.callApi(uriBuilder));
-//        // 최종 URL에 서비스 키는 수동으로 추가 (자동 인코딩 방지)
-//        String finalUrl = uriBuilder.toUriString() + "&ServiceKey=" + serviceKey;
-//        log.info("Final URL: {}", finalUrl);
-//
-//
-//        RestTemplate restTemplate = new RestTemplate();
-//
-//        String responseString = restTemplate.getForObject(finalUrl, String.class);
-//        log.info("Response: {}", responseString);
-//
-//
-//        LocationBasedListResponse response = restTemplate.getForObject(finalUrl, LocationBasedListResponse.class);
-//        return response;
-
     }
-//
-//    @GetMapping("/stays")
-//    public ResponseEntity<ApiResponse> getStays(
-//            @RequestParam double mapX,
-//            @RequestParam double mapY,
-//            @RequestParam(defaultValue = "1000") int radius,
-//            @RequestParam(defaultValue = "10") int numOfRows,
-//            @RequestParam(defaultValue = "1") int pageNo) {
-//
-//        UriComponentsBuilder uriBuilder = UriComponentsBuilder
-//                .fromHttpUrl("http://apis.data.go.kr/B551011/KorService1/locationBasedList1")
-//                .queryParam("ServiceKey", serviceKey)
-//                .queryParam("mapX", mapX)
-//                .queryParam("mapY", mapY)
-//                .queryParam("radius", radius)
-//                .queryParam("numOfRows", numOfRows)
-//                .queryParam("pageNo", pageNo)
-//                .queryParam("contentTypeId", 32)  // 숙박
-//                .queryParam("listYN", "Y")
-//                .queryParam("MobileOS", "ETC")
-//                .queryParam("MobileApp", "YourApp");
-//
-//        // 최종 URL에 서비스 키는 수동으로 추가 (자동 인코딩 방지)
-//        String finalUrl = uriBuilder.toUriString() + "&ServiceKey=" + serviceKey;
-//
-//        log.info("serviceKey = " + serviceKey);
-//        log.info("Final URL: {}", finalUrl);
-//
-//        // API 호출
-//        return ResponseEntity.ok(contentsService.callApi(finalUrl));    }
-//
-//    @GetMapping("/tourist-spots")
-//    public ResponseEntity<ApiResponse> getTouristSpots(
-//            @RequestParam double mapX,
-//            @RequestParam double mapY,
-//            @RequestParam(defaultValue = "1000") int radius,
-//            @RequestParam(defaultValue = "10") int numOfRows,
-//            @RequestParam(defaultValue = "1") int pageNo) {
-//
-//        UriComponentsBuilder uriBuilder = UriComponentsBuilder
-//                .fromHttpUrl("http://apis.data.go.kr/B551011/KorService1/locationBasedList1")
-//                .queryParam("ServiceKey", serviceKey)
-//                .queryParam("mapX", mapX)
-//                .queryParam("mapY", mapY)
-//                .queryParam("radius", radius)
-//                .queryParam("numOfRows", numOfRows)
-//                .queryParam("pageNo", pageNo)
-//                .queryParam("contentTypeId", 12)  // 관광지
-//                .queryParam("listYN", "Y")
-//                .queryParam("MobileOS", "ETC")
-//                .queryParam("MobileApp", "YourApp");
-//
-//        // 최종 URL에 서비스 키는 수동으로 추가 (자동 인코딩 방지)
-//        String finalUrl = uriBuilder.toUriString() + "&ServiceKey=" + serviceKey;
-//
-//        log.info("serviceKey = " + serviceKey);
-//        log.info("Final URL: {}", finalUrl);
-//
-//        // API 호출
-//        return ResponseEntity.ok(contentsService.callApi(finalUrl));
-//    }
+
 }
