@@ -93,10 +93,10 @@ public class CommunityController {
 
     //위치를 통해서 찾는 api
     @GetMapping("/location/{location}")
-    public BaseResponse getPostByLocation(@RequestParam PostRequestDTO postRequestDTO,@PageableDefault(size = 10) Pageable pageable) {
+    public BaseResponse getPostByLocation(@RequestParam String location,@PageableDefault(size = 10) Pageable pageable) {
         SliceResponse postDetailData;
 
-        postDetailData = createPostService.getPostListWithLocation(postRequestDTO.getLocation(),pageable);
+        postDetailData = createPostService.getPostListWithLocation(location,pageable);
 
         //로그인이냐 비로그인이냐에 따라 결과가 달라야하지만 우리는 로그인과 비 로그인의 차이가 댓글 말고는 없다
         return BaseResponse.builder()
