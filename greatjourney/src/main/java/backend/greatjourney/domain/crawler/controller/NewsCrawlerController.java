@@ -21,9 +21,8 @@ public class NewsCrawlerController {
     @GetMapping("/api/news")
     public BaseResponse newsCrawling(@RequestBody NewsRequest newsRequest){
 
-        List<NewsResponse> newsResponses = newsCrawlerService.crawl(newsRequest.getKeywordText());
-        newsResponses.addAll(newsCrawlerService.crawlWithSelenium(newsRequest.getKeywordText(),newsRequest.getCount()));
-
+//        List<NewsResponse> newsResponses = newsCrawlerService.crawl(newsRequest.getKeywordText());
+        List<NewsResponse> newsResponses = newsCrawlerService.crawlWithSelenium(newsRequest.getKeywordText(),newsRequest.getCount());
 
 
         //더미 데이터를 넣음으로써 데이터가 들어온다는 것은 확인했는데 그러면 제대로 만들어지지 않아서 문제가 생기는거지

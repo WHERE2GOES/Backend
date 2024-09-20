@@ -7,6 +7,7 @@ public class WeatherRequest {
 
     //X와 Y좌표
     private String locationX;
+
     private String locationY;
 
     //페이지 번호
