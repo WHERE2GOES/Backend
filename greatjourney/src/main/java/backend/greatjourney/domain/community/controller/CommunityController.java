@@ -45,6 +45,7 @@ public class CommunityController {
             return BaseResponse.builder()
                     .code(401)
                     .isSuccess(false)
+                    .data(null)
                     .message("해당 게시글의 주인이 아닙니다.")
                     .build();
         }
@@ -65,6 +66,7 @@ public class CommunityController {
             return BaseResponse.builder()
                     .code(401)
                     .isSuccess(false)
+                    .data(null)
                     .message("해당 게시글의 주인이 아닙니다.")
                     .build();
         }else{
@@ -147,6 +149,7 @@ public class CommunityController {
             return BaseResponse.builder()
                 .code(401)
                 .isSuccess(false)
+                .data(null)
                 .message("해당 게시글의 주인이 아닙니다.")
                 .build();
         }
@@ -169,12 +172,14 @@ public class CommunityController {
             return BaseResponse.builder()
                 .code(401)
                 .isSuccess(false)
+                .data(null)
                 .message("해당 게시글의 주인이 아닙니다.")
                 .build();
         }else{
             return BaseResponse.builder()
                     .code(200)
                     .isSuccess(true)
+                    .data(responses)
                     .message("댓글 삭제완료")
                     .build();
         }
