@@ -1,5 +1,6 @@
 package backend.greatjourney.domain.login.service;
 import backend.greatjourney.domain.login.domain.User;
+import backend.greatjourney.domain.login.dto.ProfileEditRequest;
 import backend.greatjourney.domain.login.dto.ProfileRequest;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -9,10 +10,10 @@ public interface UserService {
 
     UserDetailsService userDetailsService();
 
-    User profileSave(ProfileRequest profileRequest, String loginId);
+    User profileSave(ProfileEditRequest profileRequest, Long loginId);
 
-    Map<String, Object> getProfileInfo(String loginId);
+    Map<String, Object> getProfileInfo(Long loginId);
 
-    User saveUploadImg(String file, String loginId);
+    User saveUploadImg(String file, Long loginId);
 }
 

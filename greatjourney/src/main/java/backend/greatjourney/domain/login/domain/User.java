@@ -29,7 +29,24 @@ public class User implements UserDetails {
 
     private boolean gender;
 
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setGender(boolean gender) {
+        this.gender = gender;
+    }
+
+    public void setResidence(String residence) {
+        this.residence = residence;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
     private String phone;
+
 
     private boolean sns;
 

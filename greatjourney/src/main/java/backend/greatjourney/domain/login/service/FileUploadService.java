@@ -29,7 +29,7 @@ public class FileUploadService {
 
         try {
             s3Client.putObject(bucketName, fileName, file.getInputStream(), getObjectMetadata(file));
-            return defaultUrl + fileName;
+            return s3Client.getUrl(bucketName, fileName).toString();
         } catch (SdkClientException e) {
             throw new IOException("Error uploading file to S3", e);
         }
