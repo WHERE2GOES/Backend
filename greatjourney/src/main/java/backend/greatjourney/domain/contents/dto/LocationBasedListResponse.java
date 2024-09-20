@@ -1,9 +1,10 @@
 package backend.greatjourney.domain.contents.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
-
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class LocationBasedListResponse {
     private Response response;
@@ -12,16 +13,12 @@ public class LocationBasedListResponse {
     public static class Response {
         private Header header;
         private Body body;
-
-        // Getter, Setter
     }
 
     @Data
     public static class Header {
         private String resultCode;
         private String resultMsg;
-
-        // Getter, Setter
     }
 
     @Data
@@ -30,15 +27,11 @@ public class LocationBasedListResponse {
         private int numOfRows;
         private int pageNo;
         private int totalCount;
-
-        // Getter, Setter
     }
 
     @Data
     public static class Items {
-        private List<Item> item;
-
-        // Getter, Setter
+        private List<Item> item;  // JSON 응답에 맞게 item 리스트
     }
 
     @Data
@@ -63,9 +56,5 @@ public class LocationBasedListResponse {
         private String sigungucode;
         private String tel;
         private String title;
-
-        // Getter, Setter
     }
-
-    // Getter, Setter for Response
 }
