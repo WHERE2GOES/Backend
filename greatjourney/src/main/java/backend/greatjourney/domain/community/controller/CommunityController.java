@@ -4,13 +4,17 @@ import backend.greatjourney.domain.community.controller.request.PostRequestDTO;
 import backend.greatjourney.domain.community.controller.response.PostResponseDTO;
 import backend.greatjourney.domain.community.controller.response.SliceResponse;
 import backend.greatjourney.domain.community.entity.Community_Comment;
+import backend.greatjourney.domain.community.entity.Posting;
 import backend.greatjourney.domain.community.service.CreatePostService;
 import backend.greatjourney.global.exception.BaseResponse;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/community")
@@ -71,6 +75,20 @@ public class CommunityController {
                     .build();
         }
 
+    }
+
+    //게시글 전체 리스트를 가져오는 api
+    @GetMapping("posts")
+    public BaseResponse getAllPosts() {
+
+        List<Posting> posts = createPostService.getPostAll();
+
+        return BaseResponse.builder()
+                .code(200)
+                .isSuccess(true)
+                .message("전체 게시글 리스트를 가져오기")
+                .data(posts)
+                .build();
     }
 
     //위치를 통해서 찾는 api

@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -74,6 +76,14 @@ public class CreatePostService {
     }
 
 
+    //모든 게시글 불러오기
+    public List<Posting> getPostAll() {
+
+        List<Posting> postings = postingRepository.findAll();
+        return postings;
+    }
+
+
     //게시글 상세 검색
     public PostResponseDTO.postDetail getPostDetail(Long postId) {
         Posting post = postingRepository.findById(postId).orElseThrow();
@@ -118,8 +128,6 @@ public class CreatePostService {
         post.updateView(post.getView()+1);
 
     }
-
-
 
 
     //댓글을 작성하는 기능
