@@ -13,7 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/community")
+@RequestMapping("/api/community")
 @RequiredArgsConstructor
 public class CommunityController {
 
@@ -21,7 +21,7 @@ public class CommunityController {
 
     //게시글 생성하는 api
     @PostMapping("/create")
-    public BaseResponse createPost(@RequestBody PostRequestDTO postRequestDTO, @RequestHeader String token) {
+    public BaseResponse createPost(@RequestBody PostRequestDTO postRequestDTO, @RequestHeader("Authorization") String token) {
 
         PostResponseDTO.postDetail postDetail = createPostService.makePost(postRequestDTO,token);
 
@@ -34,7 +34,7 @@ public class CommunityController {
     }
     //게시글 수정하는 api
     @PostMapping("/modify/{postId}")
-    public BaseResponse modifyPost(@RequestBody PostRequestDTO postRequestDTO, @PathVariable Long postId, @RequestHeader String token) {
+    public BaseResponse modifyPost(@RequestBody PostRequestDTO postRequestDTO, @PathVariable Long postId, @RequestHeader("Authorization") String token) {
 
         PostResponseDTO.postDetail postDetail = createPostService.modifyPost(postRequestDTO,token,postId);
         if (postDetail == null) {
@@ -54,7 +54,7 @@ public class CommunityController {
 
     //게시글을 삭제하는 api
     @PostMapping("/delete")
-    public BaseResponse deletePost(@RequestParam Long postId, @RequestHeader String token) {
+    public BaseResponse deletePost(@RequestParam Long postId, @RequestHeader("Authorization") String token) {
         String response = createPostService.deletePost(postId,token);
 
         if (response == null) {
@@ -108,7 +108,7 @@ public class CommunityController {
 
     //댓글 작성
     @PostMapping("/details/{postId}/comment")
-    public BaseResponse createPostComment(@RequestBody Long postId ,@RequestBody String comment,@RequestHeader String token) {
+    public BaseResponse createPostComment(@RequestBody Long postId ,@RequestBody String comment,@RequestHeader("Authorization") String token) {
 
         PostResponseDTO.postDetail postDetail = createPostService.creatComment(postId,comment,token);
 
@@ -121,7 +121,7 @@ public class CommunityController {
     }
     //댓글 수정
     @PostMapping("/details/{postId}/comment/modify")
-    public  BaseResponse modifyPostComment(@RequestBody @PathVariable Long postId ,@RequestBody Long commentId,@RequestBody String comment,@RequestHeader String token) {
+    public  BaseResponse modifyPostComment(@RequestBody @PathVariable Long postId ,@RequestBody Long commentId,@RequestBody String comment,@RequestHeader("Authorization") String token) {
         PostResponseDTO.postDetail postDetail = createPostService.modifyComment(postId,commentId,comment,token);
 
 
@@ -143,7 +143,7 @@ public class CommunityController {
 
     //댓글 삭제
     @PostMapping("/comment/delete")
-    public BaseResponse deletePostComment(@RequestBody Long commentId,@RequestHeader String token) {
+    public BaseResponse deletePostComment(@RequestBody Long commentId,@RequestHeader("Authorization") String token) {
 
         String responses = createPostService.deleteComment(commentId,token);
 
@@ -161,4 +161,5 @@ public class CommunityController {
                     .build();
         }
     }
+
 }
