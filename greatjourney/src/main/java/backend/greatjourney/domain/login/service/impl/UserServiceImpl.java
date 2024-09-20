@@ -1,6 +1,7 @@
 package backend.greatjourney.domain.login.service.impl;
 
 import backend.greatjourney.domain.login.domain.User;
+import backend.greatjourney.domain.login.dto.ProfileEditRequest;
 import backend.greatjourney.domain.login.dto.ProfileRequest;
 import backend.greatjourney.domain.login.repository.UserRepository;
 import backend.greatjourney.domain.login.service.UserService;
@@ -26,16 +27,16 @@ public class UserServiceImpl implements UserService {
     public UserDetailsService userDetailsService() {
         return new UserDetailsService() {
             @Override
-            public UserDetails loadUserByUsername(String username) {
-                return userRepository.findByEmail(username)
+            public UserDetails loadUserByUsername(String userEmail) {
+                return userRepository.findByEmail(userEmail)
                         .orElseThrow(() -> new UsernameNotFoundException("User not found"));
             }
         };
     }
 
     @Override
-    public User saveUploadImg(String url, String loginId) {
-        Optional<User> optionalUser = userRepository.findByEmail(loginId);
+    public User saveUploadImg(String url, Long loginId) {
+        Optional<User> optionalUser = userRepository.findById(loginId);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             user.setProfileImageUrl(url);
@@ -48,40 +49,39 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User profileSave(ProfileRequest profileRequest, String loginId) {
+    public User profileSave(ProfileEditRequest profileRequest, Long loginId) {
 
-//        Optional<User> optionalUser = userRepository.findByLoginId(loginId);
-//
-//        if (optionalUser.isPresent()) {
-//            User user = optionalUser.get();
-//
-//            user.setNickname(profileRequest.getNickname());
-//            user.setIntroduction(profileRequest.getIntroduction());
-//            user.setBirth(LocalDate.parse(profileRequest.getBirth()));
-//            user.setGender(profileRequest.getGender());
-//
-//
-//            return userRepository.save(user);
-//
-//        }
+        Optional<User> optionalUser = userRepository.findById(loginId);
+
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+
+            user.setNickname(profileRequest.getNickname());
+            user.setResidence(profileRequest.getResidence());
+            user.setGender(profileRequest.isGender());
+            user.setPhone(profileRequest.getPhone());
+
+            return userRepository.save(user);
+
+        }
         return null;
     }
 
     @Override
-    public Map<String, Object> getProfileInfo(String loginId) {
+    public Map<String, Object> getProfileInfo(Long loginId) {
         return getStringObjectMap(loginId);
     }
 
 
-    private Map<String, Object> getStringObjectMap(String visitedUserId) {
-        Optional<User> optionalUser = userRepository.findByEmail(visitedUserId);
+    private Map<String, Object> getStringObjectMap(Long visitedUserId) {
+        Optional<User> optionalUser = userRepository.findById(visitedUserId);
 
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
 
             Map<String, Object> profileInfo = new HashMap<>();
-            profileInfo.put("userId", user.getId());
-            profileInfo.put("loginId", user.getNickname());
+//            profileInfo.put("userId", user.getId());
+            profileInfo.put("nickname", user.getNickname());
 //            profileInfo.put("password", user.getPassword());
             profileInfo.put("Email", user.getEmail());
             profileInfo.put("Gender", user.isGender());
