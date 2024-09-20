@@ -58,7 +58,7 @@ public class CommunityController {
 
     //게시글을 삭제하는 api
     @PostMapping("/delete")
-    public BaseResponse deletePost(@RequestParam Long postId, @RequestHeader("Authorization") String token) {
+    public BaseResponse deletePost(@RequestBody Long postId, @RequestHeader("Authorization") String token) {
         String response = createPostService.deletePost(postId,token);
 
         if (response == null) {
@@ -93,7 +93,7 @@ public class CommunityController {
 
     //위치를 통해서 찾는 api
     @GetMapping("/location/{location}")
-    public BaseResponse getPostByLocation(@RequestBody PostRequestDTO postRequestDTO,@PageableDefault(size = 10) Pageable pageable) {
+    public BaseResponse getPostByLocation(@RequestParam PostRequestDTO postRequestDTO,@PageableDefault(size = 10) Pageable pageable) {
         SliceResponse postDetailData;
 
         postDetailData = createPostService.getPostListWithLocation(postRequestDTO.getLocation(),pageable);
@@ -110,7 +110,7 @@ public class CommunityController {
     //게시글 상세하게 보는 api
     //게시글을 상세하게 보는 경우 view +1이 되게끔 구현
     @GetMapping("/details/{postId}")
-    public BaseResponse getPostDetail(@RequestBody @PathVariable Long postId) {
+    public BaseResponse getPostDetail(@RequestParam @PathVariable Long postId) {
         PostResponseDTO.postDetail postDetail = createPostService.getPostDetail(postId);
 
         //이때마다 조회수를 늘려줄 수 있게끔 작동하는 것이다.
