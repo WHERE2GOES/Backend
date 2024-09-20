@@ -61,8 +61,11 @@ dependencies {
 	//jsoup 관련 코드
 	implementation 'org.jsoup:jsoup:1.18.1'
 
-	//selinium관련 코드
+	//selinium 관련 코드
 	implementation 'org.seleniumhq.selenium:selenium-java:4.24.0'
+
+	//jackson 관련 코드
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
 
 }
 
