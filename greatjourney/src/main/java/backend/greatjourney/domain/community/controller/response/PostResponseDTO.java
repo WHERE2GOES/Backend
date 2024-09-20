@@ -26,7 +26,6 @@ public class PostResponseDTO {
         private User user;
         private String image_url;
         private String title;
-        private String nickname;
         private String contents;
         private String location;
         private List<Community_Comment> communityComment;
@@ -62,6 +61,8 @@ public class PostResponseDTO {
                     .communityComment(post.getCommunityComments())
                     .createdAt(post.getCreatedAt())
                     .updatedAt(post.getUpdateAt())
+                    .view(post.getView())
+                    .title(post.getTitle())
                     .build();
         }
 //        public static List<postDetail> of(Slice<Post> posts, User user){

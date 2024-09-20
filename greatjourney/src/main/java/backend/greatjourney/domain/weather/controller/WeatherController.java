@@ -7,8 +7,10 @@ import backend.greatjourney.global.exception.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.List;
 
@@ -19,9 +21,18 @@ public class WeatherController {
     private final WeatherService weatherService;
 
     @GetMapping("/api/weather/short")
-    public BaseResponse getWeathers(@RequestBody WeatherRequest request) throws IOException {
+    public BaseResponse getWeathers(@RequestParam String Step1, @RequestParam String Step2, @RequestParam @Nullable String Step3) throws IOException {
 
-        List<WeatherResponse> weatherResponse = weatherService.getWeather(request);
+        WeatherResponse weatherResponse = weatherService.getWeather(Step1,Step2,Step3,"5","20");
+
+        if (weatherResponse == null ) {
+            return BaseResponse.builder()
+                    .data(null)
+                    .code(500)
+                    .isSuccess(false)
+                    .message("단기예보를 가져오기를 실패했습니다.")
+                    .build();
+        }
 
         return BaseResponse.builder()
                 .data(weatherResponse)
