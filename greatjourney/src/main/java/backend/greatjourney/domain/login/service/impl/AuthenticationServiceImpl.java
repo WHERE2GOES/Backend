@@ -101,7 +101,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
 
-        jwtAuthenticationResponse.setToken(jwt);
+        jwtAuthenticationResponse.setAccessToken(jwt);
         jwtAuthenticationResponse.setRefreshToken(refreshToken);
         return jwtAuthenticationResponse;
 
@@ -114,7 +114,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
 
-        jwtAuthenticationResponse.setToken(jwt);
+        jwtAuthenticationResponse.setAccessToken(jwt);
         jwtAuthenticationResponse.setRefreshToken(refreshToken);
         return jwtAuthenticationResponse;
 
@@ -130,7 +130,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
 
-            jwtAuthenticationResponse.setToken(jwt);
+            jwtAuthenticationResponse.setAccessToken(jwt);
             jwtAuthenticationResponse.setRefreshToken(refreshTokenRequest.getToken());
             return jwtAuthenticationResponse;
         }
