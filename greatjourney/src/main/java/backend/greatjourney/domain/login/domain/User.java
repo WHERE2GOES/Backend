@@ -1,11 +1,14 @@
 package backend.greatjourney.domain.login.domain;
 
+import backend.greatjourney.domain.community.entity.Posting;
 import backend.greatjourney.domain.login.Role;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -28,6 +31,12 @@ public class User implements UserDetails {
     private String residence;
 
     private boolean gender;
+
+    //양방향 하게 되면 쓸라고 달아둠 일단 쓸 수도?
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JsonManagedReference
+//    private List<Posting> postings;
+
 
     public void setPhone(String phone) {
         this.phone = phone;
