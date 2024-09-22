@@ -1,6 +1,7 @@
 package backend.greatjourney.domain.community.service;
 
 
+import backend.greatjourney.domain.community.controller.request.PostModifyRequest;
 import backend.greatjourney.domain.community.controller.request.PostRequestDTO;
 import backend.greatjourney.domain.community.controller.response.PostResponseDTO;
 import backend.greatjourney.domain.community.controller.response.SliceResponse;
@@ -51,7 +52,7 @@ public class CreatePostService {
     }
 
     //게시글 수정
-    public PostResponseDTO.postDetail modifyPost(PostRequestDTO postRequestDTO, String token, Long postId) {
+    public PostResponseDTO.postDetail modifyPost(PostModifyRequest postModifyRequest, String token) {
 
         //유저에 대한 정보를 가져옴
         Long userId = tokenHashing.getUserIdFromRequest(token);
@@ -59,13 +60,13 @@ public class CreatePostService {
 
         //게시글을 가져옴
 
-        Posting posting = postingRepository.findById(postId).orElseThrow();
+        Posting posting = postingRepository.findById(postModifyRequest.getPostId()).orElseThrow();
 
         //같은 유저의 경우
-        if(posting.getUser() == user){
-            posting.setContents(postRequestDTO.getContents());
-            posting.setTitle(postRequestDTO.getTitle());
-            posting.setImage_url(postRequestDTO.getImage_url());
+        if(posting.getUser().equals(user)){
+            posting.setContents(postModifyRequest.getContents());
+            posting.setTitle(postModifyRequest.getTitle());
+            posting.setImage_url(postModifyRequest.getImage_url());
             postingRepository.save(posting);
 
             return PostResponseDTO.postDetail.of(posting);
@@ -77,12 +78,13 @@ public class CreatePostService {
 
 
     //모든 게시글 불러오기
-    public List<Posting> getPostAll() {
-
-        List<Posting> postings = postingRepository.findAll();
-        return postings;
+    public List<Posting> getPostAll(String token) {
+        Long userId = tokenHashing.getUserIdFromRequest(token);
+        if(userRepository.existsById(userId)){
+            return null;
+        }
+        return postingRepository.findAll();
     }
-
 
     //게시글 상세 검색
     public PostResponseDTO.postDetail getPostDetail(Long postId) {
@@ -91,16 +93,18 @@ public class CreatePostService {
         return PostResponseDTO.postDetail.of(post);
     }
 
+
     //위치에 따른 게시물 출력
     //여기에 왜 userId가 필요한지를 모르겠네
     //pageable을 어떻게 구현해야하는지 모르겠음 .
     //이 부분에 대한 공부를 보충하는게 필요함
     //이때 baseResponse에 데이터를 넣어서 넘기는구나 ㅇㅋ
-    public SliceResponse getPostListWithLocation(String location, Pageable pageable) {
+    public SliceResponse<PostResponseDTO.postDetail> getPostListWithLocation(String location, Pageable pageable) {
         Slice<Posting> postList = postingRepository.findAllPostByLocation(location, pageable);
         Slice<PostResponseDTO.postDetail> postDtoList = postList.map(post -> PostResponseDTO.postDetail.of(post));
         return new SliceResponse<>(postDtoList);
     }
+
 
     //게시글 삭제하는 함수
     public String deletePost(Long postId, String token) {
@@ -110,7 +114,7 @@ public class CreatePostService {
         User user = userRepository.findById(userId).orElseThrow();
 
         Posting post = postingRepository.findById(postId).orElseThrow();
-        if(post.getUser() == user){
+        if(post.getUser().equals(user)){
             postingRepository.delete(post);
             return "success";
         }else{
@@ -118,17 +122,17 @@ public class CreatePostService {
         }
     }
 
-
-
     //조회수를 증가시키는 함수
     @Transactional
     public void updateView(Long postId) {
         //findBy하게 되면 db에서 값을 가져온다는 얘기다.
         Posting post = postingRepository.findById(postId).orElseThrow();
-        post.updateView(post.getView()+1);
+        //view가 왜 null로 들어갔을까?
 
+        if(post.getView()!=null){
+            post.updateView(post.getView()+1);
+        }
     }
-
 
     //댓글을 작성하는 기능
     //댓글이 등록된 정보를 새로 가져다줘서 작성된 것을 바로 확인할 수 있게끔 설정
@@ -153,6 +157,7 @@ public class CreatePostService {
 
         Posting post2 = postingRepository.findById(postId).orElseThrow();
 
+        //이게 post가 아니라 답글 리스트가 되어야할 것 같은데
         return PostResponseDTO.postDetail.of(post2);
     }
 
@@ -173,12 +178,18 @@ public class CreatePostService {
         //community comment를 구해서 그 안의 내용을 수정
         Community_Comment communityComment = communityCommentRepository.findById(commentId).orElseThrow();
 
-        if (communityComment.getUser() == user) {
-            communityComment.setContent(comment);
+        if (communityComment.getUser().equals(user)) {
+            if(communityComment.getId().equals(commentId)){
+                //comment id가 동일할 경우에만 그렇게 한다.
+                communityComment.setContent(comment);
 
-            communityCommentRepository.save(communityComment);
+                communityCommentRepository.save(communityComment);
 
-            return PostResponseDTO.postDetail.of(post);
+                return PostResponseDTO.postDetail.of(post);
+            }else{
+                return null;
+            }
+
         } else {
             return null;
         }
@@ -193,7 +204,7 @@ public class CreatePostService {
 
         Community_Comment communityComment = commentRepository.findById(commentId).orElseThrow();
 
-        if(communityComment.getUser() == user){
+        if(communityComment.getUser().equals(user)){
             commentRepository.delete(communityComment);
             return "success";
         }else{
@@ -201,4 +212,12 @@ public class CreatePostService {
         }
     }
 
+    public String checkToken(String token) {
+        Long userId = tokenHashing.getUserIdFromRequest(token);
+        if(userRepository.existsById(userId)){
+            return "success";
+        }else {
+            return null;
+        }
+    }
 }

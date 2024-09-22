@@ -23,7 +23,6 @@ public class PostResponseDTO {
     public static class postDetail {
         //createdAt하고 comment등도 들어가게 되면 추가해서 코드를 확장해 나가면 됨
         private Long postId;
-        private User user;
         private String image_url;
         private String title;
         private String contents;
@@ -51,11 +50,11 @@ public class PostResponseDTO {
 //                    .updatedAt(post.getUpdateAt())
 //                    .build();
 //        }
+        //이게 객체로 만들어서 넘기는 함수이다.
         public static postDetail of(Posting post){
             return postDetail.builder()
                     .postId(post.getPostId())
                     .contents(post.getContents())
-                    .user(post.getUser())
                     .image_url(post.getImage_url())
                     .location(post.getLocation())
                     .communityComment(post.getCommunityComments())

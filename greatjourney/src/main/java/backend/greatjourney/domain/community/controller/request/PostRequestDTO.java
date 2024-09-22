@@ -19,7 +19,7 @@ public class PostRequestDTO {
 //    private String token;
 //    private User user;
 
-    private String image_url;
+
 
     private String title;
 
@@ -28,6 +28,7 @@ public class PostRequestDTO {
     private String contents;
 
     private String location;
+    private String image_url;
 
     //우선은 이렇게 만들고 별로면 하나의 클래스를 더 만들어서 채워넣는 식으로 하자
     //이게 캡슐화때문에 여기에 함수를 작성하는 것이다.
@@ -38,8 +39,8 @@ public class PostRequestDTO {
                 .image_url(image_url)
                 .title(title)
                 .location(location)
+                .view(1L)
                 .build();
-
     }
 
 }

@@ -9,6 +9,5 @@ import java.util.List;
 public interface Community_CommentRepository extends JpaRepository<Community_Comment, Long> {
     //Community_comment를 가져오기 위한 메소드이다.
     List<Community_Comment> findCommunity_CommentByPosting(Posting posting);
-
     Community_Comment findCommunity_CommentById(Long id);
 }

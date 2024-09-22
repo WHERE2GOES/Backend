@@ -1,6 +1,5 @@
 package backend.greatjourney.domain.community.controller.request;
 
-
 import lombok.*;
 
 @Getter
@@ -8,12 +7,6 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentRequestDTO {
-
-
-    private String postId;
-    private String commentId;
-    private String comment;
-
-
+public class CommentDeleteRequest {
+    private Long commentId;
 }

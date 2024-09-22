@@ -25,6 +25,10 @@ public class FileUploadService {
 
     public String uploadFile(MultipartFile file) throws IOException {
 
+        if(file == null){
+            return null;
+        }
+
         String fileName = generateFileName(file);
 
         try {
