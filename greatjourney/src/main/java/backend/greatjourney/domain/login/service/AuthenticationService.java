@@ -25,4 +25,6 @@ public interface AuthenticationService {
 
     boolean passwordCheck(String pw1, String pw2);
 
+    void deleteUserById(Long userId);
+
 }

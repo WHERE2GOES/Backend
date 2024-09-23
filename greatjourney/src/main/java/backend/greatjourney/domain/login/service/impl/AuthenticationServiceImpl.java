@@ -145,4 +145,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public boolean passwordCheck(String firstpassword, String secondpassword) {
         return firstpassword.equals(secondpassword);
     }
+
+    public void deleteUserById(Long userId) {
+        // userId를 통해 해당 유저가 존재하는지 확인하고 삭제
+        userRepository.findById(userId)
+                .ifPresentOrElse(
+                        user -> userRepository.delete(user),
+                        () -> {
+                            throw new IllegalArgumentException("해당 사용자가 존재하지 않습니다.");
+                        });
+    }
 }

@@ -5,9 +5,13 @@ import backend.greatjourney.domain.login.service.AuthenticationService;
 import backend.greatjourney.global.exception.BaseResponse;
 import backend.greatjourney.global.exception.BaseResponseService;
 import backend.greatjourney.global.exception.CustomExceptionHandler;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -99,11 +103,34 @@ public class AuthenticationController {
     }
 
 
-
     @PostMapping("/refresh")
     public ResponseEntity<JwtAuthenticationResponse> refresh(@RequestBody RefreshTokenRequest refreshTokenRequest) {
         return ResponseEntity.ok(authenticationService.refreshToken(refreshTokenRequest));
 
     }
+
+    // JWT 토큰 로그아웃
+    @PostMapping("/logout")
+    public BaseResponse<Object> logout(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            // Spring Security의 로그아웃 핸들러를 사용하여 로그아웃 처리
+            SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+            logoutHandler.logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+
+            return BaseResponse.<Object>builder()
+                    .code(2000)
+                    .isSuccess(true)
+                    .message("로그아웃이 완료되었습니다.")
+                    .build();
+        } catch (Exception e) {
+            log.error("로그아웃 처리 중 오류 발생: {}", e.getMessage());
+            return BaseResponse.<Object>builder()
+                    .code(5000)
+                    .isSuccess(false)
+                    .message("로그아웃 처리 중 오류가 발생했습니다.")
+                    .build();
+        }
+    }
+
 
 }

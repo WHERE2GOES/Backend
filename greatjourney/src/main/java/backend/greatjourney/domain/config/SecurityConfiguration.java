@@ -34,27 +34,13 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http.csrf(AbstractHttpConfigurer::disable)
-//                .authorizeHttpRequests(request -> request.requestMatchers("/api/**")
-//                        .permitAll()
-////                        .requestMatchers(swaggerUrls).permitAll()
-////                        .requestMatchers("/api/v1/admin").hasAnyAuthority(Role.ROLE_ADMIN.name())
-////                        .requestMatchers("/api/v1/user").hasAnyAuthority(Role.ROLE_USER.name())
-////                        .requestMatchers("/api/vi/no_user").hasAnyAuthority(Role.ROEL_NO_USER.name())
-//                        .anyRequest().authenticated())
-//
-//                .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .authenticationProvider(authenticationProvider()).addFilterBefore(
-//                        jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class
-//                );
-
 
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/**").permitAll()
-                        .requestMatchers("/api/**").permitAll()
+                        .requestMatchers("/api/login/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers(swaggerUrls).permitAll()
+                        .requestMatchers("/**").hasAuthority(Role.ROLE_USER.name())
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
