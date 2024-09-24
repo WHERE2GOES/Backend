@@ -1,4 +1,4 @@
-package backend.greatjourney.domain.kakao.controller;
+package backend.greatjourney.domain.kakao.service;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

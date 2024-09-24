@@ -1,6 +1,6 @@
 package backend.greatjourney.domain.kakao.controller;
 
-import backend.greatjourney.domain.login.dto.JwtAuthenticationResponse;
+import backend.greatjourney.domain.kakao.service.KakaoApi;
 import backend.greatjourney.domain.login.service.AuthenticationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
@@ -8,17 +8,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.Map;
 
 @Controller
 @RequestMapping("/api/kakao/auth")
 @RequiredArgsConstructor
 public class KakaoController {
 
-    private final  KakaoApi kakaoApi;
+    private final KakaoApi kakaoApi;
     private final AuthenticationService authenticationService;
 
     @GetMapping("/login")
@@ -72,8 +71,8 @@ public class KakaoController {
 //        }
 //    }
 
-    @GetMapping("/login/oauth2/code/kakao")
-    public ResponseEntity<String> loginByKakao(@RequestParam("code") String code) throws JsonProcessingException {
+    @GetMapping("/login/oauth2/{code}")
+    public ResponseEntity<String> loginByKakao(@PathVariable("code") String code) throws JsonProcessingException {
         return ResponseEntity.ok("성공!!, code: " + code);
     }
 }
