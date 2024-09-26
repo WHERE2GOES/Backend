@@ -44,7 +44,7 @@ public class KakaoController {
     }
 
     @GetMapping("/login/oauth2")
-    public ResponseEntity<JwtAuthenticationResponse> loginByKakao(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
+    public ResponseEntity loginByKakao(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
 
         System.out.println("인가 코드 받기 시작");
         // 1. 인가 코드 받기 (@RequestParam String code)
@@ -88,7 +88,7 @@ public class KakaoController {
         log.info(redirectUrl);
         response.sendRedirect(redirectUrl);  // 클라이언트로 리디렉션
 
-        return ResponseEntity.ok(jwtAuthenticationResponse);
+        return ResponseEntity.ok().build();
         //return ResponseEntity.ok(jwtAuthenticationResponse);
     }
 
