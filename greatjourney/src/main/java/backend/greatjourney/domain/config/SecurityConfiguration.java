@@ -38,8 +38,8 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/**").permitAll()
-                        .requestMatchers("/api/login/auth/**").permitAll()
-                        .requestMatchers("/api/kakao/auth/**").permitAll()
+                        //.requestMatchers("/api/login/auth/**").permitAll()
+                        //.requestMatchers("/api/kakao/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers(swaggerUrls).permitAll()
                         .requestMatchers("/**").hasAuthority(Role.ROLE_USER.name())
