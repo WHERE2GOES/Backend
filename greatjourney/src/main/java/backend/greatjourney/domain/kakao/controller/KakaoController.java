@@ -47,15 +47,15 @@ public class KakaoController {
     }
 
     @GetMapping("/login/oauth2")
-    public ResponseEntity loginByKakao(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
-
+//    public ResponseEntity<JwtAuthenticationResponse> loginByKakao(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
+    public ResponseEntity<JwtAuthenticationResponse> loginByKakao(@RequestParam("accessToken") String accessToken, HttpServletResponse response) throws IOException {
         System.out.println("인가 코드 받기 시작");
         // 1. 인가 코드 받기 (@RequestParam String code)
 
         // 2. 토큰 받기
-        System.out.println("토큰 받기 시작");
-        String accessToken = kakaoApi.getAccessToken(code);
-        System.out.println("accessToken: "+ accessToken);
+//        System.out.println("토큰 받기 시작");
+//        String accessToken = kakaoApi.getAccessToken(code);
+//        System.out.println("accessToken: "+ accessToken);
 
         // 3. 사용자 정보 받기
         System.out.println("사용자 정보 받기 시작");
@@ -75,27 +75,29 @@ public class KakaoController {
         // 3. DB에서 이메일로 사용자가 있는지 확인 (있으면 로그인, 없으면 회원가입)
         if (authenticationService.kakaoIdExists(email)) {
             // 사용자 정보가 존재하면 로그인 (JWT 발급)
-            //JwtAuthenticationResponse jwtAuthenticationResponse = authenticationService.kakaoSignin(email);
-
         } else {
             // 사용자가 없으면 회원가입 후 로그인
             authenticationService.kakaoSignup(email, nickname, picture);
-            //authenticationService.kakaoSignin(email);
         }
+
+        // 사용자 정보가 존재하면 로그인 (JWT 발급)
         JwtAuthenticationResponse jwtAuthenticationResponse = authenticationService.kakaoSignin(email);
 
-        // 5. 최종적으로 클라이언트에 리디렉션 (NATIVE_APP_KEY를 사용해 kakao${NATIVE_APP_KEY}://oauth2 형태로 리디렉션)
-
-        String redirectUrl = "kakao" + nativeAppKey + "://oauth2?accessToken=" + jwtAuthenticationResponse.getAccessToken() + "&refreshToken=" + jwtAuthenticationResponse.getRefreshToken();
-
-        log.info(redirectUrl);
-        // 헤더에 리디렉션 URL을 담음
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(redirectUrl));
-
-        // 302 응답을 반환하여 리디렉션
-        return new ResponseEntity<>(headers, HttpStatus.FOUND);
+        return ResponseEntity.ok(jwtAuthenticationResponse);
     }
+
+
+    // 5. 최종적으로 클라이언트에 리디렉션 (NATIVE_APP_KEY를 사용해 kakao${NATIVE_APP_KEY}://oauth2 형태로 리디렉션)
+
+//        String redirectUrl = "kakao" + nativeAppKey + "://oauth2?accessToken=" + jwtAuthenticationResponse.getAccessToken() + "&refreshToken=" + jwtAuthenticationResponse.getRefreshToken();
+//
+//        log.info(redirectUrl);
+//        // 헤더에 리디렉션 URL을 담음
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setLocation(URI.create(redirectUrl));
+//
+//        // 302 응답을 반환하여 리디렉션
+//        return new ResponseEntity<>(headers, HttpStatus.FOUND);
 
 //    @GetMapping("/login/oauth2/{code}")
 //    public ResponseEntity<String> loginByKakao(@RequestParam("code") String code) throws JsonProcessingException {
