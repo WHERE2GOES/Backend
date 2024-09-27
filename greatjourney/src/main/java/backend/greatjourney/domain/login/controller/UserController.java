@@ -40,9 +40,8 @@ public class UserController {
             System.out.println(entry.getKey() + ": " + entry.getValue());
         }
         return BaseResponse.<Object>builder()
-                .code(2005)
+                .code(200)
                 .isSuccess(true)
-                .message(loginId + "안녕하세요")
                 .data(profileInfo)
                 .build();
     }
@@ -53,7 +52,7 @@ public class UserController {
         Long loginId = jwtService.extractUserId(token);
         userService.profileSave(profileEditRequest, loginId);
         return BaseResponse.<Object>builder()
-                .code(4000)
+                .code(200)
                 .isSuccess(true)
                 .message("프로필 등록 성공")
                 .build();
@@ -67,7 +66,7 @@ public class UserController {
         String url = fileUploadService.uploadFile(file);
         userService.saveUploadImg(url, loginId);
         return BaseResponse.<Object>builder()
-                .code(4001)
+                .code(200)
                 .message("이미지가 업로드 되었습니다")
                 .data(url)
                 .build();
@@ -82,7 +81,7 @@ public class UserController {
             // 사용자 ID를 기반으로 회원 탈퇴 처리
             authenticationService.deleteUserById(loginId);
             return BaseResponse.<Object>builder()
-                    .code(2000)
+                    .code(200)
                     .isSuccess(true)
                     .message("회원 탈퇴가 완료되었습니다.")
                     .build();
