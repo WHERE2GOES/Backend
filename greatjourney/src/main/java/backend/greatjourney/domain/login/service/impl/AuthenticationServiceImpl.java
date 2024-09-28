@@ -82,6 +82,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .residence(null)
                 .gender(true)
                 .phone(null)
+                .profileImageUrl(profileImgUrl)
                 .sns(true)
                 .build();
 
