@@ -1,6 +1,7 @@
 package backend.greatjourney.domain.kakao.controller;
 
 import backend.greatjourney.domain.kakao.service.KakaoApi;
+import backend.greatjourney.domain.login.domain.User;
 import backend.greatjourney.domain.login.dto.JwtAuthenticationResponse;
 import backend.greatjourney.domain.login.service.AuthenticationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Controller
@@ -81,10 +83,10 @@ public class KakaoController {
 //        }
 
         // 사용자가 없으면 회원가입 후 로그인
-        authenticationService.kakaoSignup(email, nickname, picture);
+        Optional<User> user = authenticationService.kakaoSignup(email, nickname, picture);
 
         // 사용자 정보가 존재하면 로그인 (JWT 발급)
-        JwtAuthenticationResponse jwtAuthenticationResponse = authenticationService.kakaoSignin(email);
+        JwtAuthenticationResponse jwtAuthenticationResponse = authenticationService.kakaoSignin(user.get().getEmail());
 
         return ResponseEntity.ok(jwtAuthenticationResponse);
     }
