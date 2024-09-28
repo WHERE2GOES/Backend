@@ -124,9 +124,21 @@ public class KakaoApi {
             JsonObject profile = kakaoAccount.getAsJsonObject().get("profile").getAsJsonObject();
 
 
-            String email = kakaoAccount.getAsJsonObject().get("email").getAsString();
-            String nickname = profile.getAsJsonObject().get("nickname").getAsString();
-            String picture = profile.getAsJsonObject().get("thumbnail_image_url").getAsString();
+//            String email = kakaoAccount.getAsJsonObject().get("email").getAsString();
+//            String nickname = profile.getAsJsonObject().get("nickname").getAsString();
+//            String picture = profile.getAsJsonObject().get("thumbnail_image_url").getAsString();
+
+            String email = kakaoAccount.has("email") ? kakaoAccount.get("email").getAsString() : "No email provided";
+            String nickname = profile.has("nickname") ? profile.get("nickname").getAsString() : "No nickname provided";
+
+            // Thumbnail image URL을 받지 못했을 경우 기본 이미지 설정
+            String picture;
+            if (profile.has("thumbnail_image_url")) {
+                picture = profile.get("thumbnail_image_url").getAsString();
+            } else {
+                picture = ""; // 기본 이미지 URL
+                log.warn("User profile picture not available. Using default image.");
+            }
 
             userInfo.put("picture", picture);
             userInfo.put("nickname", nickname);
