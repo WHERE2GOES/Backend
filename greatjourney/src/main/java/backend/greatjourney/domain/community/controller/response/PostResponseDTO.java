@@ -31,6 +31,8 @@ public class PostResponseDTO {
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
         private Long view;
+        private String nickname;
+        private String profile_image_url;
 
 //        public static postDetail of(Posting post, User user){
 //            return postDetail.builder()
@@ -62,6 +64,22 @@ public class PostResponseDTO {
                     .updatedAt(post.getUpdateAt())
                     .view(post.getView())
                     .title(post.getTitle())
+                    .build();
+        }
+
+        public static postDetail ofDetail(Posting post,User user){
+            return postDetail.builder()
+                    .postId(post.getPostId())
+                    .contents(post.getContents())
+                    .image_url(post.getImage_url())
+                    .location(post.getLocation())
+                    .communityComment(post.getCommunityComments())
+                    .createdAt(post.getCreatedAt())
+                    .updatedAt(post.getUpdateAt())
+                    .view(post.getView())
+                    .title(post.getTitle())
+                    .nickname(user.getNickname())
+                    .profile_image_url(user.getProfileImageUrl())
                     .build();
         }
 //        public static List<postDetail> of(Slice<Post> posts, User user){

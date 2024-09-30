@@ -11,10 +11,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
@@ -27,20 +24,20 @@ public class ChatController {
     private final CreateChatRoomService createChatRoomService;
     private final SimpMessagingTemplate msgOperation;
 
-    @PostMapping("/chat")
-    public BaseResponse<Object> createChatRoom(@RequestBody ChatRoomRequestDTO request) {
+    @PostMapping("/api/chat")
+    public BaseResponse<Object> createChatRoom(@RequestHeader(name = "Authorization")String token, @RequestBody ChatRoomRequestDTO request) {
         String receiver = request.getReceiver();
         String sender = request.getSender(); // UserDetails에서 가져오는 부분을 구현
         return createChatRoomService.createChatRoom(receiver, sender);
     }
 
-    @MessageMapping("/chat/enter")
+    @MessageMapping("/api/chat/enter")
     public void enterChatRoom(ChatDTO chatDto, SimpMessageHeaderAccessor headerAccessor) throws Exception {
         ChatDTO newchatdto = createChatRoomService.enterChatRoom(chatDto, headerAccessor);
         msgOperation.convertAndSend("/sub/chat/room" + chatDto.getRoomId(), newchatdto);
     }
 
-    @MessageMapping("/chat/send")
+    @MessageMapping("/api/chat/send")
     public void sendChatRoom(ChatDTO chatDto, SimpMessageHeaderAccessor headerAccessor) throws Exception {
         msgOperation.convertAndSend("/sub/chat/room" + chatDto.getRoomId(), chatDto);
     }

@@ -186,9 +186,9 @@ public class WeatherService {
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Content-type", "application/json");
 
-        System.out.println("Response code: " + conn.getResponseCode());
-        System.out.println("Response message: " + conn.getResponseMessage());
-        System.out.println("Date Data" + Arrays.toString(dateData));
+//        System.out.println("Response code: " + conn.getResponseCode());
+//        System.out.println("Response message: " + conn.getResponseMessage());
+//        System.out.println("Date Data" + Arrays.toString(dateData));
 
         // try-with-resources로 BufferedReader 처리
         try (BufferedReader rd = new BufferedReader(new InputStreamReader(
@@ -202,7 +202,7 @@ public class WeatherService {
                 sb.append(line);
             }
 
-            System.out.println(sb.toString());
+//            System.out.println(sb.toString());
             // JSON 응답을 파싱하여 WeatherResponseDTO로 변환
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(sb.toString());

@@ -158,11 +158,12 @@ public class CommunityController {
                    .build();
        }
 
-        PostResponseDTO.postDetail postDetail = createPostService.getPostDetail(postId);
+        PostResponseDTO.postDetail postDetail = createPostService.getPostDetail(postId,token);
 
 
         //이때마다 조회수를 늘려줄 수 있게끔 작동하는 것이다.
         createPostService.updateView(postId);
+
 
         return BaseResponse.builder()
                 .code(200)
