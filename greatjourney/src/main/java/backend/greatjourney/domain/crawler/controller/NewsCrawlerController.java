@@ -6,10 +6,7 @@ import backend.greatjourney.domain.crawler.service.NewsCrawlerService;
 import backend.greatjourney.global.exception.BaseResponse;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,7 +17,7 @@ public class NewsCrawlerController {
     private final NewsCrawlerService newsCrawlerService;
 
     @GetMapping("/api/news")
-    public BaseResponse newsCrawling(@RequestParam String keywordText, @RequestParam int count){
+    public BaseResponse newsCrawling(@RequestHeader(name = "Authorization")String token, @RequestParam String keywordText, @RequestParam int count){
 
 //        List<NewsResponse> newsResponses = newsCrawlerService.crawl(newsRequest.getKeywordText());
         List<NewsResponse> newsResponses = newsCrawlerService.crawlWithSelenium(keywordText,count);

@@ -1,6 +1,7 @@
 package backend.greatjourney.domain.community.entity;
 
 
+import backend.greatjourney.domain.base_time.BaseTimeEntity;
 import backend.greatjourney.domain.login.domain.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
@@ -16,7 +17,7 @@ import net.minidev.json.annotate.JsonIgnore;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Community_Comment {
+public class Community_Comment extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +34,7 @@ public class Community_Comment {
     private Posting posting;
 
     private String content;
+
 
     public Community_Comment(User user, Posting posting, String content) {
         this.user = user;

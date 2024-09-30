@@ -80,17 +80,22 @@ public class CreatePostService {
     //모든 게시글 불러오기
     public List<Posting> getPostAll(String token) {
         Long userId = tokenHashing.getUserIdFromRequest(token);
-        if(userRepository.existsById(userId)){
+        if(!userRepository.existsById(userId)){
             return null;
         }
         return postingRepository.findAll();
     }
 
     //게시글 상세 검색
-    public PostResponseDTO.postDetail getPostDetail(Long postId) {
+    public PostResponseDTO.postDetail getPostDetail(Long postId, String token) {
         Posting post = postingRepository.findById(postId).orElseThrow();
 
-        return PostResponseDTO.postDetail.of(post);
+
+        //유저에 대한 정보를 가져옴
+        Long userId = tokenHashing.getUserIdFromRequest(token);
+        User user = userRepository.findById(userId).orElseThrow();
+
+        return PostResponseDTO.postDetail.ofDetail(post,user);
     }
 
 

@@ -5,10 +5,7 @@ import backend.greatjourney.domain.weather.dto.WeatherResponse;
 import backend.greatjourney.domain.weather.service.WeatherService;
 import backend.greatjourney.global.exception.BaseResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -21,7 +18,7 @@ public class WeatherController {
     private final WeatherService weatherService;
 
     @GetMapping("/api/weather/short")
-    public BaseResponse getWeathers(@RequestParam String Step1, @RequestParam String Step2, @RequestParam @Nullable String Step3) throws IOException {
+    public BaseResponse getWeathers(@RequestHeader(name = "Authorization")String token, @RequestParam String Step1, @RequestParam String Step2, @RequestParam @Nullable String Step3) throws IOException {
 
         WeatherResponse weatherResponse = weatherService.getWeather(Step1,Step2,Step3,"5","20");
 
