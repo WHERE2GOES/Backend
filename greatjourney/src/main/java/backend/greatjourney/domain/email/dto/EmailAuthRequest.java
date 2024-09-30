@@ -1,4 +1,4 @@
-package backend.greatjourney.domain.mail.dto;
+package backend.greatjourney.domain.email.dto;
 
 import lombok.Data;
 
