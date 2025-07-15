@@ -7,7 +7,7 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$/greatjourney" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$/../../대장정이/backend/greatjourney" />
+            <option value="$PROJECT_DIR$/greatjourney" />
           </set>
         </option>
       </GradleProjectSettings>
