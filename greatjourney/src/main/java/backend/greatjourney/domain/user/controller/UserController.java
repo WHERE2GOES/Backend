@@ -33,8 +33,8 @@ public class UserController {
 
 	//회원탈퇴
 	@DeleteMapping("/signout")
-	public BaseResponse<?> singOut(@RequestParam String refreshToken){
-		return userService
+	public BaseResponse<?> singOut(@AuthenticationPrincipal CustomOAuth2User customOAuth2User){
+		return userService.signOutUser(customOAuth2User);
 	}
 
 	//로그인

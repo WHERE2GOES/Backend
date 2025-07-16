@@ -1,6 +1,7 @@
 package backend.greatjourney.domain.user.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import backend.greatjourney.domain.token.entity.RefreshToken;
 import backend.greatjourney.domain.token.repository.RefreshTokenRepository;
@@ -15,6 +16,7 @@ import backend.greatjourney.global.exception.BaseResponse;
 import backend.greatjourney.global.exception.CustomException;
 import backend.greatjourney.global.exception.ErrorCode;
 import backend.greatjourney.global.security.CustomOAuth2User;
+import jakarta.persistence.Table;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -24,6 +26,7 @@ public class UserService {
 	private final RefreshTokenRepository refreshTokenRepository;
 	private final JwtTokenProvider tokenProvider;
 
+	@Transactional
 	public BaseResponse<User> signupUser(SignUpRequest request){
 		if(userRepository.existsByEmail(request.email())){
 			throw new IllegalArgumentException("이미 존재하는 회원입니다.");
@@ -35,6 +38,7 @@ public class UserService {
 			.build()));
 	}
 
+	@Transactional
 	public BaseResponse<Void> logOutUser(CustomOAuth2User customOAuth2User){
 
 		Long userId = Long.parseLong(customOAuth2User.getUserId());
@@ -48,11 +52,30 @@ public class UserService {
 			.build();
 	}
 
+
+	@Transactional
 	public BaseResponse<Void> signOutUser(CustomOAuth2User customOAuth2User){
+		Long userId = Long.parseLong(customOAuth2User.getUserId());
+		RefreshToken refreshToken = refreshTokenRepository.findByUserId(userId);
+
+		refreshTokenRepository.deleteByToken(refreshToken.getToken());
+		User user = userRepository.findByUserId(userId)
+			.orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
+
+		user.setStatus(Status.DELETED);
+		userRepository.save(user);
+
+		return BaseResponse.<Void>builder()
+			.isSuccess(true)
+			.code(200)
+			.message("회원탈퇴가 완료되었습니다.")
+			.data(null)
+			.build();
 
 
 	}
 
+	@Transactional
 	public BaseResponse<Void> changeUserInfo(CustomOAuth2User customOAuth2User, ChangeUserRequest request){
 		Long userId = Long.parseLong(customOAuth2User.getUserId());
 		User user = userRepository.findById(userId)
@@ -67,4 +90,6 @@ public class UserService {
 			.data(null)
 			.build();
 	}
+
+
 }
