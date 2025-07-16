@@ -19,10 +19,9 @@ import backend.greatjourney.domain.token.entity.RefreshToken;
 import backend.greatjourney.domain.token.repository.RefreshTokenRepository;
 import backend.greatjourney.domain.user.entity.User;
 import backend.greatjourney.domain.user.repository.UserRepository;
-import backend.greatjourney.global.exception.BaseException;
 import backend.greatjourney.global.exception.CustomException;
 import backend.greatjourney.global.exception.ErrorCode;
-import backend.greatjourney.global.security.CustomOAuth2User;
+import backend.greatjourney.global.security.entitiy.CustomOAuth2User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -61,7 +60,7 @@ public class JwtTokenProvider {
 		}
 	}
 
-	public String createAccessToken(String userId) {
+	public String createAccessToken(Long userId) {
 		try {
 			Date now = new Date();
 			Date expiry = new Date(now.getTime() + accessTokenDuration.toMillis());
@@ -77,7 +76,7 @@ public class JwtTokenProvider {
 		}
 	}
 
-	public String createRefreshToken(String userId) {
+	public String createRefreshToken(Long userId) {
 		try {
 			Date now = new Date();
 			Date expiry = new Date(now.getTime() + refreshTokenDuration.toMillis());
@@ -95,7 +94,7 @@ public class JwtTokenProvider {
 
 
 
-	public TokenResponse createToken(String userId) {
+	public TokenResponse createToken(Long userId) {
 		try {
 			String accessToken = createAccessToken(userId);
 			String refreshToken = createRefreshToken(userId);
@@ -150,6 +149,18 @@ public class JwtTokenProvider {
 
 		} catch (Exception e) {
 			throw new CustomException(ErrorCode.LOGIN_FAIL);
+		}
+	}
+
+	public boolean validateToken(String token) {
+		try {
+			Jwts.parser()
+				.verifyWith(key)
+				.build()
+				.parseSignedClaims(token);
+			return true;
+		} catch (Exception e) {
+			return false;
 		}
 	}
 }
