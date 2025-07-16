@@ -29,6 +29,7 @@ out/
 
 
 application.properties
+appspec.yml
 
 src/main/resources/application.properties
 
