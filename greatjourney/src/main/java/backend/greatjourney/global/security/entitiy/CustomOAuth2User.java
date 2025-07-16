@@ -1,4 +1,4 @@
-package backend.greatjourney.global.security;
+package backend.greatjourney.global.security.entitiy;
 
 import java.util.Collection;
 import java.util.List;
