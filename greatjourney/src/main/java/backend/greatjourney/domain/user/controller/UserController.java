@@ -16,29 +16,35 @@ import backend.greatjourney.domain.user.service.KakaoService;
 import backend.greatjourney.domain.user.service.UserService;
 import backend.greatjourney.global.exception.BaseResponse;
 import backend.greatjourney.global.security.entitiy.CustomOAuth2User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
+@Tag(name = "로그인 API", description = "로그인/로그아웃 API에 대한 설명입니다.")
 public class UserController {
 
 	private final UserService userService;
 	private final KakaoService kakaoService;
 
 	//회원가입
+	@Operation(summary = "회원가입 API")
 	@PostMapping("/signup")
 	public BaseResponse<User> signUp(@RequestBody SignUpRequest request){
 		return userService.signupUser(request);
 	}
 
 	//회원탈퇴
+	@Operation(summary = "회원탈퇴 API")
 	@DeleteMapping("/signout")
 	public BaseResponse<Void> singOut(@AuthenticationPrincipal CustomOAuth2User customOAuth2User){
 		return userService.signOutUser(customOAuth2User);
 	}
 
 	//카카오로그인
+	@Operation(summary = "카카오로그인 API")
 	@PostMapping("/kakao")
 	public BaseResponse<?> loginKakao(@RequestBody KakaoLoginRequest request){
 		return BaseResponse.builder()
@@ -50,6 +56,7 @@ public class UserController {
 	}
 
 	//로그아웃
+	@Operation(summary = "로그아웃 API")
 	@PostMapping("/logout")
 	public BaseResponse<Void> logout(@AuthenticationPrincipal CustomOAuth2User customOAuth2User){
 		return userService.logOutUser(customOAuth2User);
@@ -57,6 +64,7 @@ public class UserController {
 
 
 	//회원정보수정
+	@Operation(summary = "회원정보 수정 API")
 	@PatchMapping("/change")
 	public BaseResponse<?> chageUserInfo(@AuthenticationPrincipal CustomOAuth2User customOAuth2User,@RequestBody
 		ChangeUserRequest request){
