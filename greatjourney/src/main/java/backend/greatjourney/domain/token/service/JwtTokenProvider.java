@@ -93,7 +93,6 @@ public class JwtTokenProvider {
 	}
 
 
-
 	public TokenResponse createToken(Long userId) {
 		try {
 			String accessToken = createAccessToken(userId);

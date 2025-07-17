@@ -20,7 +20,6 @@ public class BaseResponse<T> {
         this.code = code;
         this.data = (T) data;
     }
-
     @Builder
     public BaseResponse(boolean isSuccess, String message, int code, T data) {
         this.isSuccess = isSuccess;
