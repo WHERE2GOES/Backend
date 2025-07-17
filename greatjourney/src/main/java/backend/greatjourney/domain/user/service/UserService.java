@@ -6,8 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import backend.greatjourney.domain.token.entity.RefreshToken;
 import backend.greatjourney.domain.token.repository.RefreshTokenRepository;
 import backend.greatjourney.domain.token.service.JwtTokenProvider;
-import backend.greatjourney.domain.user.dto.ChangeUserRequest;
-import backend.greatjourney.domain.user.dto.SignUpRequest;
+import backend.greatjourney.domain.user.dto.request.ChangeUserRequest;
+import backend.greatjourney.domain.user.dto.request.SignUpRequest;
 import backend.greatjourney.domain.user.entity.Domain;
 import backend.greatjourney.domain.user.entity.Status;
 import backend.greatjourney.domain.user.entity.User;
@@ -15,13 +15,13 @@ import backend.greatjourney.domain.user.repository.UserRepository;
 import backend.greatjourney.global.exception.BaseResponse;
 import backend.greatjourney.global.exception.CustomException;
 import backend.greatjourney.global.exception.ErrorCode;
-import backend.greatjourney.global.security.CustomOAuth2User;
-import jakarta.persistence.Table;
+import backend.greatjourney.global.security.entitiy.CustomOAuth2User;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
 	private final UserRepository userRepository;
 	private final RefreshTokenRepository refreshTokenRepository;
 	private final JwtTokenProvider tokenProvider;
@@ -71,8 +71,6 @@ public class UserService {
 			.message("회원탈퇴가 완료되었습니다.")
 			.data(null)
 			.build();
-
-
 	}
 
 	@Transactional

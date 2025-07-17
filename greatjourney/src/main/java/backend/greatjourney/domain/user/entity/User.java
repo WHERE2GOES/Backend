@@ -52,7 +52,7 @@ public class User {
 	@Embeddable
 	@Getter
 	@NoArgsConstructor
-	public class Terms {
+	public static class Terms {
 		private boolean marketing;
 
 		@Builder
