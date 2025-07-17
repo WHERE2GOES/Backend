@@ -1,70 +1,64 @@
-name: Build and Deploy for daejangjung2 server to AWS EC2 (CI/CD)
+name: Deploy Spring Backend
 
 on:
-  pull_request:
+  push:
     branches:
-      - develop
-    types: [closed]
+      - main
 
-env:
-  # 버킷에 저장할 폴더 이름
-  PROJECT_NAME: daejangjung2_server
-  # S3 버킷 이름
-  BUCKET_NAME: daejangjung2-s3-bucket
-  # CodeDeploy의 애플리케이션 이름
-  CODE_DEPLOY_APP_NAME: daejangjung2
-  # CodeDeploy의 배포그룹 이름
-  DEPLOYMENT_GROUP_NAME: daejangjung2-deployment-group
- 
 jobs:
-  build:
-    # 실행 환경 설정
+  deploy-backend:
     runs-on: ubuntu-latest
 
-    # 차례대로 실행
     steps:
-    - uses: actions/checkout@v2
+      - name: ✅ Checkout Spring Code
+        uses: actions/checkout@v3
 
-    - run: touch ./greatjourney/src/main/resources/application.properties
-    - run: echo "${{ secrets.APPLICATION }}" > ./greatjourney/src/main/resources/application.properties
-    - run: cat ./greatjourney/src/main/resources/application.properties
-    
-    - name: Set up JDK 17
-      uses: actions/setup-java@v1
-      with:
-        java-version: 17
+      - name: 🔐 application.properties 생성
+        working-directory: ./djj2
+        run: |
+          mkdir -p src/main/resources
+          echo "spring.datasource.url=${{ secrets.DB_URL }}" >> src/main/resources/application.properties
+          echo "spring.datasource.username=${{ secrets.DB_USERNAME }}" >> src/main/resources/application.properties
+          echo "spring.datasource.password=${{ secrets.DB_PASSWORD }}" >> src/main/resources/application.properties
+          echo "spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver" >> src/main/resources/application.properties
+
+          echo "spring.jpa.hibernate.ddl-auto=create" >> src/main/resources/application.properties
+          echo "spring.jpa.show-sql=true" >> src/main/resources/application.properties
+          echo "spring.jpa.properties.hibernate.format_sql=true" >> src/main/resources/application.properties
+
+          echo "spring.jwt.secret=${{ secrets.JWT_SECRET }}" >> src/main/resources/application.properties
+          echo "spring.jwt.access-token-duration=${{ secrets.JWT_ACCESS_DURATION }}" >> src/main/resources/application.properties
+          echo "spring.jwt.refresh-token-duration=${{ secrets.JWT_REFRESH_DURATION }}" >> src/main/resources/application.properties
+
+          echo "kakao.client-id=${{ secrets.KAKAO_CLIENT_ID }}" >> src/main/resources/application.properties
+          echo "kakao.client-secret=${{ secrets.KAKAO_CLIENT_SECRET }}" >> src/main/resources/application.properties
+
+      - name: ☕ Gradle Build (jar 생성)
+        run: ./gradlew build -x test
+        working-directory: ./djj2
+
+      - name: 🐳 Docker Hub 로그인
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: 📦 Build & Push Docker image (safe version, no cache)
+        uses: docker/build-push-action@v5
+        with:
+          context: ./djj2
+          file: ./djj2/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/djj2:latest
 
 
-    
-    - name: Grant execute permission for gradlew
-      run: chmod +x ./greatjourney/gradlew
-    
-    - name: Build with Gradle
-      run: ./greatjourney/gradlew clean build -x test
-      working-directory: ./greatjourney
-      
-    # 압축 파일 만들기
-    - name: Make Zip File
-      run: zip -qq -r ./$GITHUB_SHA.zip .
-      shell: bash
-      
-    # AWS 인증
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ap-northeast-2
-      
-    # S3 버킷으로 파일을 업로드
-    - name: Upload to S3
-      run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$BUCKET_NAME/$PROJECT_NAME/$GITHUB_SHA.zip
-
-    # S3 버킷에 업로드 된 파일을 대상으로 CodeDeploy에서 배포 요청
-    - name: Code Deploy
-      run: |
-        aws deploy create-deployment \
-        --application-name $CODE_DEPLOY_APP_NAME \
-        --deployment-config-name CodeDeployDefault.OneAtATime \
-        --deployment-group-name $DEPLOYMENT_GROUP_NAME \
-        --s3-location bucket=$BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$GITHUB_SHA.zip
+      - name: 🚀 EC2에 SSH 접속 후 backend 재배포
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            cd ~/my-app
+            docker compose pull backend
+            docker compose up -d backend
