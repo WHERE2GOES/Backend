@@ -30,7 +30,11 @@ public class SecurityConfig {
 			.sessionManagement(session ->
 				session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/api/auth/**","api/v1/").permitAll()
+				.requestMatchers("/api/auth/**","api/v1/","/v3/api-docs/**",
+					"/swagger-ui/**",               // ✅ Swagger UI HTML/JS
+					"/swagger-ui.html",             // ✅ Swagger 메인 HTML
+					"/webjars/**"       )            // ✅ Swagger 리소스
+				     .permitAll()
 				.anyRequest().authenticated()
 			)
 			.exceptionHandling(e -> e
@@ -44,9 +48,5 @@ public class SecurityConfig {
 		return http.build();
 	}
 
-	@Bean
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
-		throws Exception {
-		return config.getAuthenticationManager();
-	}
+
 }
