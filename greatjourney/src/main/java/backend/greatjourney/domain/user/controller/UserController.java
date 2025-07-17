@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import backend.greatjourney.domain.token.dto.TokenResponse;
 import backend.greatjourney.domain.user.dto.request.ChangeUserRequest;
 import backend.greatjourney.domain.user.dto.request.KakaoLoginRequest;
 import backend.greatjourney.domain.user.dto.request.SignUpRequest;
@@ -32,7 +33,7 @@ public class UserController {
 	//회원가입
 	@Operation(summary = "회원가입 API")
 	@PostMapping("/signup")
-	public BaseResponse<User> signUp(@RequestBody SignUpRequest request){
+	public BaseResponse<TokenResponse> signUp(@RequestBody SignUpRequest request){
 		return userService.signupUser(request);
 	}
 

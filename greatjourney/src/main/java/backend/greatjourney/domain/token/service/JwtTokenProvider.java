@@ -60,7 +60,7 @@ public class JwtTokenProvider {
 		}
 	}
 
-	public String createAccessToken(Long userId) {
+	public String createAccessToken(String userId) {
 		try {
 			Date now = new Date();
 			Date expiry = new Date(now.getTime() + accessTokenDuration.toMillis());
@@ -76,7 +76,7 @@ public class JwtTokenProvider {
 		}
 	}
 
-	public String createRefreshToken(Long userId) {
+	public String createRefreshToken(String userId) {
 		try {
 			Date now = new Date();
 			Date expiry = new Date(now.getTime() + refreshTokenDuration.toMillis());
@@ -93,7 +93,7 @@ public class JwtTokenProvider {
 	}
 
 
-	public TokenResponse createToken(Long userId) {
+	public TokenResponse createToken(String userId) {
 		try {
 			String accessToken = createAccessToken(userId);
 			String refreshToken = createRefreshToken(userId);
@@ -101,7 +101,7 @@ public class JwtTokenProvider {
 			Instant expiryDate = Instant.now().plus(refreshTokenDuration);
 
 			RefreshToken refreshTokenEntity = RefreshToken.builder()
-				.userId(userId)
+				.userId(Long.parseLong(userId))
 				.token(refreshToken)
 				.expiryDate(expiryDate)
 				.build();

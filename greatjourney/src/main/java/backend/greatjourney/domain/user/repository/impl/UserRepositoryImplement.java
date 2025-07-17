@@ -35,6 +35,16 @@ public class UserRepositoryImplement implements UserRepositoryCustom {
 		);
 	}
 
+	@Override
+	public Optional<User> findByEmail(String email) {
+		return Optional.ofNullable(
+			queryFactory
+				.selectFrom(quesr)
+				.where(quesr.email.eq(email))
+				.fetchOne()
+		);
+	}
+
 
 
 }

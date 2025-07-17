@@ -31,9 +31,10 @@ public class SecurityConfig {
 				session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers("/api/auth/**","api/v1/","/v3/api-docs/**",
-					"/swagger-ui/**",               // ✅ Swagger UI HTML/JS
-					"/swagger-ui.html",             // ✅ Swagger 메인 HTML
-					"/webjars/**"       )            // ✅ Swagger 리소스
+					"/swagger-ui/**",
+					"/swagger-ui.html",
+					"/webjars/**"     ,
+					"/api/v1/user/signup")
 				     .permitAll()
 				.anyRequest().authenticated()
 			)

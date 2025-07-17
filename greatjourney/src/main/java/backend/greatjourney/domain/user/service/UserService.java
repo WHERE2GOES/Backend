@@ -3,6 +3,7 @@ package backend.greatjourney.domain.user.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import backend.greatjourney.domain.token.dto.TokenResponse;
 import backend.greatjourney.domain.token.entity.RefreshToken;
 import backend.greatjourney.domain.token.repository.RefreshTokenRepository;
 import backend.greatjourney.domain.token.service.JwtTokenProvider;
@@ -27,15 +28,14 @@ public class UserService {
 	private final JwtTokenProvider tokenProvider;
 
 	@Transactional
-	public BaseResponse<User> signupUser(SignUpRequest request){
-		if(userRepository.existsByEmail(request.email())){
-			throw new IllegalArgumentException("이미 존재하는 회원입니다.");
-		}
-		return new BaseResponse<>(true,"회원가입이 완료되었습니다",201,userRepository.save(User.builder()
-			.domain(Domain.valueOf(request.domain()))
-			.email(request.email())
-			.status(Status.SUCCESS)
-			.build()));
+	public BaseResponse<TokenResponse> signupUser(SignUpRequest request){
+		User user = userRepository.findByEmail(request.email())
+			.orElse(User.builder().domain(Domain.valueOf(request.domain())).email(request.email()).build());
+
+		user.setStatus(Status.SUCCESS);
+		userRepository.save(user);
+		return new BaseResponse<>(true,"회원가입이 완료되었습니다",201,
+			tokenProvider.createToken(user.getUserId().toString()));
 	}
 
 	@Transactional

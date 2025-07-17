@@ -43,7 +43,7 @@ public class KakaoService {
 	public TokenResponse loginWithKakao(String accessToken) {
 		KakaoUserResponse userInfo = getUserInfo(accessToken);
 		User user = signService.saveUserKakao(userInfo, domain);
-		return jwtTokenProvider.createToken(user.getUserId());
+		return jwtTokenProvider.createToken(user.getUserId().toString());
 	}
 
 
