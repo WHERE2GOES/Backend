@@ -32,6 +32,7 @@ jobs:
 
           echo "kakao.client-id=${{ secrets.KAKAO_CLIENT_ID }}" >> src/main/resources/application.properties
           echo "kakao.client-secret=${{ secrets.KAKAO_CLIENT_SECRET }}" >> src/main/resources/application.properties
+          echo "spring.profiles.active=prod" >> src/main/resources/application.properties
 
       - name: ☕ Gradle Build (jar 생성)
         run: ./gradlew build -x test
