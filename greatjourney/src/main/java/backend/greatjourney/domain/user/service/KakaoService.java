@@ -38,7 +38,7 @@ public class KakaoService {
 	private final SignService signService;
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
-	private final String domain = "kakao";
+	private final String domain = "KAKAO";
 
 	public TokenResponse loginWithKakao(String accessToken) {
 		KakaoUserResponse userInfo = getUserInfo(accessToken);
