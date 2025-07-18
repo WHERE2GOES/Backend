@@ -4,7 +4,10 @@ import backend.greatjourney.domain.course.dto.CourseDetailResponse;
 import backend.greatjourney.domain.course.dto.PlaceDetailResponse;
 import backend.greatjourney.domain.course.service.CourseService;
 import backend.greatjourney.domain.course.service.PlaceService;
+import backend.greatjourney.global.security.entitiy.CustomOAuth2User;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,7 +22,7 @@ public class CourseController {
      * GET /api/course-detail?id={courseId}
      */
     @GetMapping("/course-detail")
-    public CourseDetailResponse getCourse(@RequestParam("id") Integer id){
+    public CourseDetailResponse getCourse(@AuthenticationPrincipal CustomOAuth2User customOAuth2User,@RequestParam("id") Integer id){
         return courseService.getCourseDetail(id);
     }
 
@@ -27,7 +30,7 @@ public class CourseController {
      * GET /api/place-detail?id={placeId}
      */
     @GetMapping("/place-detail")
-    public PlaceDetailResponse getPlace(@RequestParam("id") Long id){
+    public PlaceDetailResponse getPlace(@AuthenticationPrincipal CustomOAuth2User customOAuth2User,@RequestParam("id") Long id){
         return placeService.getPlaceDetail(id);
     }
 }
