@@ -22,6 +22,16 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.valueOf(status.getCode()));
     }
 
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<BaseResponse<Object>> handleCustomException(CustomException e){
+        BaseResponse<Object> response = BaseResponse.builder()
+            .isSuccess(false)
+            .code(e.getErrorCode().getCode())
+            .message(e.getErrorCode().getMessage())
+            .build();
+        return new ResponseEntity<>(response,e.getErrorCode().getStatus());
+    }
+
 
 //    @ExceptionHandler(Exception.class)
 //    public ResponseEntity<BaseResponse<Object>> handleGeneralException(Exception e) {
