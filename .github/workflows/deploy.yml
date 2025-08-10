@@ -36,7 +36,7 @@ jobs:
           
           echo "google.client-id=${{ secrets.GOOGLE_CLIENT_ID }}" >> src/main/resources/application.properties
           
-          
+          echo "gpt.key=${{ secrets.GPT_KEY }}" >> src/main/resources/application.properties  
 
       - name: ☕ Gradle Build (jar 생성)
         run: ./gradlew build -x test
