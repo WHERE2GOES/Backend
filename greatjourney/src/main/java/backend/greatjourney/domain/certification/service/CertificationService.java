@@ -7,6 +7,7 @@ import backend.greatjourney.domain.course.domain.Place;
 import backend.greatjourney.domain.course.repository.PlaceRepository;
 import backend.greatjourney.domain.user.entity.User;
 import backend.greatjourney.domain.user.repository.UserRepository;
+import backend.greatjourney.global.security.entitiy.CustomOAuth2User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +25,7 @@ public class CertificationService {
     private final UserCertificationRepository userCertificationRepository;
     private static final double CERTIFICATION_RADIUS_METER = 100; // 100미터
 
-    public void certify(CertificationRequest request) {
+    public void certify(CustomOAuth2User customOAuth2User, CertificationRequest request) {
         // 1단계: 검색할 사각형 범위 계산
         double lat = request.getLatitude();
         double lon = request.getLongitude();
@@ -46,7 +47,7 @@ public class CertificationService {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("조건에 맞는 인증센터를 찾을 수 없습니다."));
 
-        User user = userRepository.findByUserId(request.getUserId())
+        User user = userRepository.findByUserId(Long.parseLong(customOAuth2User.getUserId()))
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
         UserCertification certification = UserCertification.builder()
