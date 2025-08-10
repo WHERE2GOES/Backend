@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import backend.greatjourney.domain.token.dto.TokenResponse;
 import backend.greatjourney.domain.user.dto.request.ChangeUserRequest;
-import backend.greatjourney.domain.user.dto.request.KakaoLoginRequest;
+import backend.greatjourney.domain.user.dto.request.LoginRequest;
 import backend.greatjourney.domain.user.dto.request.SignUpRequest;
-import backend.greatjourney.domain.user.entity.User;
+import backend.greatjourney.domain.user.service.GoogleService;
 import backend.greatjourney.domain.user.service.KakaoService;
 import backend.greatjourney.domain.user.service.UserService;
 import backend.greatjourney.global.exception.BaseResponse;
@@ -29,6 +29,7 @@ public class UserController {
 
 	private final UserService userService;
 	private final KakaoService kakaoService;
+	private final GoogleService googleService;
 
 	//회원가입
 	@Operation(summary = "회원가입 API")
@@ -47,12 +48,24 @@ public class UserController {
 	//카카오로그인
 	@Operation(summary = "카카오로그인 API")
 	@PostMapping("/kakao")
-	public BaseResponse<?> loginKakao(@RequestBody KakaoLoginRequest request){
-		return BaseResponse.builder()
+	public BaseResponse<TokenResponse> loginKakao(@RequestBody LoginRequest request){
+		return BaseResponse.<TokenResponse>builder()
 			.isSuccess(true)
-			.code(200)
-			.message("로그인이 완료되었습니다.")
+			.code(201)
+			.message("카카오 로그인이 완료되었습니다.")
 			.data(kakaoService.loginWithKakao(request.accessToken()))
+			.build();
+	}
+
+	//구글로그인
+	@Operation(summary = "구글로그인 API")
+	@PostMapping("/google")
+	public BaseResponse<TokenResponse> loginGoogle(@RequestBody LoginRequest request){
+		return BaseResponse.<TokenResponse>builder()
+			.isSuccess(true)
+			.code(201)
+			.message("구글 로그인이 완료되었습니다.")
+			.data(googleService.loginWithGoogle(request.accessToken()))
 			.build();
 	}
 
@@ -71,6 +84,7 @@ public class UserController {
 		ChangeUserRequest request){
 		return userService.changeUserInfo(customOAuth2User,request);
 	}
+
 
 
 }

@@ -3,6 +3,7 @@ package backend.greatjourney.domain.user.service;
 import org.apache.xmlbeans.impl.store.DomImpl;
 import org.springframework.stereotype.Service;
 
+import backend.greatjourney.domain.user.dto.response.GoogleUserResponse;
 import backend.greatjourney.domain.user.dto.response.KakaoUserResponse;
 import backend.greatjourney.domain.user.entity.Domain;
 import backend.greatjourney.domain.user.entity.Status;
@@ -34,6 +35,23 @@ public class SignService {
 		return userRepository.save(user);
 
 	}
+
+	public User saveUserGoogle(GoogleUserResponse userInfo, String domain){
+
+		Domain realDomain = Domain.valueOf(domain);
+
+		User user = User.builder()
+			.userRole(UserRole.ROLE_USER)
+			.domain(realDomain)
+			.email(userInfo.getEmail())
+			.status(Status.PENDING)
+			.build();
+
+		return userRepository.save(user);
+
+	}
+
+
 
 
 }
