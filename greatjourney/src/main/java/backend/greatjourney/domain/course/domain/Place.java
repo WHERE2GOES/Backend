@@ -14,4 +14,7 @@ public class Place {
     private String category;      // 구분(인증센터, 화장실 …)
     private double latitude;      // 위도
     private double longitude;     // 경도
+
+    // 비밀번호
+    private String hash;
 }

@@ -93,7 +93,7 @@ public class DataInitializer implements CommandLineRunner {
                 double lon      = Double.parseDouble(rec.get("경도"));
                 double lat      = Double.parseDouble(rec.get("위도"));
 
-                placeRepo.save(new Place(null, name, category, lat, lon));
+                placeRepo.save(new Place(null, name, category, lat, lon, null));
             }
         }
     }
