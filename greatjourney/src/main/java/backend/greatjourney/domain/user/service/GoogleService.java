@@ -35,7 +35,7 @@ public class GoogleService {
 
 	public TokenResponse loginWithGoogle(String accessToken){
 		GoogleUserResponse googleUserResponse = getUserInfo(accessToken);
-		User user = signService.saveUserGoogle(googleUserResponse,domain);
+		User user = signService.saveUser(googleUserResponse.getEmail(),domain);
 		return jwtTokenProvider.createToken(user.getUserId().toString());
 	}
 

@@ -32,7 +32,7 @@ public class UserController {
 	private final GoogleService googleService;
 
 	//회원가입
-	@Operation(summary = "회원가입 API")
+	@Operation(summary = "회원가입 API\n"+"domain 값은 현재 : GOOGLE, KAKAO, NAVER만 입력가능함(enum)")
 	@PostMapping("/signup")
 	public BaseResponse<TokenResponse> signUp(@RequestBody SignUpRequest request){
 		return userService.signupUser(request);
