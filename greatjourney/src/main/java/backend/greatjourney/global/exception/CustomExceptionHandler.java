@@ -8,6 +8,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestControllerAdvice
 public class CustomExceptionHandler {
 
@@ -24,6 +27,8 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<BaseResponse<Object>> handleCustomException(CustomException e){
+
+        log.error(e.getMessage(),e);
         BaseResponse<Object> response = BaseResponse.builder()
             .isSuccess(false)
             .code(e.getErrorCode().getCode())
