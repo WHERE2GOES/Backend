@@ -45,6 +45,17 @@ public class UserRepositoryImplement implements UserRepositoryCustom {
 		);
 	}
 
+	@Override
+	public boolean existsByUserId(Long userId){
+		return queryFactory
+			.selectOne()
+			.from(quesr)
+			.where(
+				quesr.userId.eq(userId)
+			)
+			.fetchFirst() != null;
+	}
+
 
 
 }
