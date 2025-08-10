@@ -6,6 +6,7 @@ import backend.greatjourney.domain.survey.dto.AnswerReq;
 import backend.greatjourney.domain.survey.dto.QuestionDto;
 import backend.greatjourney.domain.survey.repository.SurveyAnswerRepository;
 import backend.greatjourney.domain.survey.repository.SurveyQuestionRepository;
+import backend.greatjourney.global.security.entitiy.CustomOAuth2User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,11 +29,11 @@ public class SurveyService {
     }
 
     @Transactional
-    public void saveAnswers(AnswerReq req) {
+    public void saveAnswers(CustomOAuth2User customOAuth2User,AnswerReq req) {
         for (AnswerDto dto : req.answers()) {
-            SurveyAnswer ans = aRepo.findByUserIdAndQuestionId(req.userId(), dto.questionId())
+            SurveyAnswer ans = aRepo.findByUserIdAndQuestionId(Long.parseLong(customOAuth2User.getUserId()), dto.questionId())
                     .orElseGet(SurveyAnswer::new);
-            ans.setUserId(req.userId());
+            ans.setUserId(Long.parseLong(customOAuth2User.getUserId()));
             ans.setQuestionId(dto.questionId());
             ans.setChoice(dto.choice());
             aRepo.save(ans);
