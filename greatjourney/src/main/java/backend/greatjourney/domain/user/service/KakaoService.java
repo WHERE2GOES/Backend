@@ -42,7 +42,7 @@ public class KakaoService {
 
 	public TokenResponse loginWithKakao(String accessToken) {
 		KakaoUserResponse userInfo = getUserInfo(accessToken);
-		User user = signService.saveUserKakao(userInfo, domain);
+		User user = signService.saveUser(userInfo.getKakao_account().getEmail(), domain);
 		return jwtTokenProvider.createToken(user.getUserId().toString());
 	}
 
