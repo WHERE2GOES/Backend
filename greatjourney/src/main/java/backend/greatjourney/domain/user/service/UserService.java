@@ -32,6 +32,7 @@ public class UserService {
 		User user = userRepository.findByEmail(request.email())
 			.orElse(User.builder().domain(Domain.valueOf(request.domain())).email(request.email()).build());
 
+		user.setName(request.name());
 		user.setStatus(Status.SUCCESS);
 		userRepository.save(user);
 		return new BaseResponse<>(true,"회원가입이 완료되었습니다",201,

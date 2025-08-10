@@ -8,6 +8,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import com.fasterxml.jackson.databind.ser.Serializers;
+
 @Slf4j
 @RestControllerAdvice
 public class CustomExceptionHandler {
@@ -32,6 +34,18 @@ public class CustomExceptionHandler {
             .message(e.getErrorCode().getMessage())
             .build();
         return new ResponseEntity<>(response,e.getErrorCode().getStatus());
+    }
+
+    @ExceptionHandler(LoginException.class)
+    public ResponseEntity<BaseResponse<Object>> handleLoginException(LoginException e){
+        log.error(e.getMessage(),e);
+        BaseResponse<Object> response = BaseResponse.builder()
+            .isSuccess(false)
+            .code(e.getCode())
+            .message(e.getMessage())
+            .data(e.getErrorResponse())
+            .build();
+        return new ResponseEntity<>(response,e.getStatus());
     }
 
 
