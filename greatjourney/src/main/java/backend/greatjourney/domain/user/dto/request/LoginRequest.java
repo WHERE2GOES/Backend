@@ -1,4 +1,4 @@
 package backend.greatjourney.domain.user.dto.request;
 
-public record KakaoLoginRequest(String accessToken) {
+public record LoginRequest(String accessToken) {
 }
