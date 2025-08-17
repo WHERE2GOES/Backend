@@ -162,4 +162,15 @@ public class JwtTokenProvider {
 			return false;
 		}
 	}
+
+	public TokenResponse makeNewAccessToken(String refreshToken){
+
+		String userId = getUserIdFromToken(refreshToken);
+
+		if(!userRepository.existsByUserId(Long.parseLong(userId))){
+			throw new CustomException(ErrorCode.USER_NOT_FOUND);
+		}
+
+		return createToken(userId);
+	}
 }
