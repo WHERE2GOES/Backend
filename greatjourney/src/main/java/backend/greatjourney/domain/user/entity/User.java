@@ -37,7 +37,9 @@ public class User {
 
 	private Terms terms;
 
-
+	@Setter
+	@Column(name = "current_course_id")
+	private Integer currentCourseId;
 
 	@Builder
 	private User(Long id, Status status, Domain domain,String email,UserRole userRole, Terms terms,String name){
