@@ -2,8 +2,8 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="eeac8027-7f7f-46b5-9d60-4cad9fd86aa2" name="aws_server" url="http://43.201.170.204">
-        <fileTransfer rootFolder="/home" accessType="SFTP" host="43.201.170.204" port="22" sshConfigId="914811fc-783a-4f61-9ace-adf5dea28223" sshConfig="ec2-user@43.201.170.204:22 key" keyPair="true">
+      <webServer id="241d9955-01a2-4214-bf6f-5f297c3a461e" name="djj2">
+        <fileTransfer rootFolder="/home" accessType="SFTP" host="54.180.114.189" port="22" sshConfigId="914811fc-783a-4f61-9ace-adf5dea28223" sshConfig="ubuntu@54.180.114.189:22 key" keyPair="true">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>

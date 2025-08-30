@@ -2,7 +2,7 @@
 <project version="4">
   <component name="SshConfigs">
     <configs>
-      <sshConfig host="43.201.170.204" id="914811fc-783a-4f61-9ace-adf5dea28223" keyPath="$USER_HOME$/Downloads/cert.pem" port="22" nameFormat="DESCRIPTIVE" username="ec2-user" useOpenSSHConfig="true" />
+      <sshConfig host="54.180.114.189" id="914811fc-783a-4f61-9ace-adf5dea28223" keyPath="$USER_HOME$/Desktop/pem/newDjj2.pem" port="22" nameFormat="DESCRIPTIVE" username="ubuntu" useOpenSSHConfig="true" />
     </configs>
   </component>
 </project>

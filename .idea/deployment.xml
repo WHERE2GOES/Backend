@@ -1,15 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" serverName="aws_server" remoteFilesAllowedToDisappearOnAutoupload="false">
-    <serverData>
-      <paths name="aws_server">
-        <serverdata>
-          <mappings>
-            <mapping local="$PROJECT_DIR$/greatjourney/src/main" web="/" />
-            <mapping local="$PROJECT_DIR$" web="/" />
-          </mappings>
-        </serverdata>
-      </paths>
-    </serverData>
-  </component>
+  <component name="PublishConfigData" serverName="djj2" remoteFilesAllowedToDisappearOnAutoupload="false" />
 </project>
