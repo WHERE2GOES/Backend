@@ -32,8 +32,8 @@ public enum ErrorCode {
 
 	CERTIFICATION_CENTER_NOT_FOUND(HttpStatus.BAD_REQUEST, 400, "조건에 맞는 인증센터를 찾을 수 없습니다."),
 
-	PLACE_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "해당 장소를 찾을 수 없습니다.")
-
+	PLACE_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "해당 장소를 찾을 수 없습니다."),
+	TERMS_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "요청한 종류의 약관을 찾을 수 없습니다.")
 
 
 	;
