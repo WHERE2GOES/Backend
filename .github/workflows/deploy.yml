@@ -22,8 +22,8 @@ jobs:
           echo "spring.datasource.password=${{ secrets.DB_PASSWORD }}" >> src/main/resources/application.properties
           echo "spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver" >> src/main/resources/application.properties
 
-          echo "spring.data.redis.host=redis >> src/main/resources/application.properties
-          echo "spring.data.redis.port=6379 >> src/main/resources/application.properties   
+          echo "spring.data.redis.host=redis" >> src/main/resources/application.properties
+          echo "spring.data.redis.port=6379" >> src/main/resources/application.properties   
           
           echo "spring.jpa.hibernate.ddl-auto=update" >> src/main/resources/application.properties
           echo "spring.jpa.show-sql=true" >> src/main/resources/application.properties
