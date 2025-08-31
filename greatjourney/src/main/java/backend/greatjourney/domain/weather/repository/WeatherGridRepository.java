@@ -13,10 +13,12 @@ public interface WeatherGridRepository extends JpaRepository<WeatherGrid, Long> 
 
 	Optional<WeatherGrid> findFirstByLevel1AndLevel2AndLevel3(String level1, String level2, String level3);
 
-	// 빈 문자열로 관리되는 경우까지 커버하기 위해 몇 가지 보조 쿼리
+	// level3이 NULL인 행 매칭
+	Optional<WeatherGrid> findFirstByLevel1AndLevel2AndLevel3IsNull(String level1, String level2);
+
+	// level2/level3이 모두 NULL
+	Optional<WeatherGrid> findFirstByLevel1AndLevel2IsNullAndLevel3IsNull(String level1);
+
+	// 보조: level1만으로 후보 찾기
 	List<WeatherGrid> findByLevel1(String level1);
-
-	Optional<WeatherGrid> findFirstByLevel1AndLevel2AndLevel3In(String level1, String level2, List<String> level3);
-
-	Optional<WeatherGrid> findFirstByLevel1AndLevel2InAndLevel3In(String level1, List<String> level2, List<String> level3);
 }

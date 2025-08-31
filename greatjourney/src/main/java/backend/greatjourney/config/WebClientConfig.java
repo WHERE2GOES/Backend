@@ -17,4 +17,13 @@ public class WebClientConfig {
 			.uriBuilderFactory(f)
 			.build();
 	}
+
+	@Bean
+	public WebClient kmaClient(WebClient.Builder builder) {
+		DefaultUriBuilderFactory f =
+			new DefaultUriBuilderFactory("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0");
+		f.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.NONE);
+		return builder.uriBuilderFactory(f).build();
+	}
+
 }

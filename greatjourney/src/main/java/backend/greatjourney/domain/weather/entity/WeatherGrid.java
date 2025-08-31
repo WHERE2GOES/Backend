@@ -17,10 +17,10 @@ public class WeatherGrid {
 	@Column(length = 50, nullable = false)
 	private String level1;  // 시/도
 
-	@Column(length = 50)
+	@Column(length = 50, nullable = true)
 	private String level2;  // 시/군/구
 
-	@Column(length = 100)
+	@Column(length = 100, nullable = true)
 	private String level3;  // 읍/면/동
 
 	@Column(nullable = false)
