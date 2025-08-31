@@ -14,4 +14,8 @@ public interface PlaceRepository extends JpaRepository<Place, Long> {
                                   @Param("maxLat") double maxLat,
                                   @Param("minLon") double minLon,
                                   @Param("maxLon") double maxLon);
+
+    List<Place> findByCategoryNotAndName(String category, String name);
+
+    List<Place> findByCategoryAndCourseId(String category, Integer courseId);
 }

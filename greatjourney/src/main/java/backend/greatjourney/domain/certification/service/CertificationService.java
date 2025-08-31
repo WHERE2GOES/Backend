@@ -45,7 +45,7 @@ public class CertificationService {
         Place certificationCenter = candidates.stream()
                 .filter(place -> "인증센터".equals(place.getCategory())) // 인증센터만 필터링
                 .filter(place -> calculateDistance(lat, lon, place.getLatitude(), place.getLongitude()) <= CERTIFICATION_RADIUS_METER) // 반경 내 필터링
-                .filter(place -> place.getHash() == null || place.getHash().equals(request.getHash())) // 해시값 비교
+                .filter(place -> place.getCourseId() == null || place.getCourseId().equals(request.getHash())) // 해시값 비교
                 .findFirst()
                 .orElseThrow(() -> new CustomException(ErrorCode.CERTIFICATION_CENTER_NOT_FOUND));
 
