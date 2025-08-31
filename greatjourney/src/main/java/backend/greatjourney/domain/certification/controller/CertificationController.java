@@ -3,6 +3,7 @@ package backend.greatjourney.domain.certification.controller;
 import backend.greatjourney.domain.certification.dto.CertificationRequest;
 import backend.greatjourney.domain.certification.dto.CertificationResponse;
 import backend.greatjourney.domain.certification.dto.CertificationStatusDto;
+import backend.greatjourney.domain.certification.dto.CourseCertificationStatusResponse;
 import backend.greatjourney.domain.certification.service.CertificationService;
 import backend.greatjourney.global.exception.BaseResponse;
 import backend.greatjourney.global.security.entitiy.CustomOAuth2User;
@@ -35,21 +36,22 @@ public class CertificationController {
     }
 
     /**
+     * [✅ 반환 타입 수정]
      * GET /api/certifications?courseId={courseId}
-     * 특정 코스에 대한 사용자의 인증 내역 조회
+     * 특정 코스에 대한 사용자의 인증 내역과 전체 완료 여부 조회
      */
     @GetMapping
-    public ResponseEntity<BaseResponse<List<CertificationStatusDto>>> getCertificationsByCourse(
+    public ResponseEntity<BaseResponse<CourseCertificationStatusResponse>> getCertificationsByCourse(
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
             @RequestParam("courseId") Integer courseId) {
 
-        List<CertificationStatusDto> certificationData = certificationService.getUserCertificationsForCourse(customOAuth2User, courseId);
+        CourseCertificationStatusResponse certificationData = certificationService.getUserCertificationsForCourse(customOAuth2User, courseId);
 
         return ResponseEntity.ok(
-                BaseResponse.<List<CertificationStatusDto>>builder()
+                BaseResponse.<CourseCertificationStatusResponse>builder()
                         .isSuccess(true)
                         .code(200)
-                        .message("코스별 인증 내역 조회에 성공했습니다.")
+                        .message("코스별 인증 현황 조회에 성공했습니다.")
                         .data(certificationData)
                         .build()
         );
