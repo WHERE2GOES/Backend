@@ -34,6 +34,9 @@ public class User {
 	private String email;
 
 	@Setter
+	private String profileImg;
+
+	@Setter
 	private UserRole userRole;
 
 	private Terms terms;

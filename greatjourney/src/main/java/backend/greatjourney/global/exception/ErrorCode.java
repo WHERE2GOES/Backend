@@ -22,6 +22,8 @@ public enum ErrorCode {
 
 	NO_REGION(BAD_REQUEST,404,"존재하지 않는 지역입니다."),
 
+	UPLOAD_FAIL(BAD_REQUEST,404,"이미지 업로드에 실패하였습니다."),
+
 	USER_NOT_FOUND(BAD_REQUEST,404,"존재하지 않는 유저입니다."),
 
 	COURSE_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "해당 코스를 찾을 수 없습니다."),

@@ -1,0 +1,11 @@
+package backend.greatjourney.domain.region.repository;
+
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import backend.greatjourney.domain.region.entity.KukmoonRegion;
+
+public interface KukmoonRegionRepository extends JpaRepository<KukmoonRegion,Long> {
+	Optional<KukmoonRegion>  findByName(String name);
+}

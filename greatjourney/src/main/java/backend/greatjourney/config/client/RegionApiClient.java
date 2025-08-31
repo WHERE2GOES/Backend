@@ -12,7 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @RequiredArgsConstructor
 public class RegionApiClient {
 
-	private final WebClient webClient;
+	private final WebClient tourClient;
 
 	@Value("${tour.key}")
 	private String serviceKey;
@@ -22,7 +22,7 @@ public class RegionApiClient {
 	public RegionApiResponse callAreaBasedList(String baseYm, String areaCd, String signguCd,
 		int pageNo, int numOfRows) {
 
-		return webClient.get()
+		return tourClient.get()
 			.uri(uriBuilder -> uriBuilder
 				.path(paths)
 				.queryParam("serviceKey", serviceKey)

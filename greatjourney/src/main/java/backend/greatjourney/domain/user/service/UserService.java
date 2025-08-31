@@ -9,6 +9,7 @@ import backend.greatjourney.domain.token.repository.RefreshTokenRepository;
 import backend.greatjourney.domain.token.service.JwtTokenProvider;
 import backend.greatjourney.domain.user.dto.request.ChangeUserRequest;
 import backend.greatjourney.domain.user.dto.request.SignUpRequest;
+import backend.greatjourney.domain.user.dto.response.UserResponse;
 import backend.greatjourney.domain.user.entity.Domain;
 import backend.greatjourney.domain.user.entity.Status;
 import backend.greatjourney.domain.user.entity.User;
@@ -36,6 +37,7 @@ public class UserService {
 		user.setName(request.name());
 		user.setUserRole(UserRole.ROLE_USER);
 		user.setStatus(Status.SUCCESS);
+		user.setProfileImg(request.profileImg());
 		userRepository.save(user);
 		return new BaseResponse<>(true,"회원가입이 완료되었습니다",201,
 			tokenProvider.createToken(user.getUserId().toString()));
@@ -83,6 +85,11 @@ public class UserService {
 			.orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		user.setName(request.name());
+
+		if(request.profileImg()!=null && !request.profileImg().isBlank()){
+			user.setProfileImg(request.profileImg());
+		}
+
 		userRepository.save(user);
 		return BaseResponse.<Void>builder()
 			.isSuccess(true)
@@ -90,6 +97,16 @@ public class UserService {
 			.message("회원정보 수정이 완료되었습니다.")
 			.data(null)
 			.build();
+	}
+
+
+	@Transactional
+	public UserResponse getMypage(CustomOAuth2User customOAuth2User){
+		Long userId = Long.parseLong(customOAuth2User.getUserId());
+		User user = userRepository.findById(userId)
+			.orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
+
+		return new UserResponse(user.getName(),user.getProfileImg());
 	}
 
 
