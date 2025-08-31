@@ -12,6 +12,7 @@ import backend.greatjourney.domain.user.dto.request.SignUpRequest;
 import backend.greatjourney.domain.user.entity.Domain;
 import backend.greatjourney.domain.user.entity.Status;
 import backend.greatjourney.domain.user.entity.User;
+import backend.greatjourney.domain.user.entity.UserRole;
 import backend.greatjourney.domain.user.repository.UserRepository;
 import backend.greatjourney.global.exception.BaseResponse;
 import backend.greatjourney.global.exception.CustomException;
@@ -33,6 +34,7 @@ public class UserService {
 			.orElse(User.builder().domain(Domain.valueOf(request.domain())).email(request.email()).build());
 
 		user.setName(request.name());
+		user.setUserRole(UserRole.ROLE_USER);
 		user.setStatus(Status.SUCCESS);
 		userRepository.save(user);
 		return new BaseResponse<>(true,"회원가입이 완료되었습니다",201,

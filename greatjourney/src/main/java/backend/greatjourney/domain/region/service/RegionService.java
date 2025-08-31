@@ -11,9 +11,11 @@ import backend.greatjourney.domain.region.repository.RegionRepository;
 import backend.greatjourney.global.exception.CustomException;
 import backend.greatjourney.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RegionService {
 
 	private final RegionRepository regionRepository;
@@ -21,13 +23,13 @@ public class RegionService {
 
 	//일단 좌표 시군구 변환 필요하면 추가하면 됨
 	//각각의 태그 요청값에 따라 다르게 보내주면 됨
-	public List<RelatedPlaceDto> getRegions( String areaName,String sigunguName, String tags){
-
+	public List<RelatedPlaceDto> getRegions(String areaName,String sigunguName, String tags){
 		Region region = regionRepository.findByAreaNmAndSigunguNm(areaName,sigunguName)
 			.orElseThrow(()->new CustomException(ErrorCode.NO_REGION));
 
+		log.info(region.toString());
 		return placeService.getRelatedPlacesByCategory("202504",region.getAreaCd().toString(),region.getSigunguCd().toString()
-		,0,100, PlaceCategory.valueOf(tags));
+		,0,100, PlaceCategory.fromSlug(tags));
 	}
 
 

@@ -13,11 +13,13 @@ import backend.greatjourney.global.exception.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/v1/region")
 @RequiredArgsConstructor
 @Tag(name = "지역 근처의 음식점, 숙소, 관광지를 가져오는 API입니다.")
+@Slf4j
 public class RegionController {
 
 	private final RegionService regionService;
@@ -51,6 +53,7 @@ public class RegionController {
 	@Operation(description = "주변 관광지를 가져오는 API입니다")
 	public BaseResponse<List<RelatedPlaceDto>> getTour(@RequestParam String areaName, @RequestParam String sigunguName){
 		//아니면 pageable로 무한 스크롤 가능하게 수정해도 됨
+		log.info("여기");
 		return BaseResponse.<List<RelatedPlaceDto>>builder()
 			.code(200)
 			.isSuccess(true)

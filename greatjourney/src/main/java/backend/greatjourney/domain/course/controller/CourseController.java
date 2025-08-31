@@ -67,4 +67,5 @@ public class CourseController {
         courseProgressService.endCourse(id, request.getCourseId());
         return ResponseEntity.ok("코스 진행이 종료되었습니다.");
     }
+
 }

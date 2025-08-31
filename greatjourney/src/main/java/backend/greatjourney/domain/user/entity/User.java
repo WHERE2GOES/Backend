@@ -33,6 +33,7 @@ public class User {
 
 	private String email;
 
+	@Setter
 	private UserRole userRole;
 
 	private Terms terms;
