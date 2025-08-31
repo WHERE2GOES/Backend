@@ -15,6 +15,8 @@ public class Place {
     private double latitude;      // 위도
     private double longitude;     // 경도
 
-    // 비밀번호
-    private Integer courseId;
+
+    private Integer courseId;     // 비밀번호
+    private String hash;          // 인증용 해시 필드
+
 }

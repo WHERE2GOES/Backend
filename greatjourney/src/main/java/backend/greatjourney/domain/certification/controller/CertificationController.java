@@ -2,6 +2,7 @@ package backend.greatjourney.domain.certification.controller;
 
 import backend.greatjourney.domain.certification.dto.CertificationRequest;
 import backend.greatjourney.domain.certification.dto.CertificationResponse;
+import backend.greatjourney.domain.certification.dto.CertificationStatusDto;
 import backend.greatjourney.domain.certification.service.CertificationService;
 import backend.greatjourney.global.exception.BaseResponse;
 import backend.greatjourney.global.security.entitiy.CustomOAuth2User;
@@ -9,10 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,5 +31,28 @@ public class CertificationController {
                 .data(null)
                 .build();
 
-        return ResponseEntity.ok(response);    }
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * [✅ 새로 구현]
+     * GET /api/certifications?courseId={courseId}
+     * 특정 코스에 대한 사용자의 인증 내역 조회
+     */
+    @GetMapping
+    public ResponseEntity<BaseResponse<List<CertificationStatusDto>>> getCertificationsByCourse(
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+            @RequestParam("courseId") Integer courseId) {
+
+        List<CertificationStatusDto> certificationData = certificationService.getUserCertificationsForCourse(customOAuth2User, courseId);
+
+        return ResponseEntity.ok(
+                BaseResponse.<List<CertificationStatusDto>>builder()
+                        .isSuccess(true)
+                        .code(200)
+                        .message("코스별 인증 내역 조회에 성공했습니다.")
+                        .data(certificationData)
+                        .build()
+        );
+    }
 }

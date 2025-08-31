@@ -34,9 +34,13 @@ public class UserCertification {
     @Column(updatable = false)
     private LocalDateTime certifiedAt;
 
+    @Column(nullable = false)
+    private Integer courseId;
+
     @Builder
-    public UserCertification(User user, Place certificationCenter) {
+    public UserCertification(User user, Place certificationCenter, Integer courseId) {
         this.user = user;
         this.certificationCenter = certificationCenter;
+        this.courseId = courseId;
     }
 }
