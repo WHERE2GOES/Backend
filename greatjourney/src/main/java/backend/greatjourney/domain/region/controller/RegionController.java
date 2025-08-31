@@ -24,56 +24,56 @@ public class RegionController {
 
 	private final RegionService regionService;
 
-
-	@GetMapping("/food")
-	@Operation(description = "주변 음식점을 가져오는 API입니다")
-	public BaseResponse<List<RelatedPlaceDto>> getFoods(@RequestParam String areaName, @RequestParam String sigunguName){
-		//아니면 pageable로 무한 스크롤 가능하게 수정해도 됨
-		return BaseResponse.<List<RelatedPlaceDto>>builder()
-			.code(200)
-			.isSuccess(true)
-			.message("주변 음식점 정보를 가져왔습니다.")
-			.data(regionService.getRegions(areaName,sigunguName,"food"))
-			.build();
-	}
-
-	@GetMapping("/sleep")
-	@Operation(description = "주변 숙소를 가져오는 API입니다")
-	public BaseResponse<List<RelatedPlaceDto>> getSleep(@RequestParam String areaName, @RequestParam String sigunguName){
-		//아니면 pageable로 무한 스크롤 가능하게 수정해도 됨
-		return BaseResponse.<List<RelatedPlaceDto>>builder()
-			.code(200)
-			.isSuccess(true)
-			.message("주변 음식점 정보를 가져왔습니다.")
-			.data(regionService.getRegions(areaName,sigunguName,"sleep"))
-			.build();
-	}
-
-	@GetMapping("/tour")
-	@Operation(description = "주변 관광지를 가져오는 API입니다")
-	public BaseResponse<List<RelatedPlaceDto>> getTour(@RequestParam String areaName, @RequestParam String sigunguName){
-		//아니면 pageable로 무한 스크롤 가능하게 수정해도 됨
-
-		return BaseResponse.<List<RelatedPlaceDto>>builder()
-			.code(200)
-			.isSuccess(true)
-			.message("주변 음식점 정보를 가져왔습니다.")
-			.data(regionService.getRegions(areaName,sigunguName,"tour"))
-			.build();
-	}
-
-
-	@GetMapping("/photo")
-	@Operation(description = "주변 포토스팟를 가져오는 API입니다")
-	public BaseResponse<List<RelatedPlaceDto>> getPhoto(@RequestParam String areaName, @RequestParam String sigunguName){
-		//아니면 pageable로 무한 스크롤 가능하게 수정해도 됨
-
-		return BaseResponse.<List<RelatedPlaceDto>>builder()
-			.code(200)
-			.isSuccess(true)
-			.message("주변 포토스팟 정보를 가져왔습니다.")
-			.data(regionService.getRegions(areaName,sigunguName,"photo"))
-			.build();
-	}
+	//
+	// @GetMapping("/food")
+	// @Operation(description = "주변 음식점을 가져오는 API입니다")
+	// public BaseResponse<List<RelatedPlaceDto>> getFoods(@RequestParam String areaName, @RequestParam String sigunguName){
+	// 	//아니면 pageable로 무한 스크롤 가능하게 수정해도 됨
+	// 	return BaseResponse.<List<RelatedPlaceDto>>builder()
+	// 		.code(200)
+	// 		.isSuccess(true)
+	// 		.message("주변 음식점 정보를 가져왔습니다.")
+	// 		.data(regionService.getRegions(areaName,sigunguName,"food"))
+	// 		.build();
+	// }
+	//
+	// @GetMapping("/sleep")
+	// @Operation(description = "주변 숙소를 가져오는 API입니다")
+	// public BaseResponse<List<RelatedPlaceDto>> getSleep(@RequestParam String areaName, @RequestParam String sigunguName){
+	// 	//아니면 pageable로 무한 스크롤 가능하게 수정해도 됨
+	// 	return BaseResponse.<List<RelatedPlaceDto>>builder()
+	// 		.code(200)
+	// 		.isSuccess(true)
+	// 		.message("주변 음식점 정보를 가져왔습니다.")
+	// 		.data(regionService.getRegions(areaName,sigunguName,"sleep"))
+	// 		.build();
+	// }
+	//
+	// @GetMapping("/tour")
+	// @Operation(description = "주변 관광지를 가져오는 API입니다")
+	// public BaseResponse<List<RelatedPlaceDto>> getTour(@RequestParam String areaName, @RequestParam String sigunguName){
+	// 	//아니면 pageable로 무한 스크롤 가능하게 수정해도 됨
+	//
+	// 	return BaseResponse.<List<RelatedPlaceDto>>builder()
+	// 		.code(200)
+	// 		.isSuccess(true)
+	// 		.message("주변 음식점 정보를 가져왔습니다.")
+	// 		.data(regionService.getRegions(areaName,sigunguName,"tour"))
+	// 		.build();
+	// }
+	//
+	//
+	// @GetMapping("/photo")
+	// @Operation(description = "주변 포토스팟를 가져오는 API입니다")
+	// public BaseResponse<List<RelatedPlaceDto>> getPhoto(@RequestParam String areaName, @RequestParam String sigunguName){
+	// 	//아니면 pageable로 무한 스크롤 가능하게 수정해도 됨
+	//
+	// 	return BaseResponse.<List<RelatedPlaceDto>>builder()
+	// 		.code(200)
+	// 		.isSuccess(true)
+	// 		.message("주변 포토스팟 정보를 가져왔습니다.")
+	// 		.data(regionService.getRegions(areaName,sigunguName,"photo"))
+	// 		.build();
+	// }
 
 }

@@ -32,6 +32,84 @@ public class FestivalService {
 
 		FestivalSearchDto dto = callSearchFestival2(eventStartDate, kukmoonRegion.getCode());
 
+		return changeDto(dto);
+
+	}
+
+	public FestivalSearchDto callSearchFestival2(String eventStartDate,Long areaCode) {
+		return tourClient.get()
+			.uri(b -> b.path("/B551011/KorService2/searchFestival2")
+				.queryParam("numOfRows", 100)
+				.queryParam("pageNo", 0)
+				.queryParam("MobileOS", "AND")
+				.queryParam("MobileApp", "eodiro")
+				.queryParam("_type", "json")
+				.queryParam("arrange", "A")
+				.queryParam("eventStartDate", eventStartDate)
+				.queryParam("serviceKey", serviceKey)
+				.queryParam("areaCode", areaCode)
+				.build())
+			.retrieve()
+			.bodyToMono(FestivalSearchDto.class)
+			.block();
+	}
+
+	public List<FestivalResponse> getFood(String areaName){
+		KukmoonRegion kukmoonRegion = kukmoonRegionRepository.findByName(areaName)
+			.orElseThrow(()->new CustomException(ErrorCode.NO_REGION));
+
+		FestivalSearchDto dto = callSearch("39",kukmoonRegion.getCode());
+		return changeDto(dto);
+	}
+
+	public List<FestivalResponse> getHotel(String areaName){
+		KukmoonRegion kukmoonRegion = kukmoonRegionRepository.findByName(areaName)
+			.orElseThrow(()->new CustomException(ErrorCode.NO_REGION));
+		FestivalSearchDto dto = callSearch("32",kukmoonRegion.getCode());
+		return changeDto(dto);
+	}
+
+	public List<FestivalResponse> getPhoto(String areaName){
+		KukmoonRegion kukmoonRegion = kukmoonRegionRepository.findByName(areaName)
+			.orElseThrow(()->new CustomException(ErrorCode.NO_REGION));
+		FestivalSearchDto dto = callSearch("12",kukmoonRegion.getCode());
+		return changeDto(dto);
+	}
+
+	public List<FestivalResponse> getPlay(String areaName){
+		KukmoonRegion kukmoonRegion = kukmoonRegionRepository.findByName(areaName)
+			.orElseThrow(()->new CustomException(ErrorCode.NO_REGION));
+		FestivalSearchDto dto = callSearch("14",kukmoonRegion.getCode());
+		return changeDto(dto);
+	}
+
+
+	public FestivalSearchDto callSearch(String contentId,Long areaCode) {
+		return tourClient.get()
+			.uri(b -> b.path("/B551011/KorService2/areaBasedList2")
+				.queryParam("numOfRows", 100)
+				.queryParam("pageNo", 0)
+				.queryParam("MobileOS", "AND")
+				.queryParam("MobileApp", "eodiro")
+				.queryParam("_type", "json")
+				.queryParam("arrange", "A")
+				.queryParam("contentTypeId", contentId)
+				.queryParam("serviceKey", serviceKey)
+				.queryParam("areaCode", areaCode)
+				.build())
+			.retrieve()
+			.bodyToMono(FestivalSearchDto.class)
+			.block();
+	}
+
+
+
+
+
+
+
+
+	private List<FestivalResponse> changeDto(FestivalSearchDto dto){
 		if (dto == null
 			|| dto.getResponse() == null
 			|| dto.getResponse().getBody() == null
@@ -57,26 +135,8 @@ public class FestivalService {
 				it.getEventenddate()
 			))
 			.toList();
-
 	}
 
 
-	public FestivalSearchDto callSearchFestival2(String eventStartDate,Long areaCode) {
-		return tourClient.get()
-			.uri(b -> b.path("/B551011/KorService2/searchFestival2")
-				.queryParam("numOfRows", 100)
-				.queryParam("pageNo", 0)
-				.queryParam("MobileOS", "AND")
-				.queryParam("MobileApp", "eodiro")
-				.queryParam("_type", "json")
-				.queryParam("arrange", "A")
-				.queryParam("eventStartDate", eventStartDate)
-				.queryParam("serviceKey", serviceKey)
-				.queryParam("areaCode", areaCode)
-				.build())
-			.retrieve()
-			.bodyToMono(FestivalSearchDto.class)
-			.block();
-	}
 
 }
