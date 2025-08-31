@@ -75,6 +75,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-cache'
 
+	//S3
+	implementation platform("software.amazon.awssdk:bom:2.25.39") // 최신 권장
+	implementation "software.amazon.awssdk:s3"
+	implementation "software.amazon.awssdk:s3-transfer-manager"
+	implementation "software.amazon.awssdk:netty-nio-client"
+
 	//querydsl
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
 	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
