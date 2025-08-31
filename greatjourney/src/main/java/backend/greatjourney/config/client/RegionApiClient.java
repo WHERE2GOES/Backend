@@ -29,7 +29,7 @@ public class RegionApiClient {
 				.queryParam("pageNo", pageNo)
 				.queryParam("numOfRows", numOfRows)
 				.queryParam("MobileOS", "AND")
-				.queryParam("MobileApp", "어디로")
+				.queryParam("MobileApp", "eodiro")
 				.queryParam("baseYm", baseYm)
 				.queryParam("areaCd", areaCd)
 				.queryParam("signguCd", signguCd)

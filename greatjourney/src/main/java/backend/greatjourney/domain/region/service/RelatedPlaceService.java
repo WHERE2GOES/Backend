@@ -1,6 +1,5 @@
 package backend.greatjourney.domain.region.service;
 
-// RelatedPlaceService.java
 import backend.greatjourney.config.client.RegionApiClient;
 import backend.greatjourney.domain.region.dto.RegionApiResponse;
 import backend.greatjourney.domain.region.dto.RelatedPlaceDto;
@@ -18,8 +17,11 @@ public class RelatedPlaceService {
 
 	private final RegionApiClient regionApiClient;
 
-	@Cacheable(cacheNames = "relatedPlaces",
-		key = "T(String).format('%s:%s:%s:%s:%s:%s', #baseYm, #areaCd, #signguCd, #pageNo, #numOfRows, #category.kor)")
+	@Cacheable(
+		cacheNames = "relatedPlaces",
+		// ⚠️ TOUR와 PHOTO는 lcls가 모두 '관광지'이므로 kor를 키로 쓰면 충돌 → name() 사용
+		key = "T(String).format('%s:%s:%s:%s:%s:%s', #baseYm, #areaCd, #signguCd, #pageNo, #numOfRows, #category.name())"
+	)
 	public List<RelatedPlaceDto> getRelatedPlacesByCategory(
 		String baseYm, String areaCd, String signguCd,
 		int pageNo, int numOfRows, PlaceCategory category
@@ -32,7 +34,7 @@ public class RelatedPlaceService {
 			: List.<RegionApiResponse.Item>of();
 
 		return items.stream()
-			.filter(i -> category.getKor().equals(i.getRlteCtgryLclsNm()))
+			.filter(category::matches) // ← enum에 위임 (PHOTO는 lcls+mcls 동시 필터)
 			.map(i -> new RelatedPlaceDto(
 				i.getRlteTatsNm(),
 				i.getRlteRank(),

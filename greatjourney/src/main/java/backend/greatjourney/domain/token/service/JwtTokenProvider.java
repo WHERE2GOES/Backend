@@ -139,10 +139,8 @@ public class JwtTokenProvider {
 			String userId = claims.getSubject();
 			Long realUserId = Long.parseLong(userId);
 
-			log.info(realUserId.toString());
 			User user = userRepository.findById(realUserId)
 				.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-			log.info("dd");
 			Map<String, Object> attributes = Map.of("userId", userId);
 			CustomOAuth2User principal = new CustomOAuth2User(attributes, userId, user.getUserRole().name());
 

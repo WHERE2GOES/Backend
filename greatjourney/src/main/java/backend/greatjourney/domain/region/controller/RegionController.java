@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/v1/region")
 @RequiredArgsConstructor
-@Tag(name = "지역 근처의 음식점, 숙소, 관광지를 가져오는 API입니다.")
+@Tag(name = "지역 근처의 음식점, 숙소, 관광지, 포토스팟을 가져오는 API입니다.")
 @Slf4j
 public class RegionController {
 
@@ -53,7 +53,7 @@ public class RegionController {
 	@Operation(description = "주변 관광지를 가져오는 API입니다")
 	public BaseResponse<List<RelatedPlaceDto>> getTour(@RequestParam String areaName, @RequestParam String sigunguName){
 		//아니면 pageable로 무한 스크롤 가능하게 수정해도 됨
-		log.info("여기");
+
 		return BaseResponse.<List<RelatedPlaceDto>>builder()
 			.code(200)
 			.isSuccess(true)
@@ -62,5 +62,18 @@ public class RegionController {
 			.build();
 	}
 
+
+	@GetMapping("/photo")
+	@Operation(description = "주변 포토스팟를 가져오는 API입니다")
+	public BaseResponse<List<RelatedPlaceDto>> getPhoto(@RequestParam String areaName, @RequestParam String sigunguName){
+		//아니면 pageable로 무한 스크롤 가능하게 수정해도 됨
+
+		return BaseResponse.<List<RelatedPlaceDto>>builder()
+			.code(200)
+			.isSuccess(true)
+			.message("주변 포토스팟 정보를 가져왔습니다.")
+			.data(regionService.getRegions(areaName,sigunguName,"photo"))
+			.build();
+	}
 
 }
