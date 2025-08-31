@@ -7,6 +7,8 @@ import backend.greatjourney.domain.course.dto.LatLngDto;
 import backend.greatjourney.domain.course.dto.PlaceItemDto;
 import backend.greatjourney.domain.course.repository.CoursePointRepository;
 import backend.greatjourney.domain.course.repository.PlaceRepository;
+import backend.greatjourney.global.exception.CustomException;
+import backend.greatjourney.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +26,7 @@ public class CourseService {
 
     public CourseDetailResponse getCourseDetail(Integer courseId){
         List<CoursePoint> points = pointRepo.findByCourse_IdOrderBySeqAsc(courseId);
-        if(points.isEmpty()) throw new IllegalArgumentException("No such course " + courseId);
+        if(points.isEmpty()) throw new CustomException(ErrorCode.COURSE_NOT_FOUND);
 
         List<LatLngDto> route = points.stream()
                 .map(p -> new LatLngDto(p.getLatitude(), p.getLongitude()))
