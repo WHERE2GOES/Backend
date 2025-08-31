@@ -14,6 +14,7 @@ import backend.greatjourney.domain.token.dto.TokenResponse;
 import backend.greatjourney.domain.user.dto.request.ChangeUserRequest;
 import backend.greatjourney.domain.user.dto.request.LoginRequest;
 import backend.greatjourney.domain.user.dto.request.SignUpRequest;
+import backend.greatjourney.domain.user.dto.response.UserResponse;
 import backend.greatjourney.domain.user.service.GoogleService;
 import backend.greatjourney.domain.user.service.KakaoService;
 import backend.greatjourney.domain.user.service.UserService;
@@ -88,9 +89,17 @@ public class UserController {
 	}
 
 	//회원정보 가져오기
-	// @Operation(summary = "회원정보 가져오는 API")
-	// @GetMapping()
+	@Operation(summary = "회원정보 가져오는 API")
+	@GetMapping("/mypage")
+	public BaseResponse<UserResponse> getMypage(@AuthenticationPrincipal CustomOAuth2User customOAuth2User){
 
+		return BaseResponse.<UserResponse>builder()
+			.isSuccess(true)
+			.message("회원정보를 조회하였습니다.")
+			.code(200)
+			.data(userService.getMypage(customOAuth2User))
+			.build();
+	}
 
 
 }
