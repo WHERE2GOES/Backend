@@ -2,6 +2,7 @@ package backend.greatjourney.domain.certification.service;
 
 import backend.greatjourney.domain.certification.domain.UserCertification;
 import backend.greatjourney.domain.certification.dto.CertificationRequest;
+import backend.greatjourney.domain.certification.dto.CertificationStatusDto;
 import backend.greatjourney.domain.certification.repository.UserCertificationRepository;
 import backend.greatjourney.domain.course.domain.Place;
 import backend.greatjourney.domain.course.repository.PlaceRepository;
@@ -25,52 +26,50 @@ public class CertificationService {
     private final PlaceRepository placeRepository;
     private final UserRepository userRepository;
     private final UserCertificationRepository userCertificationRepository;
-    private static final double CERTIFICATION_RADIUS_METER = 100; // 100미터
 
     public void certify(CustomOAuth2User customOAuth2User, CertificationRequest request) {
-        // 1단계: 검색할 사각형 범위 계산
-        double lat = request.getLatitude();
-        double lon = request.getLongitude();
-        // 위도/경도 1도당 대략적인 거리 (단순화된 계산)
-        double latDiff = CERTIFICATION_RADIUS_METER / 111000.0;
-        double lonDiff = CERTIFICATION_RADIUS_METER / (111000.0 * Math.cos(Math.toRadians(lat)));
+        // 1. 요청받은 placeId로 인증센터를 조회합니다.
+        Place certificationCenter = placeRepository.findById(request.placeId())
+                .orElseThrow(() -> new CustomException(ErrorCode.PLACE_NOT_FOUND));
 
-        // BoundingBox를 이용해 1차 필터링
-        List<Place> candidates = placeRepository.findInBoundingBox(
-                lat - latDiff, lat + latDiff,
-                lon - lonDiff, lon + lonDiff
-        );
+        // 2. 해당 장소가 '인증센터' 카테고리가 맞는지 확인합니다.
+        if (!"인증센터".equals(certificationCenter.getCategory())) {
+            throw new CustomException(ErrorCode.CERTIFICATION_CENTER_NOT_FOUND);
+        }
 
-        // 2단계: 실제 거리 계산 후 2차 필터링 및 해시값 비교
-        Place certificationCenter = candidates.stream()
-                .filter(place -> "인증센터".equals(place.getCategory())) // 인증센터만 필터링
-                .filter(place -> calculateDistance(lat, lon, place.getLatitude(), place.getLongitude()) <= CERTIFICATION_RADIUS_METER) // 반경 내 필터링
-                .filter(place -> place.getCourseId() == null || place.getCourseId().equals(request.getHash())) // 해시값 비교
-                .findFirst()
-                .orElseThrow(() -> new CustomException(ErrorCode.CERTIFICATION_CENTER_NOT_FOUND));
+        // 3. 요청받은 hash 값과 DB에 저장된 hash 값이 일치하는지 확인합니다.
+        // DB에 hash가 null이거나, 요청된 hash와 다르다면 예외를 발생시킵니다.
+        if (certificationCenter.getHash() == null || !certificationCenter.getHash().equals(request.hash())) {
+            throw new CustomException(ErrorCode.HASH_MISMATCH);
+        }
 
+        // 4. 사용자 정보를 조회합니다.
         User user = userRepository.findByUserId(Long.parseLong(customOAuth2User.getUserId()))
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
+        // 5. 인증 정보를 생성하고 저장합니다. (이미 인증했는지 중복 체크 로직을 추가할 수도 있습니다.)
         UserCertification certification = UserCertification.builder()
                 .user(user)
                 .certificationCenter(certificationCenter)
+                .courseId(certificationCenter.getCourseId())
                 .build();
 
         userCertificationRepository.save(certification);
     }
 
     /**
-     * Haversine formula를 이용한 두 지점 간의 거리 계산 (미터 단위)
+     * 특정 코스에 대한 사용자의 모든 인증 내역을 조회합니다.
      */
-    private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-        final int R = 6371; // 지구의 반경 (km)
-        double latDistance = Math.toRadians(lat2 - lat1);
-        double lonDistance = Math.toRadians(lon2 - lon1);
-        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
-                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c * 1000; // 미터 단위로 변환
+    @Transactional(readOnly = true)
+    public List<CertificationStatusDto> getUserCertificationsForCourse(CustomOAuth2User customOAuth2User, Integer courseId) {
+        Long userId = Long.parseLong(customOAuth2User.getUserId());
+
+        // 1. Repository에 추가한 간단한 쿼리 메서드를 호출합니다.
+        List<UserCertification> certifications = userCertificationRepository.findByUser_UserIdAndCourseId(userId, courseId);
+
+        // 2. 조회된 엔티티 목록을 DTO 목록으로 변환하여 반환합니다.
+        return certifications.stream()
+                .map(CertificationStatusDto::from)
+                .toList();
     }
 }

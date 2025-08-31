@@ -3,7 +3,6 @@ package backend.greatjourney.domain.course.controller;
 import backend.greatjourney.domain.course.dto.*;
 import backend.greatjourney.domain.course.service.CourseProgressService;
 import backend.greatjourney.domain.course.service.CourseService;
-import backend.greatjourney.domain.course.service.PlaceService;
 import backend.greatjourney.global.exception.BaseResponse;
 import backend.greatjourney.global.security.entitiy.CustomOAuth2User;
 import jakarta.validation.Valid;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 public class CourseController {
 
     private final CourseService courseService;
-    private final PlaceService placeService;
     private final CourseProgressService courseProgressService;
 
     /**
