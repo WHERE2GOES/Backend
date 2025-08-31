@@ -43,6 +43,18 @@ jobs:
           echo "tour.end=${{ secrets.TOUR_END }}" >> src/main/resources/application.properties
           echo "tour.key=${{ secrets.TOUR_KEY }}" >> src/main/resources/application.properties
           
+          echo "spring.servlet.multipart.enabled=true" >> src/main/resources/application.properties
+          echo "spring.servlet.multipart.max-file-size=2GB" >> src/main/resources/application.properties
+          echo "spring.servlet.multipart.max-request-size=2GB" >> src/main/resources/application.properties
+          echo "spring.servlet.multipart.file-size-threshold=2MB" >> src/main/resources/application.properties
+          echo "spring.servlet.multipart.location=/tmp" >> src/main/resources/application.properties
+          
+          echo "cloud.aws.credentials.access-key=${{ secrets.BUCKET_ACCESS }}" >> src/main/resources/application.properties
+          echo "cloud.aws.credentials.secret-key=${{ secrets.BUCKET_SECRET }}" >> src/main/resources/application.properties
+          echo "cloud.aws.region.static=${{ secrets.BUCKET_REGION }}" >> src/main/resources/application.properties
+          echo "cloud.aws.stack.auto=false" >> src/main/resources/application.properties
+          echo "cloud.aws.s3.bucket=${{ secrets.BUCKET_NAME }}" >> src/main/resources/application.properties
+      
 
       - name: ☕ Gradle Build (jar 생성)
         run: ./gradlew build -x test
