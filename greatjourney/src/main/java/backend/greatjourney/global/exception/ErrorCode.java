@@ -22,8 +22,23 @@ public enum ErrorCode {
 
 	NO_REGION(BAD_REQUEST,404,"존재하지 않는 지역입니다."),
 
+	USER_NOT_FOUND(BAD_REQUEST,404,"존재하지 않는 유저입니다."),
 
-	USER_NOT_FOUND(BAD_REQUEST,404,"존재하지 않는 유저입니다.");
+	COURSE_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "해당 코스를 찾을 수 없습니다."),
+	ALREADY_ENDED_COURSE(HttpStatus.BAD_REQUEST, 400, "이미 종료된 코스입니다."),
+	USER_NOT_ON_COURSE(HttpStatus.BAD_REQUEST, 400, "코스를 진행중인 유저가 아닙니다."),
+	COURSE_NOT_MATCH(HttpStatus.BAD_REQUEST, 400, "진행 중인 코스와 일치하지 않습니다."),
+	ALREADY_IN_PROGRESS_COURSE(HttpStatus.BAD_REQUEST, 400, "이미 진행 중인 코스가 있습니다. 기존 코스를 먼저 종료해주세요."),
+
+	CERTIFICATION_CENTER_NOT_FOUND(HttpStatus.BAD_REQUEST, 400, "조건에 맞는 인증센터를 찾을 수 없습니다."),
+
+	PLACE_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "해당 장소를 찾을 수 없습니다.")
+
+
+
+	;
+
+
 
 
 
