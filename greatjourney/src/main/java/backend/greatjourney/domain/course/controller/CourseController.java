@@ -33,4 +33,7 @@ public class CourseController {
     public PlaceDetailResponse getPlace(@AuthenticationPrincipal CustomOAuth2User customOAuth2User,@RequestParam("id") Long id){
         return placeService.getPlaceDetail(id);
     }
+
+    //추천 경로를 제공해주는 코드를 작성하면 됨
+
 }

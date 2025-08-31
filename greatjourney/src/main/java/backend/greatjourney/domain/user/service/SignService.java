@@ -26,12 +26,11 @@ public class SignService {
 
 	private final UserRepository userRepository;
 
-	@Transactional
+	@Transactional(noRollbackFor = LoginException.class)
 	public User saveUser(String email, String domain){
 
 		if(!userRepository.existsByEmail(email)){
 			Domain realDomain = Domain.valueOf(domain);
-
 			User user = User.builder()
 				.userRole(UserRole.ROLE_USER)
 				.domain(realDomain)
