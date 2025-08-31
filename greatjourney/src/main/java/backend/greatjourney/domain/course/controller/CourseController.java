@@ -4,7 +4,6 @@ import backend.greatjourney.domain.course.dto.*;
 import backend.greatjourney.domain.course.service.CourseProgressService;
 import backend.greatjourney.domain.course.service.CourseService;
 import backend.greatjourney.domain.course.service.PlaceService;
-import backend.greatjourney.domain.survey.dto.AnswerReq;
 import backend.greatjourney.global.exception.BaseResponse;
 import backend.greatjourney.global.security.entitiy.CustomOAuth2User;
 import jakarta.validation.Valid;
@@ -25,38 +24,66 @@ public class CourseController {
     private final CourseProgressService courseProgressService;
 
     /**
-     * GET /api/course-detail?id={courseId}
+     * GET /api/course-master?id={courseId}
+     * 코스의 전체 정보(경로 + 주변 장소)를 조회
      */
-    @GetMapping("/course-detail")
-    public ResponseEntity<BaseResponse<CourseDetailResponse>>  getCourse(@AuthenticationPrincipal CustomOAuth2User customOAuth2User,@RequestParam("id") Integer id){
+    @GetMapping("/course-master")
+    public ResponseEntity<BaseResponse<CourseMasterResponse>> getCourseMaster(
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+            @RequestParam("id") Integer id) {
 
-        CourseDetailResponse courseData = courseService.getCourseDetail(id);
+        CourseMasterResponse courseData = courseService.getCourseMaster(id);
 
-        BaseResponse<CourseDetailResponse> response = BaseResponse.<CourseDetailResponse>builder()
-                .isSuccess(true)
-                .code(HttpStatus.OK.value())
-                .message("코스 상세 정보 조회에 성공했습니다.")
-                .data(courseData)
-                .build();
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(
+                BaseResponse.<CourseMasterResponse>builder()
+                        .isSuccess(true)
+                        .code(HttpStatus.OK.value())
+                        .message("코스 전체 정보 조회에 성공했습니다.")
+                        .data(courseData)
+                        .build()
+        );
     }
 
     /**
-     * GET /api/place-detail?id={placeId}
+     * GET /api/course-detail?id={courseId}
+     * 코스의 경로 정보만 조회
      */
-    @GetMapping("/place-detail")
-    public ResponseEntity<BaseResponse<PlaceDetailResponse>> getPlace(@AuthenticationPrincipal CustomOAuth2User customOAuth2User,@RequestParam("id") Long id){
-        PlaceDetailResponse placeData = placeService.getPlaceDetail(id);
+    @GetMapping("/course-detail")
+    public ResponseEntity<BaseResponse<CourseRouteResponse>> getCourseDetail(
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+            @RequestParam("id") Integer id) {
 
-        BaseResponse<PlaceDetailResponse> response = BaseResponse.<PlaceDetailResponse>builder()
-                .isSuccess(true)
-                .code(HttpStatus.OK.value())
-                .message("장소 상세 정보 조회에 성공했습니다.")
-                .data(placeData)
-                .build();
+        CourseRouteResponse routeData = courseService.getCourseRoute(id); // 경로 조회 서비스 호출
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(
+                BaseResponse.<CourseRouteResponse>builder()
+                        .isSuccess(true)
+                        .code(HttpStatus.OK.value())
+                        .message("코스 상세 정보(경로) 조회에 성공했습니다.")
+                        .data(routeData)
+                        .build()
+        );
+    }
+
+    /**
+     * GET /api/course-places?id={courseId}
+     * 코스 주변 장소 정보만 조회 (신규 추가)
+     */
+    @GetMapping("/course-places")
+    public ResponseEntity<BaseResponse<CoursePlacesResponse>> getCoursePlaces(
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+            @RequestParam("id") Integer id) {
+
+        CoursePlacesResponse placesData = courseService.getCoursePlaces(id); // 주변 장소 조회 서비스 호출
+
+        return ResponseEntity.ok(
+                BaseResponse.<CoursePlacesResponse>builder()
+                        .isSuccess(true)
+                        .code(HttpStatus.OK.value())
+                        .message("코스 주변 장소 조회에 성공했습니다.")
+                        .data(placesData)
+                        .build()
+        );
     }
 
     /**

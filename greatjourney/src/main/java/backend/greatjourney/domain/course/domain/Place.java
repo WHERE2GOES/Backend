@@ -16,5 +16,5 @@ public class Place {
     private double longitude;     // 경도
 
     // 비밀번호
-    private String hash;
+    private Integer courseId;
 }
