@@ -2,11 +2,13 @@ package backend.greatjourney.domain.user.controller;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.service.annotation.GetExchange;
 
 import backend.greatjourney.domain.token.dto.TokenResponse;
 import backend.greatjourney.domain.user.dto.request.ChangeUserRequest;
@@ -84,6 +86,10 @@ public class UserController {
 		ChangeUserRequest request){
 		return userService.changeUserInfo(customOAuth2User,request);
 	}
+
+	//회원정보 가져오기
+	// @Operation(summary = "회원정보 가져오는 API")
+	// @GetMapping()
 
 
 

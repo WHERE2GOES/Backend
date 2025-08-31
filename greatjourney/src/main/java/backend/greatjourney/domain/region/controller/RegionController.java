@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/v1/region")
 @RequiredArgsConstructor
-@Tag(name = "지역 근처의 음식점, 숙소, 관광지, 포토스팟을 가져오는 API입니다.")
+// @Tag(name = "지역 근처의 음식점, 숙소, 관광지, 포토스팟을 가져오는 API입니다.")
 @Slf4j
 public class RegionController {
 
