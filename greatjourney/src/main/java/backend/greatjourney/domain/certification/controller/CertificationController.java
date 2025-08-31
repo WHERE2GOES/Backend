@@ -35,7 +35,6 @@ public class CertificationController {
     }
 
     /**
-     * [✅ 새로 구현]
      * GET /api/certifications?courseId={courseId}
      * 특정 코스에 대한 사용자의 인증 내역 조회
      */
