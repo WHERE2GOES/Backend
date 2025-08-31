@@ -3,6 +3,7 @@ package backend.greatjourney.domain.certification.service;
 import backend.greatjourney.domain.certification.domain.UserCertification;
 import backend.greatjourney.domain.certification.dto.CertificationRequest;
 import backend.greatjourney.domain.certification.dto.CertificationStatusDto;
+import backend.greatjourney.domain.certification.dto.CourseCertificationStatusResponse;
 import backend.greatjourney.domain.certification.repository.UserCertificationRepository;
 import backend.greatjourney.domain.course.domain.Place;
 import backend.greatjourney.domain.course.repository.PlaceRepository;
@@ -61,15 +62,24 @@ public class CertificationService {
      * 특정 코스에 대한 사용자의 모든 인증 내역을 조회합니다.
      */
     @Transactional(readOnly = true)
-    public List<CertificationStatusDto> getUserCertificationsForCourse(CustomOAuth2User customOAuth2User, Integer courseId) {
+    public CourseCertificationStatusResponse getUserCertificationsForCourse(CustomOAuth2User customOAuth2User, Integer courseId) {
         Long userId = Long.parseLong(customOAuth2User.getUserId());
 
-        // 1. Repository에 추가한 간단한 쿼리 메서드를 호출합니다.
-        List<UserCertification> certifications = userCertificationRepository.findByUser_UserIdAndCourseId(userId, courseId);
+        // 1. 해당 코스의 전체 인증센터 개수를 조회합니다.
+        long totalCertificationCenters = placeRepository.countByCategoryAndCourseId("인증센터", courseId);
 
-        // 2. 조회된 엔티티 목록을 DTO 목록으로 변환하여 반환합니다.
-        return certifications.stream()
+        // 2. 사용자가 해당 코스에서 완료한 인증 내역을 조회합니다.
+        List<UserCertification> userCertifications = userCertificationRepository.findByUser_UserIdAndCourseId(userId, courseId);
+
+        // 3. 완료 여부를 계산합니다. (전체 개수가 0일 경우도 고려)
+        boolean isCompleted = (totalCertificationCenters > 0) && (userCertifications.size() >= totalCertificationCenters);
+
+        // 4. 인증 내역을 DTO 리스트로 변환합니다.
+        List<CertificationStatusDto> certificationDtos = userCertifications.stream()
                 .map(CertificationStatusDto::from)
                 .toList();
+
+        // 5. 최종 응답 DTO를 생성하여 반환합니다.
+        return new CourseCertificationStatusResponse(isCompleted, certificationDtos);
     }
 }
