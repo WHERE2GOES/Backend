@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import backend.greatjourney.domain.weather.dto.GridRequest;
+import backend.greatjourney.domain.weather.dto.KmaUltraNcstDto;
 import backend.greatjourney.domain.weather.dto.UltraNcstKoreanDto;
 import backend.greatjourney.domain.weather.service.WeatherGridService;
 import backend.greatjourney.global.exception.BaseResponse;

@@ -26,24 +26,24 @@ public class KmaUltraNcstMapper {
 		Integer ny = items.isEmpty() ? null : items.get(0).getNy();
 
 		UltraNcstKoreanDto.UltraNcstKoreanDtoBuilder builder = UltraNcstKoreanDto.builder()
-			.기준일자(baseDate)
-			.기준시각(baseTime)
-			.격자X(nx)
-			.격자Y(ny);
+			.baseDate(baseDate)
+			.baseTime(baseTime)
+			.X(nx)
+			.Y(ny);
 
 		for (var it : items) {
 			String c = it.getCategory();
 			String v = it.getObsrValue();
 
 			switch (c) {
-				case "PTY" -> builder.강수형태(PrecipitationType.fromCode(v));
-				case "T1H" -> builder.기온(toDouble(v));
-				case "REH" -> builder.습도(toInt(v));
-				case "WSD" -> builder.풍속(toDouble(v));
-				case "VEC" -> builder.풍향(toInt(v));
-				case "RN1" -> builder.시간강수량(toDouble(v));
-				case "UUU" -> builder.동서바람성분(toDouble(v));
-				case "VVV" -> builder.남북바람성분(toDouble(v));
+				case "PTY" -> builder.rainType(PrecipitationType.fromCode(v));
+				case "T1H" -> builder.temperature(toDouble(v));
+				case "REH" -> builder.humidity(toInt(v));
+				case "WSD" -> builder.windSpeed(toDouble(v));
+				case "VEC" -> builder.windDircetion(toInt(v));
+				case "RN1" -> builder.RN1(toDouble(v));
+				case "UUU" -> builder.UUU(toDouble(v));
+				case "VVV" -> builder.VVV(toDouble(v));
 			}
 
 		}

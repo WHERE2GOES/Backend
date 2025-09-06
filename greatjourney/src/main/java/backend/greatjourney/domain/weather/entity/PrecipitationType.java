@@ -4,14 +4,14 @@ import lombok.Getter;
 
 @Getter
 public enum PrecipitationType {
-	맑음(0, "맑음"),
-	비(1, "비"),
-	비눈(2, "비/눈"),
-	눈(3, "눈"),
-	빗방울(5, "빗방울"),
-	빗방울눈날림(6, "빗방울눈날림"),
-	눈날림(7, "눈날림"),
-	알수없음(-1, "알수없음");
+	맑음(0, "sunny"),
+	비(1, "rain"),
+	비눈(2, "rain/snow"),
+	눈(3, "snow"),
+	빗방울(5, "litte rain"),
+	빗방울눈날림(6, "litte rain and snowy"),
+	눈날림(7, "snow"),
+	알수없음(-1, "unknown");
 
 	private final int code;
 	private final String desc;
