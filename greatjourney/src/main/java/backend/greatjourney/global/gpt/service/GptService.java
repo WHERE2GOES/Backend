@@ -221,7 +221,7 @@ public class GptService {
 		var items = full.top3().stream()
 			.map(t -> new GptTop3LiteResponse.Item(
 				t.name(),
-				"https://ddo123.s3.ap-northeast-2.amazonaws.com/test_images/615416da-bbbd-44c6-9b1a-b342df2b4931_Group%202085667687.png",
+				"https://ddo123.s3.ap-northeast-2.amazonaws.com/test_images/46460912-913d-449f-b7e0-5238aac37639_Group%25202085667687.png",
 				t.country(),
 				t.id().toString()
 			))
@@ -250,7 +250,7 @@ public class GptService {
 
 		return new GptTrailFullResponse(
 			top.name(),
-			"https://ddo123.s3.ap-northeast-2.amazonaws.com/test_images/615416da-bbbd-44c6-9b1a-b342df2b4931_Group%202085667687.png",
+			"https://ddo123.s3.ap-northeast-2.amazonaws.com/test_images/46460912-913d-449f-b7e0-5238aac37639_Group%25202085667687.png",
 			top.country(),
 			top.id().toString(),
 			top.ai_summary(),
