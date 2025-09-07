@@ -221,7 +221,7 @@ public class GptService {
 		var items = full.top3().stream()
 			.map(t -> new GptTop3LiteResponse.Item(
 				t.name(),
-				safeImageUrl(t.name(), t.image_url()),
+				"https://ddo123.s3.ap-northeast-2.amazonaws.com/test_images/615416da-bbbd-44c6-9b1a-b342df2b4931_Group%202085667687.png",
 				t.country(),
 				t.id().toString()
 			))
