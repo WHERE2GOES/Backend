@@ -39,6 +39,8 @@ public enum ErrorCode {
 
 	GOOGLE_USER_NOT_FOUND(NOT_FOUND,404,"구글 유저를 찾을 수 없습니다."),
 
+	PENDING_USER(BAD_REQUEST,404,"PENDING 상태의 유저입니다. 회원가입을 완료해주세요"),
+
 	HASH_MISMATCH(HttpStatus.BAD_REQUEST, 400, "인증 해시값이 일치하지 않습니다.")
 
 
