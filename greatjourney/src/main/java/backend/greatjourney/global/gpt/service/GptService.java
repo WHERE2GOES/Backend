@@ -250,8 +250,10 @@ public class GptService {
 
 		return new GptTrailFullResponse(
 			top.name(),
-			safeImageUrl(top.name(), top.image_url()),
-			top.ai_summary(),               // ✅ 한 줄 추천 요약
+			"https://ddo123.s3.ap-northeast-2.amazonaws.com/test_images/615416da-bbbd-44c6-9b1a-b342df2b4931_Group%202085667687.png",
+			top.country(),
+			top.id().toString(),
+			top.ai_summary(),
 			full.weights(),
 			top.score(),
 			top.reasons(),
