@@ -66,12 +66,12 @@ public class GptController {
 
 	@GetMapping("/detail")
 	@Operation(summary = "추천 경로의 상세정보를 제공하는 API입니다.")
-	public BaseResponse<GptTrailFullResponse> getFullDetail(@RequestParam String name) {
+	public BaseResponse<GptTrailFullResponse> getFullDetail(@RequestParam String courseId) {
 		return BaseResponse.<GptTrailFullResponse>builder()
 			.isSuccess(true)
 			.code(200)
 			.message("상세화된 정보를 가져왔습니다.")
-			.data(gptService.getTrailFullFromCache(name))
+			.data(gptService.getTrailFullFromCache(courseId))
 			.build();
 	}
 
