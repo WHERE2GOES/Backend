@@ -20,5 +20,4 @@ public class GoogleUserResponse {
 	@JsonAlias({"email_verified", "verified_email"})
 	private Boolean emailVerified;
 
-	private String picture;
 }

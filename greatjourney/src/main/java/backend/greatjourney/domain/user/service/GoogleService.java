@@ -59,7 +59,7 @@ public class GoogleService {
 				throw new CustomException(ErrorCode.USER_NOT_FOUND);
 			}
 		} catch (Exception e) {
-			throw new CustomException(ErrorCode.KAKAO_USER_ERROR);
+			throw new CustomException(ErrorCode.GOOGLE_USER_NOT_FOUND);
 		}
 	}
 

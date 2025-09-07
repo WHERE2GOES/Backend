@@ -37,6 +37,8 @@ public enum ErrorCode {
 	PLACE_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "해당 장소를 찾을 수 없습니다."),
 	TERMS_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "요청한 종류의 약관을 찾을 수 없습니다."),
 
+	GOOGLE_USER_NOT_FOUND(NOT_FOUND,404,"구글 유저를 찾을 수 없습니다."),
+
 	HASH_MISMATCH(HttpStatus.BAD_REQUEST, 400, "인증 해시값이 일치하지 않습니다.")
 
 

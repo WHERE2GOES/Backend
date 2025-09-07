@@ -11,7 +11,6 @@ import lombok.Setter;
 public class KakaoUserResponse {
 	private Long id;
 	private KakaoAccount kakao_account;
-	private Properties properties;
 
 	@Getter
 	@Setter
@@ -20,10 +19,4 @@ public class KakaoUserResponse {
 		private String email;
 	}
 
-	@Getter
-	@Setter
-	@JsonIgnoreProperties(ignoreUnknown = true)
-	public static class Properties {
-		private String nickname;
-	}
 }
