@@ -9,6 +9,7 @@ public record GptRankResponse(
 	List<String> extra_considerations  // 추가 고려사항
 ) {
 	public record TopItem(
+		Integer id,
 		String name,
 		double score,
 		Reasons reasons,
