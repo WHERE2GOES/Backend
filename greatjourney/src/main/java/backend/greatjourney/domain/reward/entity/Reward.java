@@ -26,13 +26,13 @@ public class Reward {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	private Rewards rewards;
+	private Long courseId;
 
 
 	@Builder
-	private Reward(User user, Rewards rewards){
+	private Reward(User user, Long courseId){
 		this.user = user;
-		this.rewards = rewards;
+		this.courseId = courseId;
 	}
 
 }

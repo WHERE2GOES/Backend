@@ -21,7 +21,7 @@ public class RewardService {
 	private final UserRepository userRepository;
 
 	//사용자가 요청하면 다 완료된 것을 확인해서 발급해주기 -> 백에서 처리?해야할 듯
-	public BaseResponse<Void> getReward(CustomOAuth2User customOAuth2User, Rewards rewards){
+	public BaseResponse<Void> getReward(CustomOAuth2User customOAuth2User,Long courseId){
 
 		//일단 사용자에 대한 검증이 필요 -> 사용자의 보상 정보 존재 해야함
 		if(!userRepository.existsByUserId(Long.parseLong(customOAuth2User.getUserId()))){
@@ -32,11 +32,16 @@ public class RewardService {
 			.orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		//코스를 다 돌았는지 확인하는 부분이 필요함
+		//해당 코스를 다 돌았는지 필요
+
+		//어떻게 다 돌았는지 확인
 
 		Reward reward = Reward.builder()
-			.rewards(rewards)
+			.courseId(courseId)
 			.user(user)
 			.build();
+
+
 
 		rewardRepository.save(reward);
 
