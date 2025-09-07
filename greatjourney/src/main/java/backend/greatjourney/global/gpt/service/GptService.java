@@ -245,7 +245,7 @@ public class GptService {
             아래 13개 국토대장정 코스의 '현재 시기' 특성과 일반적 코스 특성을 바탕으로,
             평가 기준 5개(weather, festival, activity, food, difficulty)에 대한 '가중치'를 스스로 정하고(합=1),
             그 가중치로 상위 3곳을 선정하세요.
-            응답에는 각 코스의 image_url(공개 https)과 ai_summary(25자 내외 한국어 한 문장)도 포함하세요.
+            응답에는 각 코스의 image_url(공개 https)과 ai_summary(25자 내외 한국어 한 문장), country(지역)도 포함하세요.
 
             후보 목록:
             - 아라길

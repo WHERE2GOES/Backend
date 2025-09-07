@@ -14,7 +14,8 @@ public record GptRankResponse(
 		Reasons reasons,
 		WeightedBreakdown weighted,
 		String image_url,      // 대표 이미지 URL
-		String ai_summary      // ✅ AI 한 줄 추천 요약
+		String ai_summary,    // ✅ AI 한 줄 추천 요약
+		String country
 	) {}
 
 	// 평가 기준(5개)

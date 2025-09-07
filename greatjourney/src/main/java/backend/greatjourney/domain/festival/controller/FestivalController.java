@@ -11,6 +11,7 @@ import backend.greatjourney.domain.festival.dto.FestivalResponse;
 import backend.greatjourney.domain.festival.service.FestivalService;
 import backend.greatjourney.global.exception.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -39,7 +40,10 @@ public class FestivalController {
 		+ " 전북특별자치도"
 		+ " 전라남도"
 		+ " 제주특별자치도\n" +"로 값들을 넣어주면 됨 + 날짜")
-	public BaseResponse<List<FestivalResponse>> getFestivals(@RequestParam String areaName, @RequestParam String startDate){
+	public BaseResponse<List<FestivalResponse>> getFestivals(@RequestParam String areaName,
+		@Parameter(description = "축제 시작 날짜 (yyyyMMdd 형식)", example = "20250402")
+		@RequestParam String startDate){
+
 		return BaseResponse.<List<FestivalResponse>>builder()
 			.code(200)
 			.isSuccess(true)
