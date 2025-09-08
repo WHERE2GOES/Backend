@@ -2,6 +2,7 @@ package backend.greatjourney.domain.survey.controller;
 
 import backend.greatjourney.domain.survey.dto.AnswerReq;
 import backend.greatjourney.domain.survey.dto.AnswerRes;
+import backend.greatjourney.domain.survey.dto.CourseRecDto;
 import backend.greatjourney.domain.survey.dto.QuestionDto;
 import backend.greatjourney.domain.survey.service.SurveyService;
 import backend.greatjourney.global.security.entitiy.CustomOAuth2User;
@@ -30,5 +31,11 @@ public class SurveyController {
     public AnswerRes save(@AuthenticationPrincipal CustomOAuth2User customOAuth2User,@RequestBody @Valid AnswerReq req) {
         service.saveAnswers(customOAuth2User,req);
         return new AnswerRes(true);
+    }
+
+    // ③ 사용자별 맞춤 코스 추천 (✨ 신규 추가)
+    @GetMapping("/recommendations")
+    public List<CourseRecDto> recommendCourses(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+        return service.getRecommendedCourses(customOAuth2User);
     }
 }
