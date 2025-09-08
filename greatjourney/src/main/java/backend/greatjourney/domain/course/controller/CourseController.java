@@ -108,4 +108,24 @@ public class CourseController {
         return ResponseEntity.ok("코스 진행이 종료되었습니다.");
     }
 
+    /**
+     * GET /api/course/current
+     * 현재 사용자가 진행 중인 코스 정보를 조회 (✨ 신규 추가)
+     */
+    @GetMapping("/course/current")
+    public ResponseEntity<BaseResponse<CurrentCourseResponse>> getCurrentCourse(
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+
+        CurrentCourseResponse currentCourse = courseProgressService.getCurrentCourse(customOAuth2User);
+
+        return ResponseEntity.ok(
+                BaseResponse.<CurrentCourseResponse>builder()
+                        .isSuccess(true)
+                        .code(HttpStatus.OK.value())
+                        .message("현재 진행 중인 코스 정보 조회에 성공했습니다.")
+                        .data(currentCourse)
+                        .build()
+        );
+    }
+
 }

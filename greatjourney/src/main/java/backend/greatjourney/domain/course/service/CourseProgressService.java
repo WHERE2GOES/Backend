@@ -1,10 +1,13 @@
 package backend.greatjourney.domain.course.service;
 
+import backend.greatjourney.domain.course.domain.Course;
 import backend.greatjourney.domain.course.dto.CourseEndReq;
 import backend.greatjourney.domain.course.dto.CourseStartReq;
+import backend.greatjourney.domain.course.dto.CurrentCourseResponse;
 import backend.greatjourney.domain.course.repository.CourseRepository;
 import backend.greatjourney.domain.user.entity.User;
 import backend.greatjourney.domain.user.repository.UserRepository;
+import backend.greatjourney.global.exception.BaseException;
 import backend.greatjourney.global.exception.CustomException;
 import backend.greatjourney.global.exception.ErrorCode;
 import backend.greatjourney.global.security.entitiy.CustomOAuth2User;
@@ -57,5 +60,29 @@ public class CourseProgressService {
 
         // 3. 사용자의 현재 진행 코스 ID를 null로 변경하여 종료 처리
         user.setCurrentCourseId(null);
+    }
+
+
+    /**
+     * 현재 사용자가 진행 중인 코스 정보를 조회 (✨ 신규 추가)
+     */
+    public CurrentCourseResponse getCurrentCourse(CustomOAuth2User customOAuth2User) {
+        // 사용자 정보 조회
+        User user = userRepository.findById(Long.parseLong(customOAuth2User.getUserId()))
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        // 사용자가 진행 중인 코스 ID 확인
+        Integer currentCourseId = user.getCurrentCourseId();
+
+        if (currentCourseId == null) {
+            // 진행 중인 코스가 없을 경우
+            return new CurrentCourseResponse(false, null, null);
+        }
+
+        Course course = courseRepository.findById(currentCourseId)
+                .orElseThrow(() -> new CustomException(ErrorCode.COURSE_NOT_FOUND));
+
+        // 진행 중인 코스가 있을 경우
+        return new CurrentCourseResponse(true, course.getId(), course.getName());
     }
 }
