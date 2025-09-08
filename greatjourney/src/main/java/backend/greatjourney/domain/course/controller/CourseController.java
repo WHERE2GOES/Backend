@@ -101,10 +101,10 @@ public class CourseController {
      * @body {"courseId": 1}
      */
     @PostMapping("/course/end")
-    public ResponseEntity<String> endCourse(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, @RequestBody @Valid CourseEndReq req) {
+    public ResponseEntity<String> endCourse(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 
         // 로그인된 사용자의 ID와 요청받은 courseId를 서비스로 전달
-        courseProgressService.endCourse(customOAuth2User,req);
+        courseProgressService.endCourse(customOAuth2User);
         return ResponseEntity.ok("코스 진행이 종료되었습니다.");
     }
 

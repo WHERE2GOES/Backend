@@ -42,7 +42,7 @@ public class CourseProgressService {
     }
 
 
-    public void endCourse(CustomOAuth2User customOAuth2User, CourseEndReq req) {
+    public void endCourse(CustomOAuth2User customOAuth2User) {
         Long userId = Long.parseLong(customOAuth2User.getUserId());
         // 1. 사용자 정보를 DB에서 조회
         User user = userRepository.findByUserId(userId)
@@ -55,13 +55,7 @@ public class CourseProgressService {
             throw new CustomException(ErrorCode.USER_NOT_ON_COURSE);
         }
 
-        Integer courseId = req.courseId();
-        // 3. 종료하려는 코스가 현재 진행 중인 코스가 맞는지 확인
-        if (!currentCourseId.equals(courseId)) {
-            throw new CustomException(ErrorCode.COURSE_NOT_MATCH);
-        }
-
-        // 4. 사용자의 현재 진행 코스 ID를 null로 변경하여 종료 처리
+        // 3. 사용자의 현재 진행 코스 ID를 null로 변경하여 종료 처리
         user.setCurrentCourseId(null);
     }
 }
