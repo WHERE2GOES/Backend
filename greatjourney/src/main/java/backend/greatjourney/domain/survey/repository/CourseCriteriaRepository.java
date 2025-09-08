@@ -8,8 +8,4 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface CourseCriteriaRepository extends JpaRepository<CourseCriteria, Long> {
-
-    @Query("SELECT cc.courseId FROM CourseCriteria cc WHERE cc.difficulty = :difficulty AND cc.scenery = :scenery AND cc.geography = :geography")
-    List<Integer> findCourseIdsByCriteria(String difficulty, String scenery, String geography);
-
 }

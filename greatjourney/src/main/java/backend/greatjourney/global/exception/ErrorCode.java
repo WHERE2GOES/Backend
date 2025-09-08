@@ -39,7 +39,9 @@ public enum ErrorCode {
 
 	GOOGLE_USER_NOT_FOUND(NOT_FOUND,404,"구글 유저를 찾을 수 없습니다."),
 
-	HASH_MISMATCH(HttpStatus.BAD_REQUEST, 400, "인증 해시값이 일치하지 않습니다.")
+	HASH_MISMATCH(HttpStatus.BAD_REQUEST, 400, "인증 해시값이 일치하지 않습니다."),
+
+	SURVEY_NOT_COMPLETED(HttpStatus.BAD_REQUEST, 400, "모든 설문에 답변해야 추천받을 수 있습니다."),
 
 
 	;
