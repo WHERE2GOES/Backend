@@ -1,5 +1,7 @@
 package backend.greatjourney.domain.reward.service;
 
+import backend.greatjourney.domain.certification.dto.CourseCertificationStatusResponse;
+import backend.greatjourney.domain.certification.service.CertificationService;
 import org.springframework.stereotype.Service;
 
 import backend.greatjourney.domain.reward.entity.Reward;
@@ -19,9 +21,10 @@ public class RewardService {
 
 	private final RewardRepository rewardRepository;
 	private final UserRepository userRepository;
+	private final CertificationService certificationService;
 
 	//사용자가 요청하면 다 완료된 것을 확인해서 발급해주기 -> 백에서 처리?해야할 듯
-	public BaseResponse<Void> getReward(CustomOAuth2User customOAuth2User, Rewards rewards){
+	public BaseResponse<Void> getReward(CustomOAuth2User customOAuth2User,Long courseId){
 
 		//일단 사용자에 대한 검증이 필요 -> 사용자의 보상 정보 존재 해야함
 		if(!userRepository.existsByUserId(Long.parseLong(customOAuth2User.getUserId()))){
@@ -32,11 +35,28 @@ public class RewardService {
 			.orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		//코스를 다 돌았는지 확인하는 부분이 필요함
+		//해당 코스를 다 돌았는지 필요
+		// 2. CertificationService를 사용하여 해당 코스를 모두 완료했는지 확인
+		CourseCertificationStatusResponse certificationStatus =
+				certificationService.getUserCertificationsForCourse(customOAuth2User, courseId.intValue());
+
+		// 만약 코스를 완료 / 미완료
+		if (!certificationStatus.isCompleted()) {
+//			미완료
+//			throw new CustomException(ErrorCode.COURSE_NOT_COMPLETED); // ErrorCode에 COURSE_NOT_COMPLETED 추가 필요
+		}
+		else{
+//			완료
+		}
+
+		//어떻게 다 돌았는지 확인
 
 		Reward reward = Reward.builder()
-			.rewards(rewards)
+			.courseId(courseId)
 			.user(user)
 			.build();
+
+
 
 		rewardRepository.save(reward);
 

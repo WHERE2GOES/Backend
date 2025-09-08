@@ -22,10 +22,10 @@ public class RewardController {
 	private final RewardService rewardService;
 
 	@PostMapping("")
-	@Operation(summary = "사용자에게 보상 추가 하는 API입니다.\n" + "보상의 경우 어떠한 보상인지 ex) 어떤 경로 보상인지 현재는 COURSE1, COURSE2, COURSE3 이런 식으로 입력받게 해둠")
+	@Operation(summary = "사용자에게 보상 추가 하는 API입니다.\n" + "보상의 경우 어떠한 보상인지")
 	public BaseResponse<Void> makeReward(@AuthenticationPrincipal  CustomOAuth2User customOAuth2User, @RequestParam
-		Rewards rewards){
-		return rewardService.getReward(customOAuth2User,rewards);
+		Long courseId){
+		return rewardService.getReward(customOAuth2User,courseId);
 	}
 
 }

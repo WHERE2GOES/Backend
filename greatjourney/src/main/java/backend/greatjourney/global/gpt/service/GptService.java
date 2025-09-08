@@ -74,6 +74,26 @@ public class GptService {
 		return "https://www.google.com/search?tbm=isch&q=" + q;
 	}
 
+	// GptService 클래스 상단
+	private static final Map<String, Integer> TRAIL_ID = Map.ofEntries(
+		Map.entry("아라길", 1),
+		Map.entry("한강종주길", 2),
+		Map.entry("남한강길", 3),
+		Map.entry("새재길", 4),
+		Map.entry("낙동강길", 5),
+		Map.entry("금강길", 6),
+		Map.entry("영산강길", 7),
+		Map.entry("북한강길", 8),
+		Map.entry("섬진강길", 9),
+		Map.entry("오천길", 10),
+		Map.entry("동해안(강원)길", 11),
+		Map.entry("동해안(경북)길", 12),
+		Map.entry("제주환상길", 13)
+	);
+	private static final Map<Integer, String> ID_TO_NAME = TRAIL_ID.entrySet()
+		.stream().collect(java.util.stream.Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+
+
 	// =======================
 	// Top3 묶음 (계산 + 캐시)
 	// =======================
@@ -201,14 +221,27 @@ public class GptService {
 		var items = full.top3().stream()
 			.map(t -> new GptTop3LiteResponse.Item(
 				t.name(),
-				safeImageUrl(t.name(), t.image_url())
+				"https://ddo123.s3.ap-northeast-2.amazonaws.com/test_images/46460912-913d-449f-b7e0-5238aac37639_Group%25202085667687.png",
+				t.country(),
+				t.id().toString()
 			))
 			.toList();
 		return new GptTop3LiteResponse(items);
 	}
 
+	private String trailNameById(int trailId) {
+		String name = ID_TO_NAME.get(trailId);
+		if (name == null) {
+			throw new IllegalArgumentException("Unknown trailId: " + trailId);
+		}
+		return name;
+	}
+
 	// 단일 코스 — 이름 + 이미지 1개 + 수치화된 모든 정보 반환
-	public GptTrailFullResponse getTrailFullFromCache(String trailName) {
+	public GptTrailFullResponse getTrailFullFromCache(String courseId) {
+
+		String trailName = trailNameById(Integer.parseInt(courseId));
+
 		var full = getTrailFromCache(trailName);
 		var top = full.top3().stream()
 			.filter(t -> equalsIgnoreCaseTrim(t.name(), trailName))
@@ -217,8 +250,10 @@ public class GptService {
 
 		return new GptTrailFullResponse(
 			top.name(),
-			safeImageUrl(top.name(), top.image_url()),
-			top.ai_summary(),               // ✅ 한 줄 추천 요약
+			"https://ddo123.s3.ap-northeast-2.amazonaws.com/test_images/46460912-913d-449f-b7e0-5238aac37639_Group%25202085667687.png",
+			top.country(),
+			top.id().toString(),
+			top.ai_summary(),
 			full.weights(),
 			top.score(),
 			top.reasons(),
@@ -241,27 +276,51 @@ public class GptService {
             반드시 JSON으로만 답하세요(추가 텍스트 금지).
             """;
 
+			// computeStructured() 내 user 프롬프트 교체/추가 부분
 			String user = """
-            아래 13개 국토대장정 코스의 '현재 시기' 특성과 일반적 코스 특성을 바탕으로,
-            평가 기준 5개(weather, festival, activity, food, difficulty)에 대한 '가중치'를 스스로 정하고(합=1),
-            그 가중치로 상위 3곳을 선정하세요.
-            응답에는 각 코스의 image_url(공개 https)과 ai_summary(25자 내외 한국어 한 문장), country(지역)도 포함하세요.
+			아래 13개 국토대장정 코스의 '현재 시기' 특성과 일반적 코스 특성을 바탕으로,
+			평가 기준 5개(weather, festival, activity, food, difficulty)에 대한 '가중치'를 스스로 정하고(합=1),
+			그 가중치로 상위 3곳을 선정하세요.
+			
+			응답의 각 top3 항목에는 다음 필드를 반드시 포함하세요:
+			- name (후보명과 완전히 동일한 문자열 사용)
+			- id (아래 매핑표의 정수 id, 절대 임의 생성 금지)
+			- score, reasons{...}, weighted{...}, image_url, ai_summary, country(지역)
+			
+			[이름→id 매핑표]
+			1: 아라길
+			2: 한강종주길
+			3: 남한강길
+			4: 새재길
+			5: 낙동강길
+			6: 금강길
+			7: 영산강길
+			8: 북한강길
+			9: 섬진강길
+			10: 오천길
+			11: 동해안(강원)길
+			12: 동해안(경북)길
+			13: 제주환상길
+			
+			지역(country)은 아래 중 하나로 정확히 기입:
+			서울 인천 대전 대구 광주 부산 울산 세종특별자치시 경기도 강원특별자치도 충청북도 충청남도 경상북도 경상남도 전북특별자치도 전라남도 제주특별자치도
+			
+			후보 목록:
+			- 아라길
+			- 한강종주길
+			- 남한강길
+			- 새재길
+			- 낙동강길
+			- 금강길
+			- 영산강길
+			- 북한강길
+			- 섬진강길
+			- 오천길
+			- 동해안(강원)길
+			- 동해안(경북)길
+			- 제주환상길
+			""";
 
-            후보 목록:
-            - 아라길
-            - 한강종주길
-            - 남한강길
-            - 새재길
-            - 낙동강길
-            - 금강길
-            - 영산강길
-            - 북한강길
-            - 섬진강길
-            - 오천자길
-            - 동해안(강원)길
-            - 동해안(경북)길
-            - 제주환상길
-            """;
 
 			// === JSON Schema(strict) ===
 			Map<String, Object> schema = buildJsonSchema();
@@ -304,7 +363,6 @@ public class GptService {
 	}
 
 	private Map<String, Object> buildJsonSchema() {
-		// JSON Schema for GptRankResponse with strict true
 		Map<String, Object> weightsProps = Map.of(
 			"weather", Map.of("type", "number"),
 			"festival", Map.of("type", "number"),
@@ -335,12 +393,16 @@ public class GptService {
 		);
 
 		Map<String, Object> topItemProps = Map.of(
+			"id", Map.of("type", "integer"),       // ✅ id 추가
 			"name", Map.of("type", "string"),
 			"score", Map.of("type", "number"),
+			"country", Map.of("type", "string"),   // county → country 로 일관
 			"reasons", Map.of(
 				"type", "object",
 				"additionalProperties", false,
-				"required", List.of("weather","weather_reason","festival","festival_reason","activity","activity_reason","food","food_reason","difficulty","difficulty_reason"),
+				"required", List.of("weather","weather_reason","festival","festival_reason",
+					"activity","activity_reason","food","food_reason",
+					"difficulty","difficulty_reason"),
 				"properties", reasonsProps
 			),
 			"weighted", Map.of(
@@ -374,7 +436,8 @@ public class GptService {
 						"items", Map.of(
 							"type", "object",
 							"additionalProperties", false,
-							"required", List.of("name","score","reasons","weighted","image_url","ai_summary"),
+							// ✅ id, country를 required에 반드시 포함
+							"required", List.of("id","name","score","country","reasons","weighted","image_url","ai_summary"),
 							"properties", topItemProps
 						)
 					),
@@ -388,4 +451,5 @@ public class GptService {
 
 		return schema;
 	}
+
 }

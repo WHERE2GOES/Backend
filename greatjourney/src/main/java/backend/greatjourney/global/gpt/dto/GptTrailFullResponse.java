@@ -6,6 +6,8 @@ import java.util.Map;
 public record GptTrailFullResponse(
 	String name,
 	String image_url,
+	String country,
+	String courseId,
 	String ai_summary,                        // ✅ 한 줄 요약 포함
 	Map<String, Double> weights,              // 모델 가중치
 	double score,                             // 총점

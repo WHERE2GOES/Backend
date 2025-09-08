@@ -43,9 +43,15 @@ public class SignService {
 			throw new LoginException(HttpStatus.NOT_FOUND,404,"유저가 존재하지 않습니다. 회원가입이 필요합니다.",new LoginErrorResponse(email,domain));
 		}
 
-
-		return userRepository.findByEmail(email)
+		User user = userRepository.findByEmail(email)
 			.orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
+
+		if(user.getStatus() == Status.PENDING){
+			throw new LoginException(HttpStatus.NOT_FOUND,404,"PENDING 상태의 유저입니다. 회원가입이 필요합니다.",new LoginErrorResponse(email,domain));
+		}
+
+
+		return user;
 
 	}
 
