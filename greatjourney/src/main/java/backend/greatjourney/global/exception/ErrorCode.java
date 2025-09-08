@@ -41,7 +41,10 @@ public enum ErrorCode {
 
 	PENDING_USER(BAD_REQUEST,404,"PENDING 상태의 유저입니다. 회원가입을 완료해주세요"),
 
-	HASH_MISMATCH(HttpStatus.BAD_REQUEST, 400, "인증 해시값이 일치하지 않습니다.")
+	HASH_MISMATCH(HttpStatus.BAD_REQUEST, 400, "인증 해시값이 일치하지 않습니다."),
+
+	COURSE_NOT_COMPLETED(HttpStatus.BAD_REQUEST, 400, "아직 코스를 완료하지 않았습니다."),
+	REWARD_ALREADY_GRANTED(HttpStatus.CONFLICT, 400, "이미 해당 코스에 대한 보상을 받았습니다."),
 
 
 	;
