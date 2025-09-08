@@ -46,7 +46,7 @@ public enum ErrorCode {
 	COURSE_NOT_COMPLETED(HttpStatus.BAD_REQUEST, 400, "아직 코스를 완료하지 않았습니다."),
 	REWARD_ALREADY_GRANTED(HttpStatus.CONFLICT, 400, "이미 해당 코스에 대한 보상을 받았습니다."),
 
-
+	SURVEY_NOT_COMPLETED(HttpStatus.BAD_REQUEST, 400,"모든 설문에 답변해야 추천받을 수 있습니다."),
 	;
 
 
