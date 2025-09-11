@@ -106,7 +106,7 @@ public class GptService {
 	public GptRankResponse rankBikeTrails() {
 		GptRankResponse r = computeStructured(0.2);
 		if (r != null && r.top3() != null && !r.top3().isEmpty()) {
-			seedSinglesFromTop3(r);
+			seedSinglesFromAll(r);
 			return r;
 		}
 		// 안전 폴백(혹시라도): 빈 구조
@@ -121,7 +121,7 @@ public class GptService {
 	public GptRankResponse refreshBikeTrails() {
 		GptRankResponse r = computeStructured(0.4);
 		if (r != null && r.top3() != null && !r.top3().isEmpty()) {
-			seedSinglesFromTop3(r);
+			seedSinglesFromAll(r);
 			return r;
 		}
 		return new GptRankResponse(Map.of(), List.of(), List.of("모델 응답 비정상"));
@@ -135,16 +135,20 @@ public class GptService {
 	public void evictBikeTrails() { }
 
 	// Top3 → 단일 키 즉시 시드
-	private void seedSinglesFromTop3(GptRankResponse top3) {
+	private void seedSinglesFromAll(GptRankResponse full) {
 		var cache = cacheManager.getCache(CACHE_NAME);
-		if (cache == null) return;
-		for (var item : top3.top3()) {
+		if (cache == null || full == null || full.top3() == null) return;
+
+		for (var item : full.top3()) {        // 이제 여기에 13개가 들어있음
 			String singleKey = KEY_PREFIX + norm(item.name());
-			GptRankResponse single = new GptRankResponse(top3.weights(), List.of(item), top3.extra_considerations());
+			GptRankResponse single = new GptRankResponse(
+				full.weights(),
+				List.of(item),                 // 단일 항목만 담은 래핑
+				full.extra_considerations()
+			);
 			cache.put(singleKey, single);
 		}
 	}
-
 	// Top3 캐시 먼저 읽고, 없으면 계산해서 put
 	public GptRankResponse getTop3CachedFirst() {
 		var cache = cacheManager.getCache(CACHE_NAME);
@@ -163,7 +167,7 @@ public class GptService {
 		// 직접 put + 단일 키들도 시드
 		if (cache != null) {
 			cache.put(KEY_TOP3, fresh);
-			seedSinglesFromTop3(fresh);
+			seedSinglesFromAll(fresh);
 		}
 		return fresh;
 	}
@@ -219,6 +223,7 @@ public class GptService {
 
 	private GptTop3LiteResponse toLite(GptRankResponse full) {
 		var items = full.top3().stream()
+			.limit(3)
 			.map(t -> new GptTop3LiteResponse.Item(
 				t.name(),
 				"https://ddo123.s3.ap-northeast-2.amazonaws.com/test_images/46460912-913d-449f-b7e0-5238aac37639_Group%25202085667687.png",
@@ -278,48 +283,51 @@ public class GptService {
 
 			// computeStructured() 내 user 프롬프트 교체/추가 부분
 			String user = """
-			아래 13개 국토대장정 코스의 '현재 시기' 특성과 일반적 코스 특성을 바탕으로,
-			평가 기준 5개(weather, festival, activity, food, difficulty)에 대한 '가중치'를 스스로 정하고(합=1),
-			그 가중치로 상위 3곳을 선정하세요.
-			
-			응답의 각 top3 항목에는 다음 필드를 반드시 포함하세요:
-			- name (후보명과 완전히 동일한 문자열 사용)
-			- id (아래 매핑표의 정수 id, 절대 임의 생성 금지)
-			- score, reasons{...}, weighted{...}, image_url, ai_summary, country(지역)
-			
-			[이름→id 매핑표]
-			1: 아라길
-			2: 한강종주길
-			3: 남한강길
-			4: 새재길
-			5: 낙동강길
-			6: 금강길
-			7: 영산강길
-			8: 북한강길
-			9: 섬진강길
-			10: 오천길
-			11: 동해안(강원)길
-			12: 동해안(경북)길
-			13: 제주환상길
-			
-			지역(country)은 아래 중 하나로 정확히 기입:
-			서울 인천 대전 대구 광주 부산 울산 세종특별자치시 경기도 강원특별자치도 충청북도 충청남도 경상북도 경상남도 전북특별자치도 전라남도 제주특별자치도
-			
-			후보 목록:
-			- 아라길
-			- 한강종주길
-			- 남한강길
-			- 새재길
-			- 낙동강길
-			- 금강길
-			- 영산강길
-			- 북한강길
-			- 섬진강길
-			- 오천길
-			- 동해안(강원)길
-			- 동해안(경북)길
-			- 제주환상길
-			""";
+아래 13개 국토대장정 코스를 '현재 시기' 특성과 일반적 특성으로 평가하고,
+평가 기준 5개(weather, festival, activity, food, difficulty)의 '가중치'(합=1)를 스스로 정한 뒤,
+모든 13개 코스에 대해 score/reasons/weighted/…를 계산해 **점수 내림차순으로 정렬한 전체 목록**을 반환하세요.
+
+응답의 각 항목에는 다음 필드를 반드시 포함:
+- name (후보명과 완전히 동일)
+- id (아래 매핑표의 정수 id)
+- score, reasons{...}, weighted{...}, image_url, ai_summary, country
+
+[이름→id 매핑표]
+1: 아라길
+2: 한강종주길
+3: 남한강길
+4: 새재길
+5: 낙동강길
+6: 금강길
+7: 영산강길
+8: 북한강길
+9: 섬진강길
+10: 오천길
+11: 동해안(강원)길
+12: 동해안(경북)길
+13: 제주환상길
+
+region(country)는 아래 중 하나로 정확히 기입:
+서울 인천 대전 대구 광주 부산 울산 세종특별자치시 경기도 강원특별자치도 충청북도 충청남도
+경상북도 경상남도 전북특별자치도 전라남도 제주특별자치도
+
+**반드시 13개 전부를 포함**하고, **score 내림차순**으로 정렬해 반환하세요.
+후보 목록:
+- 아라길
+- 한강종주길
+- 남한강길
+- 새재길
+- 낙동강길
+- 금강길
+- 영산강길
+- 북한강길
+- 섬진강길
+- 오천길
+- 동해안(강원)길
+- 동해안(경북)길
+- 제주환상길
+""";
+
 
 
 			// === JSON Schema(strict) ===
@@ -431,12 +439,12 @@ public class GptService {
 					),
 					"top3", Map.of(
 						"type", "array",
-						"minItems", 1,
-						"maxItems", 3,
+						"minItems", 13,
+						"maxItems", 13,
+						"uniqueItems", true,
 						"items", Map.of(
 							"type", "object",
 							"additionalProperties", false,
-							// ✅ id, country를 required에 반드시 포함
 							"required", List.of("id","name","score","country","reasons","weighted","image_url","ai_summary"),
 							"properties", topItemProps
 						)
