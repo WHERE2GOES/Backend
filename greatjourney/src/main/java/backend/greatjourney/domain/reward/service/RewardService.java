@@ -1,9 +1,12 @@
 package backend.greatjourney.domain.reward.service;
 
+import java.util.List;
+
 import backend.greatjourney.domain.certification.dto.CourseCertificationStatusResponse;
 import backend.greatjourney.domain.certification.service.CertificationService;
 import org.springframework.stereotype.Service;
 
+import backend.greatjourney.domain.reward.dto.RewardResponse;
 import backend.greatjourney.domain.reward.entity.Reward;
 import backend.greatjourney.domain.reward.entity.Rewards;
 import backend.greatjourney.domain.reward.repository.RewardRepository;
@@ -67,6 +70,28 @@ public class RewardService {
 			.message("보상이 추가되었습니다.")
 			.data(null)
 			.code(201)
+			.build();
+	}
+
+
+	public BaseResponse<RewardResponse> getAllRewards(CustomOAuth2User customOAuth2User){
+		if(!userRepository.existsByUserId(Long.parseLong(customOAuth2User.getUserId()))){
+			throw new CustomException(ErrorCode.USER_NOT_FOUND);
+		}
+
+		User user = userRepository.findByUserId(Long.parseLong(customOAuth2User.getUserId()))
+			.orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+		List<RewardResponse.Rewards> rewardsList = rewardRepository.findAllByUser(user).stream()
+			.map(reward -> {
+				return new RewardResponse.Rewards(reward.getCourseId().toString());
+			}).toList();
+
+		return BaseResponse
+			.<RewardResponse>builder()
+			.message("보상을 조회하였습니다.")
+			.data(new RewardResponse(rewardsList))
+			.code(200)
 			.build();
 	}
 

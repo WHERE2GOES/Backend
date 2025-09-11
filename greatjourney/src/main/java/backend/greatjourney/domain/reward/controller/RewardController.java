@@ -1,11 +1,13 @@
 package backend.greatjourney.domain.reward.controller;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import backend.greatjourney.domain.reward.dto.RewardResponse;
 import backend.greatjourney.domain.reward.entity.Rewards;
 import backend.greatjourney.domain.reward.service.RewardService;
 import backend.greatjourney.global.exception.BaseResponse;
@@ -26,6 +28,12 @@ public class RewardController {
 	public BaseResponse<Void> makeReward(@AuthenticationPrincipal  CustomOAuth2User customOAuth2User, @RequestParam
 		Long courseId){
 		return rewardService.getReward(customOAuth2User,courseId);
+	}
+
+	@GetMapping("")
+	@Operation(summary = "사용자가 가지고 있는 보상항목 전달 API")
+	public BaseResponse<RewardResponse> getRewards(@AuthenticationPrincipal CustomOAuth2User customOAuth2User){
+		return rewardService.getAllRewards(customOAuth2User);
 	}
 
 }
