@@ -1,13 +1,14 @@
 package backend.greatjourney.domain.survey.service;
 
-import backend.greatjourney.domain.course.domain.Course;
 import backend.greatjourney.domain.course.repository.CourseRepository;
 import backend.greatjourney.domain.survey.domain.CourseCriteria;
 import backend.greatjourney.domain.survey.domain.SurveyAnswer;
+import backend.greatjourney.domain.survey.domain.SurveyTheme;
 import backend.greatjourney.domain.survey.dto.*;
 import backend.greatjourney.domain.survey.repository.CourseCriteriaRepository;
 import backend.greatjourney.domain.survey.repository.SurveyAnswerRepository;
 import backend.greatjourney.domain.survey.repository.SurveyQuestionRepository;
+import backend.greatjourney.domain.survey.repository.SurveyThemeRepository;
 import backend.greatjourney.global.exception.CustomException;
 import backend.greatjourney.global.exception.ErrorCode;
 import backend.greatjourney.global.security.entitiy.CustomOAuth2User;
@@ -29,6 +30,7 @@ public class SurveyService {
     private final SurveyAnswerRepository aRepo;
     private final CourseRepository cRepo;
     private final CourseCriteriaRepository ccRepo;
+    private final SurveyThemeRepository tRepo; // 새로 추가된 리포지토리
 
     public List<QuestionDto> getQuestions() {
         return qRepo.findAllByOrderByOrderIndexAsc().stream()
@@ -135,6 +137,34 @@ public class SurveyService {
             this.courseId = courseId;
             this.score = score;
         }
+    }
+
+
+    /**
+     * 사용자의 설문 답변에 맞는 테마를 DB에서 조회하여 반환하는 API
+     */
+    public SurveyThemeResponseDto getSurveyTheme(CustomOAuth2User customOAuth2User) {
+        Long userId = Long.parseLong(customOAuth2User.getUserId());
+
+        // 1. 사용자의 설문 답변 전체 조회
+        List<SurveyAnswer> userAnswers = aRepo.findByUserId(userId);
+
+        if (userAnswers.size() < 3) {
+            throw new CustomException(ErrorCode.SURVEY_NOT_COMPLETED);
+        }
+
+        // 2. 답변을 선호 기준으로 변환
+        Map<String, String> userPreferences = parseUserPreferences(userAnswers);
+        String difficulty = userPreferences.get("difficulty");
+        String geography = userPreferences.get("geography");
+        String scenery = userPreferences.get("scenery");
+
+        // 3. DB에서 선호도에 맞는 테마를 조회
+        SurveyTheme foundTheme = tRepo.findByDifficultyAndGeographyAndScenery(difficulty, geography, scenery)
+                .orElseThrow(() -> new CustomException(ErrorCode.THEME_NOT_FOUND));
+
+        // 4. 조회된 엔티티를 DTO로 변환하여 반환
+        return new SurveyThemeResponseDto(foundTheme.getThemeName(), foundTheme.getThemeCode());
     }
 }
 

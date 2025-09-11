@@ -47,6 +47,8 @@ public enum ErrorCode {
 	REWARD_ALREADY_GRANTED(HttpStatus.CONFLICT, 400, "이미 해당 코스에 대한 보상을 받았습니다."),
 
 	SURVEY_NOT_COMPLETED(HttpStatus.BAD_REQUEST, 400,"모든 설문에 답변해야 추천받을 수 있습니다."),
+
+    THEME_NOT_FOUND(HttpStatus.NOT_FOUND, 400,"일치하는 테마를 찾을 수 없습니다."),
 	;
 
 
