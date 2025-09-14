@@ -4,9 +4,12 @@ import backend.greatjourney.domain.certification.domain.UserCertification;
 import backend.greatjourney.domain.certification.dto.CertificationRequest;
 import backend.greatjourney.domain.certification.dto.CertificationStatusDto;
 import backend.greatjourney.domain.certification.dto.CourseCertificationStatusResponse;
+import backend.greatjourney.domain.certification.dto.UncertifiedPlaceDto;
 import backend.greatjourney.domain.certification.repository.UserCertificationRepository;
 import backend.greatjourney.domain.course.domain.Place;
+import backend.greatjourney.domain.course.dto.CertificationCenterDto;
 import backend.greatjourney.domain.course.repository.PlaceRepository;
+import backend.greatjourney.domain.course.service.CourseInfoService;
 import backend.greatjourney.domain.user.entity.User;
 import backend.greatjourney.domain.user.repository.UserRepository;
 import backend.greatjourney.global.exception.CustomException;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +31,7 @@ public class CertificationService {
     private final PlaceRepository placeRepository;
     private final UserRepository userRepository;
     private final UserCertificationRepository userCertificationRepository;
+    private final CourseInfoService courseInfoService;
 
     public void certify(CustomOAuth2User customOAuth2User, CertificationRequest request) {
         // 1. 요청받은 placeId로 인증센터를 조회합니다.
@@ -65,6 +70,11 @@ public class CertificationService {
     public CourseCertificationStatusResponse getUserCertificationsForCourse(CustomOAuth2User customOAuth2User, Integer courseId) {
         Long userId = Long.parseLong(customOAuth2User.getUserId());
 
+        // 1. CourseInfoService를 통해 코스의 전체 인증센터 DTO 목록을 가져옵니다.
+        List<CertificationCenterDto> allCenterDtos = courseInfoService.getCertificationCentersForCourse(courseId);
+        long totalCertificationsCount = allCenterDtos.size();
+
+
         // 1. 해당 코스의 전체 인증센터 개수를 조회합니다.
         long totalCertificationCenters = placeRepository.countByCategoryAndCourseId("인증센터", courseId);
 
@@ -82,7 +92,24 @@ public class CertificationService {
                 .map(CertificationStatusDto::from)
                 .toList();
 
+        // 5. '미인증' 목록('uncertifiedList')을 계산합니다.
+        //    - 먼저, 인증 완료한 장소의 ID만 Set으로 추출합니다.
+        Set<Long> certifiedPlaceIds = userCertifications.stream()
+                .map(uc -> uc.getCertificationCenter().getId())
+                .collect(Collectors.toSet());
+
+        //    - 전체 인증센터 DTO 목록에서, 인증된 ID를 포함하지 않는 것들만 필터링합니다.
+        List<UncertifiedPlaceDto> uncertifiedDtos = allCenterDtos.stream()
+                .filter(centerDto -> !certifiedPlaceIds.contains(centerDto.placeId()))
+                .map(centerDto -> new UncertifiedPlaceDto(
+                        centerDto.placeId(),
+                        centerDto.placeName()
+//                        centerDto.latitude(),
+//                        centerDto.longitude()
+                ))
+                .toList();
+
         // 5. 최종 응답 DTO를 생성하여 반환합니다.
-        return new CourseCertificationStatusResponse(isCompleted, totalCertificationCenters, certifiedCount, certificationDtos);
+        return new CourseCertificationStatusResponse(isCompleted, totalCertificationCenters, certifiedCount, certificationDtos, uncertifiedDtos);
     }
 }
