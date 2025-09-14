@@ -49,10 +49,11 @@ public class UserService {
 		Long userId = Long.parseLong(customOAuth2User.getUserId());
 		RefreshToken refreshToken = refreshTokenRepository.findByUserId(userId);
 
+		refreshTokenRepository.deleteByUserId(userId);
 		return BaseResponse.<Void>builder()
 			.code(200)
 			.message("로그아웃이 완료되었습니다.")
-			.data(refreshTokenRepository.deleteByToken(refreshToken.getToken()))
+			.data(null)
 			.isSuccess(true)
 			.build();
 	}
