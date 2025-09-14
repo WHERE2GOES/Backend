@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.hc.core5.util.Timeout;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
@@ -23,35 +24,65 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import backend.greatjourney.domain.course.domain.Course;
+import backend.greatjourney.domain.course.repository.CourseRepository;
+import backend.greatjourney.global.exception.CustomException;
+import backend.greatjourney.global.exception.ErrorCode;
 import backend.greatjourney.global.gpt.dto.GptRankResponse;
 import backend.greatjourney.global.gpt.dto.GptTop3LiteResponse;
 import backend.greatjourney.global.gpt.dto.GptTrailFullResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 
 @Service
 @Slf4j
+
 public class GptService {
 
 	private final RestTemplate restTemplate;
 	private final CacheManager cacheManager;
 
 	private static final String CHAT_URL = "https://api.openai.com/v1/chat/completions";
-	private static final String MODEL    = "gpt-4o-mini"; // JSON Schema(strict) 지원
+	private static final String MODEL    = "gpt-5-mini"; // JSON Schema(strict) 지원
 
 	private static final String CACHE_NAME = "gptBikeTrails";
-	private static final String KEY_TOP3   = "rankBikeTrails:v3";
-	private static final String KEY_PREFIX = "rankBikeTrail:v3:"; // 단일 코스 키 프리픽스
+	private static final String KEY_TOP3   = "rankBikeTrails:v4";
+	private static final String KEY_PREFIX = "rankBikeTrail:v4:"; // 단일 코스 키 프리픽스
+
+	private final CourseRepository courseRepository;
 
 	@Value("${gpt.key}")
 	private String API_KEY;
 
-	public GptService(CacheManager cacheManager) {
-		var factory = new SimpleClientHttpRequestFactory();
-		factory.setConnectTimeout(8000);
-		factory.setReadTimeout(20000);
+
+	public GptService(CacheManager cacheManager, CourseRepository courseRepository) {
+		var cm = new PoolingHttpClientConnectionManager();
+		cm.setMaxTotal(100);
+		cm.setDefaultMaxPerRoute(20);
+
+		var rc = RequestConfig.custom()
+			.setConnectTimeout(Timeout.ofSeconds(12_000))    // 연결 10s
+			.setResponseTimeout(Timeout.ofSeconds(180_000))  // ★ 읽기 120s (필요시 180_000)
+			.build();
+
+		CloseableHttpClient httpClient = HttpClientBuilder.create()
+			.setConnectionManager(cm)
+			.setDefaultRequestConfig(rc)
+			.disableAutomaticRetries() // 재시도는 우리가 제어
+			.build();
+
+		var factory = new HttpComponentsClientHttpRequestFactory(httpClient);
 		this.restTemplate = new RestTemplate(factory);
 		this.cacheManager = cacheManager;
+		this.courseRepository = courseRepository;
 	}
+
 
 	// ========= 유틸 =========
 	private String norm(String s) {
@@ -68,11 +99,6 @@ public class GptService {
 		return a.trim().equalsIgnoreCase(b.trim());
 	}
 
-	private String safeImageUrl(String name, String url) {
-		if (url != null && !url.isBlank() && url.startsWith("http")) return url;
-		String q = URLEncoder.encode(name + " 자전거길", StandardCharsets.UTF_8);
-		return "https://www.google.com/search?tbm=isch&q=" + q;
-	}
 
 	// GptService 클래스 상단
 	private static final Map<String, Integer> TRAIL_ID = Map.ofEntries(
@@ -226,7 +252,7 @@ public class GptService {
 			.limit(3)
 			.map(t -> new GptTop3LiteResponse.Item(
 				t.name(),
-				"https://ddo123.s3.ap-northeast-2.amazonaws.com/test_images/46460912-913d-449f-b7e0-5238aac37639_Group%25202085667687.png",
+				resolveImageUrlByName(t.name()),
 				t.country(),
 				t.id().toString()
 			))
@@ -252,10 +278,11 @@ public class GptService {
 			.filter(t -> equalsIgnoreCaseTrim(t.name(), trailName))
 			.findFirst()
 			.orElse(full.top3().get(0));
+		String imageUrl = resolveImageUrlByName(top.name());
 
 		return new GptTrailFullResponse(
 			top.name(),
-			"https://ddo123.s3.ap-northeast-2.amazonaws.com/test_images/46460912-913d-449f-b7e0-5238aac37639_Group%25202085667687.png",
+			imageUrl,
 			top.country(),
 			top.id().toString(),
 			top.ai_summary(),
@@ -283,50 +310,52 @@ public class GptService {
 
 			// computeStructured() 내 user 프롬프트 교체/추가 부분
 			String user = """
-아래 13개 국토대장정 코스를 '현재 시기' 특성과 일반적 특성으로 평가하고,
-평가 기준 5개(weather, festival, activity, food, difficulty)의 '가중치'(합=1)를 스스로 정한 뒤,
-모든 13개 코스에 대해 score/reasons/weighted/…를 계산해 **점수 내림차순으로 정렬한 전체 목록**을 반환하세요.
-
-응답의 각 항목에는 다음 필드를 반드시 포함:
-- name (후보명과 완전히 동일)
-- id (아래 매핑표의 정수 id)
-- score, reasons{...}, weighted{...}, image_url, ai_summary, country
-
-[이름→id 매핑표]
-1: 아라길
-2: 한강종주길
-3: 남한강길
-4: 새재길
-5: 낙동강길
-6: 금강길
-7: 영산강길
-8: 북한강길
-9: 섬진강길
-10: 오천길
-11: 동해안(강원)길
-12: 동해안(경북)길
-13: 제주환상길
-
-region(country)는 아래 중 하나로 정확히 기입:
-서울 인천 대전 대구 광주 부산 울산 세종특별자치시 경기도 강원특별자치도 충청북도 충청남도
-경상북도 경상남도 전북특별자치도 전라남도 제주특별자치도
-
-**반드시 13개 전부를 포함**하고, **score 내림차순**으로 정렬해 반환하세요.
-후보 목록:
-- 아라길
-- 한강종주길
-- 남한강길
-- 새재길
-- 낙동강길
-- 금강길
-- 영산강길
-- 북한강길
-- 섬진강길
-- 오천길
-- 동해안(강원)길
-- 동해안(경북)길
-- 제주환상길
-""";
+				아래 13개 국토대장정 코스를 '현재 시기' 특성과 일반적 특성으로 평가하고,
+				평가 기준 5개(weather, festival, activity, food, difficulty)의 '가중치'(합=1)를 스스로 정한 뒤,
+				모든 13개 코스에 대해 score/reasons/weighted/…를 계산해 **점수 내림차순으로 정렬한 전체 목록**을 반환하세요.
+				이때 현재 날씨와 날짜를 고려해주며, 이때 해당 자전거길을 지나는 곳 근처의 축제 정보를 고려해서 제공해주세요.
+				
+				응답의 각 항목에는 다음 필드를 반드시 포함:
+				- name (후보명과 완전히 동일)
+				- id (아래 매핑표의 정수 id)
+				- score, reasons{...}, weighted{...}, ai_summary, country
+				- ai_summary는 2줄
+				
+				[이름→id 매핑표]
+				1: 아라길
+				2: 한강종주길
+				3: 남한강길
+				4: 새재길
+				5: 낙동강길
+				6: 금강길
+				7: 영산강길
+				8: 북한강길
+				9: 섬진강길
+				10: 오천길
+				11: 동해안(강원)길
+				12: 동해안(경북)길
+				13: 제주환상길
+				
+				region(country)는 아래 중 하나로 정확히 기입:
+				서울 인천 대전 대구 광주 부산 울산 세종특별자치시 경기도 강원특별자치도 충청북도 충청남도
+				경상북도 경상남도 전북특별자치도 전라남도 제주특별자치도
+				
+				**반드시 13개 전부를 포함**하고, **score 내림차순**으로 정렬해 반환하세요.
+				후보 목록:
+				- 아라길
+				- 한강종주길
+				- 남한강길
+				- 새재길
+				- 낙동강길
+				- 금강길
+				- 영산강길
+				- 북한강길
+				- 섬진강길
+				- 오천길
+				- 동해안(강원)길
+				- 동해안(경북)길
+				- 제주환상길
+				""";
 
 
 
@@ -335,7 +364,7 @@ region(country)는 아래 중 하나로 정확히 기입:
 
 			Map<String, Object> body = new HashMap<>();
 			body.put("model", MODEL);
-			body.put("temperature", temperature);
+			// body.put("temperature", temperature);
 			body.put("response_format", Map.of(
 				"type", "json_schema",
 				"json_schema", schema
@@ -358,8 +387,6 @@ region(country)는 아래 중 하나로 정확히 기입:
 			String content = (String) message.get("content");
 			if (content == null || content.isBlank()) throw new IllegalStateException("Empty content");
 
-			// 디버깅용 로그(필요시 주석 해제)
-			// log.info("LLM JSON: {}", content);
 
 			ObjectMapper om = new ObjectMapper();
 			return om.readValue(content, GptRankResponse.class);
@@ -419,7 +446,6 @@ region(country)는 아래 중 하나로 정확히 기입:
 				"required", List.of("weather","festival","activity","food","difficulty"),
 				"properties", weightedProps
 			),
-			"image_url", Map.of("type", "string"),
 			"ai_summary", Map.of("type", "string")
 		);
 
@@ -441,11 +467,10 @@ region(country)는 아래 중 하나로 정확히 기입:
 						"type", "array",
 						"minItems", 13,
 						"maxItems", 13,
-						"uniqueItems", true,
 						"items", Map.of(
 							"type", "object",
 							"additionalProperties", false,
-							"required", List.of("id","name","score","country","reasons","weighted","image_url","ai_summary"),
+							"required", List.of("id","name","score","country","reasons","weighted","ai_summary"),
 							"properties", topItemProps
 						)
 					),
@@ -458,6 +483,12 @@ region(country)는 아래 중 하나로 정확히 기입:
 		);
 
 		return schema;
+	}
+
+
+	private String resolveImageUrlByName(String trailName) {
+			return courseRepository.findByName(trailName)
+				.map(Course::getImage_url).orElseThrow( ()->new CustomException(ErrorCode.NO_IMAGE));
 	}
 
 }

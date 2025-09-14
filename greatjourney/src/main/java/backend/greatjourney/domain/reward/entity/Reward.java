@@ -30,11 +30,14 @@ public class Reward {
 
 	private Long courseId;
 
+	private String rewardItem;
+
 
 	@Builder
-	private Reward(User user, Long courseId){
+	private Reward(User user, Long courseId,String rewardItem){
 		this.user = user;
 		this.courseId = courseId;
+		this.rewardItem = rewardItem;
 	}
 
 }

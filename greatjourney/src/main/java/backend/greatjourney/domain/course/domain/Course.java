@@ -10,4 +10,5 @@ public class Course {
     @Id
     private Integer id;            // ROAD_SN
     private String name;           // 노선명
+    private String image_url;
 }

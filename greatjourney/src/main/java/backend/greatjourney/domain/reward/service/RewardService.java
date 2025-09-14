@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 
 import backend.greatjourney.domain.reward.dto.RewardResponse;
 import backend.greatjourney.domain.reward.entity.Reward;
+import backend.greatjourney.domain.reward.entity.RewardList;
 import backend.greatjourney.domain.reward.entity.Rewards;
+import backend.greatjourney.domain.reward.repository.RewardListRepository;
 import backend.greatjourney.domain.reward.repository.RewardRepository;
 import backend.greatjourney.domain.user.entity.User;
 import backend.greatjourney.domain.user.repository.UserRepository;
@@ -25,6 +27,7 @@ public class RewardService {
 	private final RewardRepository rewardRepository;
 	private final UserRepository userRepository;
 	private final CertificationService certificationService;
+	private final RewardListRepository rewardListRepository;
 
 	//사용자가 요청하면 다 완료된 것을 확인해서 발급해주기 -> 백에서 처리?해야할 듯
 	public BaseResponse<Void> getReward(CustomOAuth2User customOAuth2User,Long courseId){
@@ -46,19 +49,17 @@ public class RewardService {
 		// 만약 코스를 완료 / 미완료
 		if (!certificationStatus.isCompleted()) {
 //			미완료
-//			throw new CustomException(ErrorCode.COURSE_NOT_COMPLETED); // ErrorCode에 COURSE_NOT_COMPLETED 추가 필요
-		}
-		else{
-//			완료
+		throw new CustomException(ErrorCode.COURSE_NOT_COMPLETED); // ErrorCode에 COURSE_NOT_COMPLETED 추가 필요
 		}
 
 		//어떻게 다 돌았는지 확인
+		RewardList rewardList = rewardListRepository.findByCourseId(courseId).orElseThrow(()->new CustomException(ErrorCode.NO_REGION));
 
 		Reward reward = Reward.builder()
 			.courseId(courseId)
+			.rewardItem(rewardList.getRewardBody())
 			.user(user)
 			.build();
-
 
 
 		rewardRepository.save(reward);
@@ -84,7 +85,7 @@ public class RewardService {
 
 		List<RewardResponse.Rewards> rewardsList = rewardRepository.findAllByUser(user).stream()
 			.map(reward -> {
-				return new RewardResponse.Rewards(reward.getCourseId().toString());
+				return new RewardResponse.Rewards(reward.getCourseId().toString(),reward.getRewardItem());
 			}).toList();
 
 		return BaseResponse
