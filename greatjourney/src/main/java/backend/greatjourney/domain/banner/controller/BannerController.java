@@ -3,6 +3,7 @@ package backend.greatjourney.domain.banner.controller;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import backend.greatjourney.domain.banner.service.BannerService;
@@ -10,7 +11,8 @@ import backend.greatjourney.global.exception.BaseResponse;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@RestController("/api/v1/banner")
+@RestController
+@RequestMapping("/api/v1/banner")
 public class BannerController {
 
 	private final BannerService bannerService;
