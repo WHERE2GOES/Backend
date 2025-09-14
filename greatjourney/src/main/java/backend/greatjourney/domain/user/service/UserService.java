@@ -47,7 +47,7 @@ public class UserService {
 	public BaseResponse<Void> logOutUser(CustomOAuth2User customOAuth2User){
 
 		Long userId = Long.parseLong(customOAuth2User.getUserId());
-		RefreshToken refreshToken = refreshTokenRepository.findByUserId(userId);
+		// RefreshToken refreshToken = refreshTokenRepository.findByUserId(userId);
 
 		refreshTokenRepository.deleteByUserId(userId);
 		return BaseResponse.<Void>builder()
