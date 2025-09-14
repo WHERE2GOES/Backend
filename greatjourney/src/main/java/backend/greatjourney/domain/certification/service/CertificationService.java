@@ -71,6 +71,9 @@ public class CertificationService {
         // 2. 사용자가 해당 코스에서 완료한 인증 내역을 조회합니다.
         List<UserCertification> userCertifications = userCertificationRepository.findByUser_UserIdAndCourseId(userId, courseId);
 
+        // (추가) 사용자가 인증한 개수를 계산합니다.
+        long certifiedCount = userCertifications.size();
+
         // 3. 완료 여부를 계산합니다. (전체 개수가 0일 경우도 고려)
         boolean isCompleted = (totalCertificationCenters > 0) && (userCertifications.size() >= totalCertificationCenters);
 
@@ -80,6 +83,6 @@ public class CertificationService {
                 .toList();
 
         // 5. 최종 응답 DTO를 생성하여 반환합니다.
-        return new CourseCertificationStatusResponse(isCompleted, certificationDtos);
+        return new CourseCertificationStatusResponse(isCompleted, totalCertificationCenters, certifiedCount, certificationDtos);
     }
 }
