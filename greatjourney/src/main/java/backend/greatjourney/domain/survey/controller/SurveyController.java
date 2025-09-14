@@ -47,4 +47,23 @@ public class SurveyController {
 
         return ResponseEntity.ok(response);
     }
+
+    /**
+     * 사용자의 설문 결과에 맞는 테마를 반환하는 API
+     */
+    @GetMapping("/theme")
+    public ResponseEntity<BaseResponse<SurveyThemeResponseDto>> getSurveyTheme(
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+
+        SurveyThemeResponseDto theme = service.getSurveyTheme(customOAuth2User);
+
+        BaseResponse<SurveyThemeResponseDto> response = BaseResponse.<SurveyThemeResponseDto>builder()
+                .message("사용자 맞춤 테마 조회에 성공했습니다.")
+                .data(theme)
+                .code(200)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
 }
