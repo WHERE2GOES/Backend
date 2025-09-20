@@ -25,7 +25,7 @@ public class RewardController {
 
 	@PostMapping("")
 	@Operation(summary = "사용자에게 보상 추가 하는 API입니다.\n" + "보상의 경우 어떠한 보상인지")
-	public BaseResponse<Void> makeReward(@AuthenticationPrincipal  CustomOAuth2User customOAuth2User, @RequestParam
+	public BaseResponse<String> makeReward(@AuthenticationPrincipal  CustomOAuth2User customOAuth2User, @RequestParam
 		Long courseId){
 		return rewardService.getReward(customOAuth2User,courseId);
 	}
