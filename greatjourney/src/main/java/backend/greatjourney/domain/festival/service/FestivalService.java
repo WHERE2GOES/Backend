@@ -27,6 +27,8 @@ public class FestivalService {
 	private String changeGang(String areaName){
 		if(areaName.contains("강원")) {
 			return "강원특별자치도";
+		}else if(areaName.contains("경기")){
+			return "경기도";
 		}else{
 			return areaName;
 		}
