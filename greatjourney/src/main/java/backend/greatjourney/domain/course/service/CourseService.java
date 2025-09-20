@@ -85,4 +85,11 @@ public class CourseService {
         return points;
     }
 
+
+
+    public List<PlaceItemDto> retrieveRestroom(){
+        return placeRepo.findAllByCategory("화장실").stream()
+            .map(place -> new PlaceItemDto(place.getId(),place.getName(),place.getCategory(),place.getLatitude(),place.getLongitude()))
+            .toList();
+    }
 }

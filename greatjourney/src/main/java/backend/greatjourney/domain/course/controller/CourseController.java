@@ -1,5 +1,7 @@
 package backend.greatjourney.domain.course.controller;
 
+import java.util.List;
+
 import backend.greatjourney.domain.course.dto.*;
 import backend.greatjourney.domain.course.service.CourseProgressService;
 import backend.greatjourney.domain.course.service.CourseService;
@@ -126,6 +128,18 @@ public class CourseController {
                         .data(currentCourse)
                         .build()
         );
+    }
+
+    @GetMapping("/course/restroom")
+    public ResponseEntity<BaseResponse<List<PlaceItemDto>>> retrieveRestRoom(
+    ){
+        return ResponseEntity.ok(
+            BaseResponse.<List<PlaceItemDto>>builder()
+                .isSuccess(true)
+                .code(HttpStatus.OK.value())
+                .message("현재 진행 중인 코스 정보 조회에 성공했습니다.")
+                .data(courseService.retrieveRestroom())
+                .build());
     }
 
 }

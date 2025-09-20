@@ -2,6 +2,8 @@ package backend.greatjourney.domain.course.repository;
 
 
 import backend.greatjourney.domain.course.domain.Place;
+
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,5 +22,8 @@ public interface PlaceRepository extends JpaRepository<Place, Long> {
     List<Place> findByCategoryAndCourseId(String category, Integer courseId);
 
     long countByCategoryAndCourseId(String category, Integer courseId);
+
+    List<Place> findAllByCategory(String category);
+
 
 }
