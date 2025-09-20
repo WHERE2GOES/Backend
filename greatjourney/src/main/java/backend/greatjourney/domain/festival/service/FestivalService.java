@@ -24,10 +24,18 @@ public class FestivalService {
 	@Value("${tour.key}")
 	private String serviceKey;
 
+	private String changeGang(String areaName){
+		if(areaName.contains("강원")) {
+			return "강원특별자치도";
+		}else{
+			return areaName;
+		}
+	}
+
 
 	//일단 지역 입력받기 -> 지역을 바탕으로 정보들을 가져오기
 	public List<FestivalResponse> getFestivals(String eventStartDate, String areaName){
-		KukmoonRegion kukmoonRegion = kukmoonRegionRepository.findByName(areaName)
+		KukmoonRegion kukmoonRegion = kukmoonRegionRepository.findByName(changeGang(areaName))
 			.orElseThrow(()->new CustomException(ErrorCode.NO_REGION));
 
 		FestivalSearchDto dto = callSearchFestival2(eventStartDate, kukmoonRegion.getCode());
@@ -55,7 +63,7 @@ public class FestivalService {
 	}
 
 	public List<FestivalResponse> getFood(String areaName){
-		KukmoonRegion kukmoonRegion = kukmoonRegionRepository.findByName(areaName)
+		KukmoonRegion kukmoonRegion = kukmoonRegionRepository.findByName(changeGang(areaName))
 			.orElseThrow(()->new CustomException(ErrorCode.NO_REGION));
 
 		FestivalSearchDto dto = callSearch("39",kukmoonRegion.getCode());
@@ -63,21 +71,21 @@ public class FestivalService {
 	}
 
 	public List<FestivalResponse> getHotel(String areaName){
-		KukmoonRegion kukmoonRegion = kukmoonRegionRepository.findByName(areaName)
+		KukmoonRegion kukmoonRegion = kukmoonRegionRepository.findByName(changeGang(areaName))
 			.orElseThrow(()->new CustomException(ErrorCode.NO_REGION));
 		FestivalSearchDto dto = callSearch("32",kukmoonRegion.getCode());
 		return changeDto(dto);
 	}
 
 	public List<FestivalResponse> getPhoto(String areaName){
-		KukmoonRegion kukmoonRegion = kukmoonRegionRepository.findByName(areaName)
+		KukmoonRegion kukmoonRegion = kukmoonRegionRepository.findByName(changeGang(areaName))
 			.orElseThrow(()->new CustomException(ErrorCode.NO_REGION));
 		FestivalSearchDto dto = callSearch("12",kukmoonRegion.getCode());
 		return changeDto(dto);
 	}
 
 	public List<FestivalResponse> getPlay(String areaName){
-		KukmoonRegion kukmoonRegion = kukmoonRegionRepository.findByName(areaName)
+		KukmoonRegion kukmoonRegion = kukmoonRegionRepository.findByName(changeGang(areaName))
 			.orElseThrow(()->new CustomException(ErrorCode.NO_REGION));
 		FestivalSearchDto dto = callSearch("14",kukmoonRegion.getCode());
 		return changeDto(dto);
